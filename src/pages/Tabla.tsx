@@ -1,11 +1,31 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Trophy } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
-interface TeamStats {
+interface Team {
+  id: string;
+  name: string;
+  category: "Femenino" | "Masculino" | "Mixto";
+}
+
+interface TeamStat {
+  id: string;
+  team_id: string;
+  played: number;
+  won: number;
+  lost: number;
+  sets_for: number;
+  sets_against: number;
+  points: number;
+}
+
+interface TeamStanding {
   position: number;
   team: string;
   category: "Femenino" | "Masculino" | "Mixto";
@@ -18,85 +38,48 @@ interface TeamStats {
 }
 
 const Tabla = () => {
-  const standings: TeamStats[] = [
-    {
-      position: 1,
-      team: "Águilas Voladoras",
-      category: "Femenino",
-      played: 2,
-      won: 2,
-      lost: 0,
-      setsFor: 6,
-      setsAgainst: 2,
-      points: 6,
-    },
-    {
-      position: 2,
-      team: "Panteras",
-      category: "Femenino",
-      played: 1,
-      won: 1,
-      lost: 0,
-      setsFor: 3,
-      setsAgainst: 1,
-      points: 3,
-    },
-    {
-      position: 3,
-      team: "Tigres del Norte",
-      category: "Femenino",
-      played: 2,
-      won: 0,
-      lost: 2,
-      setsFor: 2,
-      setsAgainst: 6,
-      points: 0,
-    },
-    {
-      position: 1,
-      team: "Leones Azules",
-      category: "Masculino",
-      played: 1,
-      won: 1,
-      lost: 0,
-      setsFor: 3,
-      setsAgainst: 2,
-      points: 3,
-    },
-    {
-      position: 2,
-      team: "Halcones FC",
-      category: "Masculino",
-      played: 1,
-      won: 0,
-      lost: 1,
-      setsFor: 2,
-      setsAgainst: 3,
-      points: 0,
-    },
-    {
-      position: 1,
-      team: "Relámpagos",
-      category: "Mixto",
-      played: 0,
-      won: 0,
-      lost: 0,
-      setsFor: 0,
-      setsAgainst: 0,
-      points: 0,
-    },
-    {
-      position: 2,
-      team: "Estrellas Unidas",
-      category: "Mixto",
-      played: 0,
-      won: 0,
-      lost: 0,
-      setsFor: 0,
-      setsAgainst: 0,
-      points: 0,
-    },
-  ];
+  const [standings, setStandings] = useState<TeamStanding[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadStandings();
+  }, []);
+
+  const loadStandings = async () => {
+    try {
+      const [teamsResponse, statsResponse] = await Promise.all([
+        supabase.from("teams").select("*"),
+        supabase.from("team_stats").select("*"),
+      ]);
+
+      if (teamsResponse.error) throw teamsResponse.error;
+      if (statsResponse.error) throw statsResponse.error;
+
+      const teams: Team[] = teamsResponse.data || [];
+      const stats: TeamStat[] = statsResponse.data || [];
+
+      const combined: TeamStanding[] = teams.map((team) => {
+        const stat = stats.find((s) => s.team_id === team.id);
+        return {
+          position: 0,
+          team: team.name,
+          category: team.category,
+          played: stat?.played || 0,
+          won: stat?.won || 0,
+          lost: stat?.lost || 0,
+          setsFor: stat?.sets_for || 0,
+          setsAgainst: stat?.sets_against || 0,
+          points: stat?.points || 0,
+        };
+      });
+
+      setStandings(combined);
+    } catch (error) {
+      toast.error("Error al cargar tabla de posiciones");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const categories = ["Femenino", "Masculino", "Mixto"] as const;
 
@@ -110,6 +93,18 @@ const Tabla = () => {
         return "bg-purple-500/10 text-purple-700 dark:text-purple-400";
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-muted-foreground">Cargando tabla...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -126,7 +121,8 @@ const Tabla = () => {
             {categories.map((category) => {
               const categoryTeams = standings
                 .filter((team) => team.category === category)
-                .sort((a, b) => b.points - a.points);
+                .sort((a, b) => b.points - a.points)
+                .map((team, index) => ({ ...team, position: index + 1 }));
 
               return (
                 <Card key={category} className="gradient-card">
@@ -139,49 +135,55 @@ const Tabla = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-16 text-center">Pos</TableHead>
-                            <TableHead>Equipo</TableHead>
-                            <TableHead className="text-center">PJ</TableHead>
-                            <TableHead className="text-center">PG</TableHead>
-                            <TableHead className="text-center">PP</TableHead>
-                            <TableHead className="text-center">SF</TableHead>
-                            <TableHead className="text-center">SC</TableHead>
-                            <TableHead className="text-center font-bold">Pts</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {categoryTeams.map((team) => (
-                            <TableRow key={`${team.category}-${team.team}`} className="hover:bg-muted/50">
-                              <TableCell className="text-center font-medium">
-                                <div className="flex items-center justify-center gap-1">
-                                  {team.position === 1 && (
-                                    <Trophy className="w-4 h-4 text-primary" />
-                                  )}
-                                  {team.position}
-                                </div>
-                              </TableCell>
-                              <TableCell className="font-semibold">{team.team}</TableCell>
-                              <TableCell className="text-center">{team.played}</TableCell>
-                              <TableCell className="text-center text-green-600 dark:text-green-400 font-medium">
-                                {team.won}
-                              </TableCell>
-                              <TableCell className="text-center text-red-600 dark:text-red-400 font-medium">
-                                {team.lost}
-                              </TableCell>
-                              <TableCell className="text-center">{team.setsFor}</TableCell>
-                              <TableCell className="text-center">{team.setsAgainst}</TableCell>
-                              <TableCell className="text-center font-bold text-lg text-primary">
-                                {team.points}
-                              </TableCell>
+                    {categoryTeams.length === 0 ? (
+                      <p className="text-center text-muted-foreground py-8">
+                        No hay equipos en esta categoría
+                      </p>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="w-16 text-center">Pos</TableHead>
+                              <TableHead>Equipo</TableHead>
+                              <TableHead className="text-center">PJ</TableHead>
+                              <TableHead className="text-center">PG</TableHead>
+                              <TableHead className="text-center">PP</TableHead>
+                              <TableHead className="text-center">SF</TableHead>
+                              <TableHead className="text-center">SC</TableHead>
+                              <TableHead className="text-center font-bold">Pts</TableHead>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
+                          </TableHeader>
+                          <TableBody>
+                            {categoryTeams.map((team) => (
+                              <TableRow key={`${team.category}-${team.team}`} className="hover:bg-muted/50">
+                                <TableCell className="text-center font-medium">
+                                  <div className="flex items-center justify-center gap-1">
+                                    {team.position === 1 && (
+                                      <Trophy className="w-4 h-4 text-primary" />
+                                    )}
+                                    {team.position}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="font-semibold">{team.team}</TableCell>
+                                <TableCell className="text-center">{team.played}</TableCell>
+                                <TableCell className="text-center text-green-600 dark:text-green-400 font-medium">
+                                  {team.won}
+                                </TableCell>
+                                <TableCell className="text-center text-red-600 dark:text-red-400 font-medium">
+                                  {team.lost}
+                                </TableCell>
+                                <TableCell className="text-center">{team.setsFor}</TableCell>
+                                <TableCell className="text-center">{team.setsAgainst}</TableCell>
+                                <TableCell className="text-center font-bold text-lg text-primary">
+                                  {team.points}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               );

@@ -1,55 +1,43 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Calendar, Clock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface News {
-  id: number;
+  id: string;
   title: string;
   summary: string;
   date: string;
-  category: "Torneo" | "Resultados" | "Comunicados";
+  category: string;
 }
 
 const Noticias = () => {
-  const news: News[] = [
-    {
-      id: 1,
-      title: "¡Arranca la Liga Elo Campense 2025!",
-      summary: "Con gran emoción damos inicio oficial a la temporada 2025 de nuestra liga. Esperamos partidos llenos de energía y deportividad.",
-      date: "2025-10-20",
-      category: "Torneo",
-    },
-    {
-      id: 2,
-      title: "Águilas Voladoras mantiene el invicto",
-      summary: "El equipo femenino consigue su segunda victoria consecutiva con un impresionante 3-1 ante Tigres del Norte.",
-      date: "2025-11-05",
-      category: "Resultados",
-    },
-    {
-      id: 3,
-      title: "Modificación de horarios - Jornada 3",
-      summary: "Por motivos de disponibilidad del gimnasio, los partidos de la jornada 3 se adelantan 30 minutos. Revisar fixture actualizado.",
-      date: "2025-11-10",
-      category: "Comunicados",
-    },
-    {
-      id: 4,
-      title: "Leones Azules gana en un partido reñido",
-      summary: "En un encuentro muy parejo, Leones Azules se impuso 3-2 a Halcones FC en la categoría masculina.",
-      date: "2025-11-05",
-      category: "Resultados",
-    },
-    {
-      id: 5,
-      title: "Próximos encuentros de categoría mixta",
-      summary: "Este fin de semana debutan los equipos de categoría mixta. ¡No te pierdas estos emocionantes partidos!",
-      date: "2025-11-08",
-      category: "Torneo",
-    },
-  ];
+  const [news, setNews] = useState<News[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadNews();
+  }, []);
+
+  const loadNews = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("news")
+        .select("*")
+        .order("date", { ascending: false });
+
+      if (error) throw error;
+      setNews(data || []);
+    } catch (error) {
+      toast.error("Error al cargar noticias");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getCategoryColor = (category: News["category"]) => {
     switch (category) {
@@ -84,6 +72,18 @@ const Noticias = () => {
     return `Hace ${Math.floor(diffDays / 30)} meses`;
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-muted-foreground">Cargando noticias...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -95,35 +95,45 @@ const Noticias = () => {
             Las últimas novedades de la liga
           </p>
 
-          <div className="space-y-6">
-            {news.map((item) => (
-              <Card key={item.id} className="hover:shadow-card transition-all duration-300 gradient-card">
-                <CardHeader>
-                  <div className="flex items-start justify-between gap-4 mb-2">
-                    <Badge className={getCategoryColor(item.category)}>
-                      {item.category}
-                    </Badge>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {formatDate(item.date)}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {getTimeAgo(item.date)}
-                      </span>
+          {news.length === 0 ? (
+            <Card className="gradient-card">
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">
+                  No hay noticias publicadas aún
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-6">
+              {news.map((item) => (
+                <Card key={item.id} className="hover:shadow-card transition-all duration-300 gradient-card">
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-4 mb-2">
+                      <Badge className={getCategoryColor(item.category)}>
+                        {item.category}
+                      </Badge>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
+                          {formatDate(item.date)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {getTimeAgo(item.date)}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <CardTitle className="text-2xl">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {item.summary}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <CardTitle className="text-2xl">{item.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {item.summary}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </main>
 

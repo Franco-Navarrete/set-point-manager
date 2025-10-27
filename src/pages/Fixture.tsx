@@ -1,87 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type Category = "Todos" | "Femenino" | "Masculino" | "Mixto";
 
+interface Team {
+  id: string;
+  name: string;
+}
+
 interface Match {
-  id: number;
+  id: string;
   date: string;
   time: string;
-  teamA: string;
-  teamB: string;
-  scoreA?: number;
-  scoreB?: number;
+  team_a_id: string;
+  team_b_id: string;
+  score_a: number | null;
+  score_b: number | null;
   category: Exclude<Category, "Todos">;
   jornada: number;
 }
 
 const Fixture = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>("Todos");
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const matches: Match[] = [
-    {
-      id: 1,
-      date: "2025-11-05",
-      time: "18:00",
-      teamA: "Águilas Voladoras",
-      teamB: "Tigres del Norte",
-      scoreA: 3,
-      scoreB: 1,
-      category: "Femenino",
-      jornada: 1,
-    },
-    {
-      id: 2,
-      date: "2025-11-05",
-      time: "20:00",
-      teamA: "Halcones FC",
-      teamB: "Leones Azules",
-      scoreA: 2,
-      scoreB: 3,
-      category: "Masculino",
-      jornada: 1,
-    },
-    {
-      id: 3,
-      date: "2025-11-12",
-      time: "19:00",
-      teamA: "Estrellas Unidas",
-      teamB: "Relámpagos",
-      category: "Mixto",
-      jornada: 2,
-    },
-    {
-      id: 4,
-      date: "2025-11-12",
-      time: "21:00",
-      teamA: "Panteras",
-      teamB: "Águilas Voladoras",
-      category: "Femenino",
-      jornada: 2,
-    },
-    {
-      id: 5,
-      date: "2025-11-19",
-      time: "18:30",
-      teamA: "Tigres del Norte",
-      teamB: "Halcones FC",
-      category: "Masculino",
-      jornada: 3,
-    },
-    {
-      id: 6,
-      date: "2025-11-19",
-      time: "20:30",
-      teamA: "Leones Azules",
-      teamB: "Relámpagos",
-      category: "Mixto",
-      jornada: 3,
-    },
-  ];
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const [matchesResponse, teamsResponse] = await Promise.all([
+        supabase.from("matches").select("*").order("date"),
+        supabase.from("teams").select("id, name"),
+      ]);
+
+      if (matchesResponse.error) throw matchesResponse.error;
+      if (teamsResponse.error) throw teamsResponse.error;
+
+      setMatches(matchesResponse.data || []);
+      setTeams(teamsResponse.data || []);
+    } catch (error) {
+      toast.error("Error al cargar fixture");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTeamName = (teamId: string) => {
+    return teams.find((t) => t.id === teamId)?.name || "Equipo";
+  };
 
   const categories: Category[] = ["Todos", "Femenino", "Masculino", "Mixto"];
 
@@ -109,6 +85,18 @@ const Fixture = () => {
       day: "numeric" 
     });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-muted-foreground">Cargando fixture...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -156,15 +144,15 @@ const Fixture = () => {
                   <CardContent>
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex-1 text-right">
-                        <p className="font-semibold text-lg">{match.teamA}</p>
+                        <p className="font-semibold text-lg">{getTeamName(match.team_a_id)}</p>
                       </div>
                       
                       <div className="flex items-center gap-4 px-6 py-3 bg-muted rounded-lg min-w-[120px] justify-center">
-                        {match.scoreA !== undefined && match.scoreB !== undefined ? (
+                        {match.score_a !== null && match.score_b !== null ? (
                           <>
-                            <span className="text-2xl font-bold">{match.scoreA}</span>
+                            <span className="text-2xl font-bold">{match.score_a}</span>
                             <span className="text-muted-foreground">-</span>
-                            <span className="text-2xl font-bold">{match.scoreB}</span>
+                            <span className="text-2xl font-bold">{match.score_b}</span>
                           </>
                         ) : (
                           <span className="text-muted-foreground font-medium">VS</span>
@@ -172,7 +160,7 @@ const Fixture = () => {
                       </div>
                       
                       <div className="flex-1 text-left">
-                        <p className="font-semibold text-lg">{match.teamB}</p>
+                        <p className="font-semibold text-lg">{getTeamName(match.team_b_id)}</p>
                       </div>
                     </div>
                   </CardContent>

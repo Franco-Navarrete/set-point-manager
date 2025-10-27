@@ -1,11 +1,52 @@
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const checkAdminStatus = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    
+    setIsAdmin(!!data);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
 
   const navItems = [
     { name: "Inicio", path: "/" },
@@ -30,44 +71,66 @@ const Navigation = () => {
             <span className="font-bold text-xl hidden sm:inline">Liga Elo Campense</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => (
               <Link key={item.path} to={item.path}>
-                <Button
-                  variant={isActive(item.path) ? "default" : "ghost"}
-                  className="transition-all duration-200"
-                >
+                <Button variant={isActive(item.path) ? "default" : "ghost"}>
                   {item.name}
                 </Button>
               </Link>
             ))}
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Button variant="outline" size="sm" onClick={() => navigate("/admin")}>
+                    <Shield className="w-4 h-4 mr-2" />
+                    Admin
+                  </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={handleLogout}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Salir
+                </Button>
+              </>
+            ) : (
+              <Button variant="default" size="sm" onClick={() => navigate("/auth")}>
+                Ingresar
+              </Button>
+            )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X /> : <Menu />}
           </Button>
         </div>
 
-        {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-2 border-t border-border">
             {navItems.map((item) => (
               <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)}>
-                <Button
-                  variant={isActive(item.path) ? "default" : "ghost"}
-                  className="w-full justify-start"
-                >
+                <Button variant={isActive(item.path) ? "default" : "ghost"} className="w-full justify-start">
                   {item.name}
                 </Button>
               </Link>
             ))}
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Button variant="outline" className="w-full" onClick={() => { navigate("/admin"); setMobileMenuOpen(false); }}>
+                    <Shield className="w-4 h-4 mr-2" />
+                    Admin
+                  </Button>
+                )}
+                <Button variant="outline" className="w-full" onClick={() => { handleLogout(); setMobileMenuOpen(false); }}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Salir
+                </Button>
+              </>
+            ) : (
+              <Button className="w-full" onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}>
+                Ingresar
+              </Button>
+            )}
           </div>
         )}
       </div>
