@@ -6,6 +6,9 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useLeague } from "@/contexts/LeagueContext";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type Category = "Todos" | "Femenino" | "Masculino" | "Mixto";
 
@@ -27,6 +30,7 @@ interface Match {
 }
 
 const Fixture = () => {
+  const { selectedLeague } = useLeague();
   const [selectedCategory, setSelectedCategory] = useState<Category>("Todos");
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -34,12 +38,19 @@ const Fixture = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [selectedLeague]);
 
   const loadData = async () => {
+    setLoading(true);
     try {
+      let matchesQuery = supabase.from("matches").select("*").order("date");
+      
+      if (selectedLeague) {
+        matchesQuery = matchesQuery.eq("league_id", selectedLeague.id);
+      }
+
       const [matchesResponse, teamsResponse] = await Promise.all([
-        supabase.from("matches").select("*").order("date"),
+        matchesQuery,
         supabase.from("teams").select("id, name"),
       ]);
 
@@ -105,9 +116,18 @@ const Fixture = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Fixture</h1>
-          <p className="text-muted-foreground text-lg mb-8">
+          <p className="text-muted-foreground text-lg mb-4">
             Calendario completo de partidos del torneo
           </p>
+
+          {!selectedLeague && (
+            <Alert className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Selecciona una liga o evento desde el menú superior para ver los partidos
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Category Filters */}
           <div className="flex flex-wrap gap-3 mb-8">

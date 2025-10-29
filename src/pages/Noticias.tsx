@@ -3,9 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useLeague } from "@/contexts/LeagueContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface News {
   id: string;
@@ -16,19 +18,27 @@ interface News {
 }
 
 const Noticias = () => {
+  const { selectedLeague } = useLeague();
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadNews();
-  }, []);
+  }, [selectedLeague]);
 
   const loadNews = async () => {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
+      let newsQuery = supabase
         .from("news")
         .select("*")
         .order("date", { ascending: false });
+      
+      if (selectedLeague) {
+        newsQuery = newsQuery.eq("league_id", selectedLeague.id);
+      }
+
+      const { data, error } = await newsQuery;
 
       if (error) throw error;
       setNews(data || []);
@@ -91,9 +101,18 @@ const Noticias = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Noticias</h1>
-          <p className="text-muted-foreground text-lg mb-8">
+          <p className="text-muted-foreground text-lg mb-4">
             Las últimas novedades de la liga
           </p>
+
+          {!selectedLeague && (
+            <Alert className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Selecciona una liga o evento desde el menú superior para ver las noticias
+              </AlertDescription>
+            </Alert>
+          )}
 
           {news.length === 0 ? (
             <Card className="gradient-card">

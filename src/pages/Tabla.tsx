@@ -4,9 +4,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Trophy } from "lucide-react";
+import { Trophy, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useLeague } from "@/contexts/LeagueContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Team {
   id: string;
@@ -38,17 +40,25 @@ interface TeamStanding {
 }
 
 const Tabla = () => {
+  const { selectedLeague } = useLeague();
   const [standings, setStandings] = useState<TeamStanding[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadStandings();
-  }, []);
+  }, [selectedLeague]);
 
   const loadStandings = async () => {
+    setLoading(true);
     try {
+      let teamsQuery = supabase.from("teams").select("*");
+      
+      if (selectedLeague) {
+        teamsQuery = teamsQuery.eq("league_id", selectedLeague.id);
+      }
+
       const [teamsResponse, statsResponse] = await Promise.all([
-        supabase.from("teams").select("*"),
+        teamsQuery,
         supabase.from("team_stats").select("*"),
       ]);
 
@@ -113,9 +123,18 @@ const Tabla = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Tabla de Posiciones</h1>
-          <p className="text-muted-foreground text-lg mb-8">
+          <p className="text-muted-foreground text-lg mb-4">
             Clasificación actual del torneo por categoría
           </p>
+
+          {!selectedLeague && (
+            <Alert className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Selecciona una liga o evento desde el menú superior para ver las posiciones
+              </AlertDescription>
+            </Alert>
+          )}
 
           <div className="space-y-8">
             {categories.map((category) => {

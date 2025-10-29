@@ -6,6 +6,9 @@ import Footer from "@/components/Footer";
 import teamPlaceholder from "@/assets/team-placeholder.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useLeague } from "@/contexts/LeagueContext";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Team {
   id: string;
@@ -22,18 +25,26 @@ interface Player {
 }
 
 const Equipos = () => {
+  const { selectedLeague } = useLeague();
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [selectedLeague]);
 
   const loadData = async () => {
+    setLoading(true);
     try {
+      let teamsQuery = supabase.from("teams").select("*").order("name");
+      
+      if (selectedLeague) {
+        teamsQuery = teamsQuery.eq("league_id", selectedLeague.id);
+      }
+
       const [teamsResponse, playersResponse] = await Promise.all([
-        supabase.from("teams").select("*").order("name"),
+        teamsQuery,
         supabase.from("players").select("*").order("position"),
       ]);
 
@@ -83,9 +94,18 @@ const Equipos = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Equipos</h1>
-          <p className="text-muted-foreground text-lg mb-8">
+          <p className="text-muted-foreground text-lg mb-4">
             Conoce a todos los equipos participantes del torneo
           </p>
+
+          {!selectedLeague && (
+            <Alert className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Selecciona una liga o evento desde el menú superior para ver los equipos
+              </AlertDescription>
+            </Alert>
+          )}
 
           {teams.length === 0 ? (
             <Card className="gradient-card">

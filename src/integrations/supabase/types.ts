@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      leagues: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          type: Database["public"]["Enums"]["league_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          type: Database["public"]["Enums"]["league_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          type?: Database["public"]["Enums"]["league_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       matches: {
         Row: {
           category: Database["public"]["Enums"]["category_type"]
@@ -21,6 +54,7 @@ export type Database = {
           date: string
           id: string
           jornada: number
+          league_id: string | null
           score_a: number | null
           score_b: number | null
           team_a_id: string
@@ -34,6 +68,7 @@ export type Database = {
           date: string
           id?: string
           jornada: number
+          league_id?: string | null
           score_a?: number | null
           score_b?: number | null
           team_a_id: string
@@ -47,6 +82,7 @@ export type Database = {
           date?: string
           id?: string
           jornada?: number
+          league_id?: string | null
           score_a?: number | null
           score_b?: number | null
           team_a_id?: string
@@ -55,6 +91,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "matches_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "matches_team_a_id_fkey"
             columns: ["team_a_id"]
@@ -77,6 +120,7 @@ export type Database = {
           created_at: string
           date: string
           id: string
+          league_id: string | null
           summary: string
           title: string
           updated_at: string
@@ -86,6 +130,7 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
+          league_id?: string | null
           summary: string
           title: string
           updated_at?: string
@@ -95,11 +140,20 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
+          league_id?: string | null
           summary?: string
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "news_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       players: {
         Row: {
@@ -203,6 +257,7 @@ export type Database = {
           category: Database["public"]["Enums"]["category_type"]
           created_at: string
           id: string
+          league_id: string | null
           logo_url: string | null
           name: string
           updated_at: string
@@ -211,6 +266,7 @@ export type Database = {
           category: Database["public"]["Enums"]["category_type"]
           created_at?: string
           id?: string
+          league_id?: string | null
           logo_url?: string | null
           name: string
           updated_at?: string
@@ -219,11 +275,20 @@ export type Database = {
           category?: Database["public"]["Enums"]["category_type"]
           created_at?: string
           id?: string
+          league_id?: string | null
           logo_url?: string | null
           name?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "teams_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -270,6 +335,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user"
       category_type: "Femenino" | "Masculino" | "Mixto"
+      league_type: "LIGA" | "EVENTO_GRANDE" | "EVENTO_2DO_ORDEN"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -399,6 +465,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       category_type: ["Femenino", "Masculino", "Mixto"],
+      league_type: ["LIGA", "EVENTO_GRANDE", "EVENTO_2DO_ORDEN"],
     },
   },
 } as const

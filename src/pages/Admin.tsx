@@ -10,6 +10,7 @@ import { AdminTeams } from "@/components/admin/AdminTeams";
 import { AdminMatches } from "@/components/admin/AdminMatches";
 import { AdminNews } from "@/components/admin/AdminNews";
 import { AdminStats } from "@/components/admin/AdminStats";
+import { AdminLeagues } from "@/components/admin/AdminLeagues";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -74,13 +75,18 @@ const Admin = () => {
             Gestiona todos los aspectos de la liga
           </p>
 
-          <Tabs defaultValue="teams" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+          <Tabs defaultValue="leagues" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="leagues">Ligas</TabsTrigger>
               <TabsTrigger value="teams">Equipos</TabsTrigger>
               <TabsTrigger value="matches">Fixture</TabsTrigger>
               <TabsTrigger value="news">Noticias</TabsTrigger>
               <TabsTrigger value="stats">Estadísticas</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="leagues">
+              <AdminLeagues />
+            </TabsContent>
 
             <TabsContent value="teams">
               <AdminTeams />

@@ -4,6 +4,7 @@ import { Menu, X, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import LeagueSelector from "./LeagueSelector";
 
 const Navigation = () => {
   const location = useLocation();
@@ -63,13 +64,17 @@ const Navigation = () => {
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
+        <div className="flex items-center justify-between gap-4 h-16">
+          <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-glow">
               <span className="text-primary-foreground font-bold text-xl">V</span>
             </div>
-            <span className="font-bold text-xl hidden sm:inline">Liga Elo Campense</span>
+            <span className="font-bold text-xl hidden lg:inline">Liga Elo Campense</span>
           </Link>
+
+          <div className="hidden md:block flex-shrink-0">
+            <LeagueSelector />
+          </div>
 
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => (
@@ -106,6 +111,9 @@ const Navigation = () => {
 
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-2 border-t border-border">
+            <div className="px-2 mb-4">
+              <LeagueSelector />
+            </div>
             {navItems.map((item) => (
               <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)}>
                 <Button variant={isActive(item.path) ? "default" : "ghost"} className="w-full justify-start">
