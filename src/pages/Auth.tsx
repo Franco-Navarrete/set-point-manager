@@ -88,7 +88,7 @@ const Auth = () => {
       <Card className="w-full max-w-md gradient-card">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">
-            Liga Elo Campense
+            El Ocampense
           </CardTitle>
           <CardDescription className="mt-2">
             {isForgotPassword

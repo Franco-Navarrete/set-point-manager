@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">Liga Elo Campense</h3>
+            <h3 className="font-bold text-lg mb-4">El Ocampense</h3>
             <p className="text-muted-foreground text-sm">
               Promoviendo el vóley y la comunidad deportiva local desde 2024.
             </p>
@@ -60,7 +60,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          © 2025 Liga Elo Campense de Vóley. Todos los derechos reservados.
+          © 2025 El Ocampense. Todos los derechos reservados.
         </div>
       </div>
     </footer>

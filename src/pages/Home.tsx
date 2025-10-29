@@ -73,7 +73,7 @@ const Home = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl">
               <h1 className="text-5xl md:text-7xl font-bold mb-6 text-balance">
-                Liga Elo Campense de <span className="text-primary">Vóley</span>
+                El Ocampense
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground mb-8 text-balance">
                 Uniendo comunidad, deporte y pasión. Competencia sana para todos los niveles.
@@ -136,9 +136,9 @@ const Home = () => {
                 <div className="max-w-3xl mx-auto text-center">
                   <h2 className="text-3xl md:text-4xl font-bold mb-6">Nuestros Valores</h2>
                   <div className="space-y-6 text-lg text-muted-foreground">
-                    <p>
-                      La Liga Elo Campense nace del amor por el vóley y el deseo de fortalecer nuestra comunidad deportiva.
-                    </p>
+                <p>
+                  El Ocampense nace del amor por el vóley y el deseo de fortalecer nuestra comunidad deportiva.
+                </p>
                     <p>
                       Promovemos la <span className="text-primary font-semibold">competencia sana</span>, 
                       el <span className="text-primary font-semibold">respeto mutuo</span> y 

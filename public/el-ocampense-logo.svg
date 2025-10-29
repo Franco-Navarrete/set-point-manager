@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300">
+  <defs>
+    <style>
+      .bg { fill: #000000; }
+      .title { fill: #cfcfcf; font-weight: 700; font-size: 140px; font-family: Arial, Helvetica, sans-serif; letter-spacing: 6px; }
+      .subtitle { fill: #b5b5b5; font-size: 40px; font-family: Georgia, 'Times New Roman', serif; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="300" rx="0" ry="0" />
+  <text class="title" x="50" y="190">EL OCAMPENSE</text>
+  <text class="subtitle" x="60" y="260">“Chi va piano, va Lontano”</text>
+</svg>

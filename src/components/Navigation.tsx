@@ -86,13 +86,13 @@ const Navigation = () => {
               </div>
             ) : (
               <img
-                src="/logo-ocampense.jpg"
+                src="/el-ocampense-logo.svg"
                 alt="El Ocampense"
                 className="h-10 w-auto object-contain"
                 onError={() => setLogoError(true)}
               />
             )}
-            <span className="font-bold text-xl hidden lg:inline">Liga Elo Campense</span>
+            <span className="font-bold text-xl hidden lg:inline">El Ocampense</span>
           </Link>
 
           {/* Eliminamos el selector aquí para moverlo entre el menú y el botón Ingresar */}
