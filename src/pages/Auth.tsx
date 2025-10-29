@@ -3,13 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const emailSchema = z.string().email("Email inválido");
+const passwordSchema = z.string().min(6, "La contraseña debe tener al menos 6 caracteres");
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -26,7 +31,32 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      // Validar email
+      const emailValidation = emailSchema.safeParse(email);
+      if (!emailValidation.success) {
+        toast.error(emailValidation.error.errors[0].message);
+        setLoading(false);
+        return;
+      }
+
+      // Validar contraseña solo si no es recuperación
+      if (!isForgotPassword) {
+        const passwordValidation = passwordSchema.safeParse(password);
+        if (!passwordValidation.success) {
+          toast.error(passwordValidation.error.errors[0].message);
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (isForgotPassword) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        toast.success("¡Revisa tu email para recuperar tu contraseña!");
+        setIsForgotPassword(false);
+      } else if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -60,9 +90,13 @@ const Auth = () => {
           <CardTitle className="text-3xl font-bold">
             Liga Elo Campense
           </CardTitle>
-          <p className="text-muted-foreground mt-2">
-            {isLogin ? "Inicia sesión" : "Crea tu cuenta"}
-          </p>
+          <CardDescription className="mt-2">
+            {isForgotPassword
+              ? "Recupera tu contraseña"
+              : isLogin
+              ? "Inicia sesión en tu cuenta"
+              : "Crea tu cuenta"}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAuth} className="space-y-4">
@@ -75,27 +109,56 @@ const Auth = () => {
                 required
               />
             </div>
-            <div>
-              <Input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
+            {!isForgotPassword && (
+              <div>
+                <Input
+                  type="password"
+                  placeholder="Contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Cargando..." : isLogin ? "Iniciar Sesión" : "Registrarse"}
+              {loading
+                ? "Cargando..."
+                : isForgotPassword
+                ? "Enviar email de recuperación"
+                : isLogin
+                ? "Iniciar Sesión"
+                : "Registrarse"}
             </Button>
           </form>
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              {isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión"}
-            </button>
+          
+          <div className="mt-4 space-y-2 text-center">
+            {!isForgotPassword && (
+              <>
+                <button
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors block w-full"
+                >
+                  {isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión"}
+                </button>
+                {isLogin && (
+                  <button
+                    onClick={() => setIsForgotPassword(true)}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors block w-full"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                )}
+              </>
+            )}
+            {isForgotPassword && (
+              <button
+                onClick={() => setIsForgotPassword(false)}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors block w-full"
+              >
+                Volver al inicio de sesión
+              </button>
+            )}
           </div>
         </CardContent>
       </Card>

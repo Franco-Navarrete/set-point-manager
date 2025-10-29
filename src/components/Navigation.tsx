@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, LogOut, Shield } from "lucide-react";
+import { Menu, X, LogOut, Shield, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import LeagueSelector from "./LeagueSelector";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 const Navigation = () => {
   const location = useLocation();
@@ -85,18 +92,33 @@ const Navigation = () => {
               </Link>
             ))}
             {user ? (
-              <>
-                {isAdmin && (
-                  <Button variant="outline" size="sm" onClick={() => navigate("/admin")}>
-                    <Shield className="w-4 h-4 mr-2" />
-                    Admin
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    Mi Cuenta
                   </Button>
-                )}
-                <Button variant="outline" size="sm" onClick={handleLogout}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Salir
-                </Button>
-              </>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-popover border-border z-50">
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuItem onClick={() => navigate("/admin")}>
+                        <Shield className="w-4 h-4 mr-2" />
+                        Panel Admin
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <DropdownMenuItem onClick={() => navigate("/change-password")}>
+                    <KeyRound className="w-4 h-4 mr-2" />
+                    Cambiar Contraseña
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Cerrar Sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Button variant="default" size="sm" onClick={() => navigate("/auth")}>
                 Ingresar
@@ -124,14 +146,18 @@ const Navigation = () => {
             {user ? (
               <>
                 {isAdmin && (
-                  <Button variant="outline" className="w-full" onClick={() => { navigate("/admin"); setMobileMenuOpen(false); }}>
+                  <Button variant="outline" className="w-full justify-start" onClick={() => { navigate("/admin"); setMobileMenuOpen(false); }}>
                     <Shield className="w-4 h-4 mr-2" />
-                    Admin
+                    Panel Admin
                   </Button>
                 )}
-                <Button variant="outline" className="w-full" onClick={() => { handleLogout(); setMobileMenuOpen(false); }}>
+                <Button variant="outline" className="w-full justify-start" onClick={() => { navigate("/change-password"); setMobileMenuOpen(false); }}>
+                  <KeyRound className="w-4 h-4 mr-2" />
+                  Cambiar Contraseña
+                </Button>
+                <Button variant="outline" className="w-full justify-start" onClick={() => { handleLogout(); setMobileMenuOpen(false); }}>
                   <LogOut className="w-4 h-4 mr-2" />
-                  Salir
+                  Cerrar Sesión
                 </Button>
               </>
             ) : (
