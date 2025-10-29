@@ -34,10 +34,22 @@ const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-4">Síguenos</h3>
             <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Facebook">
+              <a
+                href="https://www.facebook.com/ElOcampense/?ref=_xav_ig_profile_page_web#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Facebook"
+              >
                 <Facebook className="w-6 h-6" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram">
+              <a
+                href="https://www.instagram.com/elocampense?igsh=amI4c2d0YmkzbDB4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Instagram"
+              >
                 <Instagram className="w-6 h-6" />
               </a>
               <a href="mailto:contacto@ligaelocampense.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Email">

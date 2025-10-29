@@ -17,6 +17,7 @@ const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -56,10 +57,16 @@ const Navigation = () => {
     navigate("/");
   };
 
-  const navItems = [
+  // Navegación: desktop y móvil
+  const desktopPrimary = [
     { name: "Inicio", path: "/" },
+  ];
+  const fixtureTablaItems = [
     { name: "Fixture", path: "/fixture" },
     { name: "Tabla", path: "/tabla" },
+  ];
+
+  const moreNavItems = [
     { name: "Equipos", path: "/equipos" },
     { name: "Noticias", path: "/noticias" },
     { name: "Sobre Nosotros", path: "/sobre-nosotros" },
@@ -73,24 +80,67 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between gap-4 h-16">
           <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-glow">
-              <span className="text-primary-foreground font-bold text-xl">V</span>
-            </div>
+            {logoError ? (
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-glow">
+                <span className="text-primary-foreground font-bold text-xl">V</span>
+              </div>
+            ) : (
+              <img
+                src="/logo-ocampense.jpg"
+                alt="El Ocampense"
+                className="h-10 w-auto object-contain"
+                onError={() => setLogoError(true)}
+              />
+            )}
             <span className="font-bold text-xl hidden lg:inline">Liga Elo Campense</span>
           </Link>
 
-          <div className="hidden md:block flex-shrink-0">
-            <LeagueSelector />
-          </div>
+          {/* Eliminamos el selector aquí para moverlo entre el menú y el botón Ingresar */}
 
           <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
+            {desktopPrimary.map((item) => (
               <Link key={item.path} to={item.path}>
                 <Button variant={isActive(item.path) ? "default" : "ghost"}>
                   {item.name}
                 </Button>
               </Link>
             ))}
+
+            {/* Dropdown Fixture/Tabla */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={fixtureTablaItems.some((i) => isActive(i.path)) ? "default" : "ghost"}>
+                  Fixture / Tabla
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="bg-popover border-border z-50">
+                {fixtureTablaItems.map((item) => (
+                  <DropdownMenuItem key={item.path} onClick={() => navigate(item.path)}>
+                    {item.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={moreNavItems.some((i) => isActive(i.path)) ? "default" : "ghost"}>
+                  Más
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="bg-popover border-border z-50">
+                {moreNavItems.map((item) => (
+                  <DropdownMenuItem key={item.path} onClick={() => navigate(item.path)}>
+                    {item.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Selector de liga/evento colocado entre el menú y el botón Ingresar */}
+            <div className="mx-2 w-56">
+              <LeagueSelector />
+            </div>
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -108,7 +158,7 @@ const Navigation = () => {
                       <DropdownMenuSeparator />
                     </>
                   )}
-                  <DropdownMenuItem onClick={() => navigate("/change-password")}>
+                  <DropdownMenuItem onClick={() => navigate("/change-password")}> 
                     <KeyRound className="w-4 h-4 mr-2" />
                     Cambiar Contraseña
                   </DropdownMenuItem>
@@ -120,7 +170,7 @@ const Navigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button variant="default" size="sm" onClick={() => navigate("/auth")}>
+              <Button variant="default" size="sm" onClick={() => navigate("/auth")}> 
                 Ingresar
               </Button>
             )}
@@ -136,7 +186,8 @@ const Navigation = () => {
             <div className="px-2 mb-4">
               <LeagueSelector />
             </div>
-            {navItems.map((item) => (
+            {/* Menú móvil: Inicio, Fixture, Tabla y Más */}
+            {[...desktopPrimary, ...fixtureTablaItems, ...moreNavItems].map((item) => (
               <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)}>
                 <Button variant={isActive(item.path) ? "default" : "ghost"} className="w-full justify-start">
                   {item.name}

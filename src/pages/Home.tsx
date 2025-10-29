@@ -51,7 +51,7 @@ const Home = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl">
               <h1 className="text-5xl md:text-7xl font-bold mb-6 text-balance">
-                Liga Elo Campense de <span className="gradient-hero bg-clip-text text-transparent">Vóley</span>
+                Liga Elo Campense de <span className="text-primary">Vóley</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground mb-8 text-balance">
                 Uniendo comunidad, deporte y pasión. Competencia sana para todos los niveles.
