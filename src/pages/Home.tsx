@@ -6,6 +6,28 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-volleyball.jpg";
 
+// Slot de publicidad para ubicar a ambos lados de secciones
+const AdSlot = ({ imageSrc, href }: { imageSrc?: string; href?: string }) => {
+  return (
+    <div className="hidden lg:block">
+      {imageSrc ? (
+        <a href={href || "#"} target="_blank" rel="noopener noreferrer" className="block">
+          <img
+            src={imageSrc}
+            alt="Publicidad"
+            className="w-full rounded-md border border-border shadow-card object-cover"
+            style={{ maxHeight: 280 }}
+          />
+        </a>
+      ) : (
+        <div className="h-[280px] rounded-md border border-dashed border-border bg-muted/30 flex items-center justify-center text-center px-3">
+          <span className="text-sm text-muted-foreground">Espacio disponible para publicidad</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Home = () => {
   const features = [
     {
@@ -72,52 +94,63 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Features Grid */}
+        {/* Features Grid con espacios de publicidad a ambos lados */}
         <section className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Accesos rápidos</h2>
-              <p className="text-muted-foreground text-lg">
-                Toda la información que necesitas en un solo lugar
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {features.map((feature, index) => (
-                <Link key={index} to={feature.link}>
-                  <Card className="h-full hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-pointer gradient-card border-border/50">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                        <feature.icon className="w-8 h-8 text-primary" />
-                      </div>
-                      <h3 className="font-bold text-xl mb-2">{feature.title}</h3>
-                      <p className="text-muted-foreground">{feature.description}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+            <div className="grid lg:grid-cols-[220px,1fr,220px] gap-6 items-start">
+              <AdSlot />
+              <div>
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">Accesos rápidos</h2>
+                  <p className="text-muted-foreground text-lg">
+                    Toda la información que necesitas en un solo lugar
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {features.map((feature, index) => (
+                    <Link key={index} to={feature.link}>
+                      <Card className="h-full hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-pointer gradient-card border-border/50">
+                        <CardContent className="p-6 text-center">
+                          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                            <feature.icon className="w-8 h-8 text-primary" />
+                          </div>
+                          <h3 className="font-bold text-xl mb-2">{feature.title}</h3>
+                          <p className="text-muted-foreground">{feature.description}</p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <AdSlot />
             </div>
           </div>
         </section>
 
-        {/* Values Section */}
+        {/* Values Section con espacios de publicidad a ambos lados */}
         <section className="py-20">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Nuestros Valores</h2>
-              <div className="space-y-6 text-lg text-muted-foreground">
-                <p>
-                  La Liga Elo Campense nace del amor por el vóley y el deseo de fortalecer nuestra comunidad deportiva.
-                </p>
-                <p>
-                  Promovemos la <span className="text-primary font-semibold">competencia sana</span>, 
-                  el <span className="text-primary font-semibold">respeto mutuo</span> y 
-                  el <span className="text-primary font-semibold">crecimiento conjunto</span> de todos los participantes.
-                </p>
-                <p>
-                  Más que un torneo, somos una familia unida por la pasión deportiva.
-                </p>
+            <div className="grid lg:grid-cols-[220px,1fr,220px] gap-6 items-start">
+              <AdSlot />
+              <div>
+                <div className="max-w-3xl mx-auto text-center">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-6">Nuestros Valores</h2>
+                  <div className="space-y-6 text-lg text-muted-foreground">
+                    <p>
+                      La Liga Elo Campense nace del amor por el vóley y el deseo de fortalecer nuestra comunidad deportiva.
+                    </p>
+                    <p>
+                      Promovemos la <span className="text-primary font-semibold">competencia sana</span>, 
+                      el <span className="text-primary font-semibold">respeto mutuo</span> y 
+                      el <span className="text-primary font-semibold">crecimiento conjunto</span> de todos los participantes.
+                    </p>
+                    <p>
+                      Más que un torneo, somos una familia unida por la pasión deportiva.
+                    </p>
+                  </div>
+                </div>
               </div>
+              <AdSlot />
             </div>
           </div>
         </section>
