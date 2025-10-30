@@ -5,13 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Filter } from "lucide-react";
+
+interface League {
+  id: string;
+  name: string;
+  type: string;
+}
 
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino" | "Mixto";
+  category: "Femenino" | "Masculino";
   logo_url: string | null;
+  league_id: string | null;
 }
 
 interface Player {
@@ -22,15 +29,32 @@ interface Player {
 }
 
 export const AdminTeams = () => {
+  const [leagues, setLeagues] = useState<League[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [newTeam, setNewTeam] = useState({ name: "", category: "Femenino" as const });
+  const [newTeam, setNewTeam] = useState({ name: "", category: "Femenino" as const, league_id: "" });
   const [newPlayer, setNewPlayer] = useState({ team_id: "", name: "" });
+  const [filterLeague, setFilterLeague] = useState<string>("");
 
   useEffect(() => {
+    loadLeagues();
     loadTeams();
     loadPlayers();
   }, []);
+
+  const loadLeagues = async () => {
+    const { data, error } = await supabase
+      .from("leagues")
+      .select("*")
+      .eq("is_active", true)
+      .order("display_order");
+    
+    if (error) {
+      toast.error("Error al cargar ligas");
+    } else {
+      setLeagues(data || []);
+    }
+  };
 
   const loadTeams = async () => {
     const { data, error } = await supabase
@@ -59,8 +83,8 @@ export const AdminTeams = () => {
   };
 
   const createTeam = async () => {
-    if (!newTeam.name) {
-      toast.error("Ingresa el nombre del equipo");
+    if (!newTeam.name || !newTeam.league_id) {
+      toast.error("Completa todos los campos");
       return;
     }
 
@@ -72,10 +96,26 @@ export const AdminTeams = () => {
       toast.error("Error al crear equipo");
     } else {
       toast.success("Equipo creado");
-      setNewTeam({ name: "", category: "Femenino" });
+      setNewTeam({ name: "", category: "Femenino", league_id: "" });
       loadTeams();
     }
   };
+
+  const getLeagueName = (leagueId: string | null) => {
+    if (!leagueId) return "Sin liga";
+    return leagues.find(l => l.id === leagueId)?.name || "Desconocida";
+  };
+
+  const filteredTeams = filterLeague 
+    ? teams.filter(team => team.league_id === filterLeague)
+    : teams;
+
+  const filteredPlayers = filterLeague
+    ? players.filter(player => {
+        const team = teams.find(t => t.id === player.team_id);
+        return team?.league_id === filterLeague;
+      })
+    : players;
 
   const deleteTeam = async (id: string) => {
     const { error } = await supabase
@@ -129,6 +169,30 @@ export const AdminTeams = () => {
     <div className="space-y-6">
       <Card className="gradient-card">
         <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="w-5 h-5" />
+            Filtrar por Liga
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select value={filterLeague} onValueChange={setFilterLeague}>
+            <SelectTrigger>
+              <SelectValue placeholder="Todas las ligas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Todas las ligas</SelectItem>
+              {leagues.map((league) => (
+                <SelectItem key={league.id} value={league.id}>
+                  {league.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
+      <Card className="gradient-card">
+        <CardHeader>
           <CardTitle>Crear Nuevo Equipo</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -142,12 +206,26 @@ export const AdminTeams = () => {
             onValueChange={(value: any) => setNewTeam({ ...newTeam, category: value })}
           >
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder="Selecciona categoría" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Femenino">Femenino</SelectItem>
               <SelectItem value="Masculino">Masculino</SelectItem>
-              <SelectItem value="Mixto">Mixto</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={newTeam.league_id}
+            onValueChange={(value) => setNewTeam({ ...newTeam, league_id: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecciona liga" />
+            </SelectTrigger>
+            <SelectContent>
+              {leagues.map((league) => (
+                <SelectItem key={league.id} value={league.id}>
+                  {league.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Button onClick={createTeam} className="w-full">
@@ -159,15 +237,17 @@ export const AdminTeams = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Equipos Existentes</CardTitle>
+          <CardTitle>Equipos Existentes ({filteredTeams.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {teams.map((team) => (
+            {filteredTeams.map((team) => (
               <div key={team.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                 <div>
                   <p className="font-semibold">{team.name}</p>
-                  <p className="text-sm text-muted-foreground">{team.category}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {team.category} • {getLeagueName(team.league_id)}
+                  </p>
                 </div>
                 <Button
                   variant="destructive"
@@ -216,17 +296,19 @@ export const AdminTeams = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Jugadores</CardTitle>
+          <CardTitle>Jugadores ({filteredPlayers.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {players.map((player) => {
+            {filteredPlayers.map((player) => {
               const team = teams.find((t) => t.id === player.team_id);
               return (
                 <div key={player.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                   <div>
                     <p className="font-semibold">{player.name}</p>
-                    <p className="text-sm text-muted-foreground">{team?.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {team?.name} • {getLeagueName(team?.league_id || null)}
+                    </p>
                   </div>
                   <Button
                     variant="destructive"
