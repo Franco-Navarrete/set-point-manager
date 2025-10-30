@@ -106,11 +106,11 @@ export const AdminTeams = () => {
     return leagues.find(l => l.id === leagueId)?.name || "Desconocida";
   };
 
-  const filteredTeams = filterLeague 
+  const filteredTeams = filterLeague && filterLeague !== "all"
     ? teams.filter(team => team.league_id === filterLeague)
     : teams;
 
-  const filteredPlayers = filterLeague
+  const filteredPlayers = filterLeague && filterLeague !== "all"
     ? players.filter(player => {
         const team = teams.find(t => t.id === player.team_id);
         return team?.league_id === filterLeague;
@@ -175,12 +175,12 @@ export const AdminTeams = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={filterLeague} onValueChange={setFilterLeague}>
+          <Select value={filterLeague || "all"} onValueChange={setFilterLeague}>
             <SelectTrigger>
               <SelectValue placeholder="Todas las ligas" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todas las ligas</SelectItem>
+              <SelectItem value="all">Todas las ligas</SelectItem>
               {leagues.map((league) => (
                 <SelectItem key={league.id} value={league.id}>
                   {league.name}
