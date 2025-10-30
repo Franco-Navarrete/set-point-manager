@@ -334,7 +334,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
-      category_type: "Femenino" | "Masculino" | "Mixto"
+      category_type: "Femenino" | "Masculino"
       league_type: "LIGA" | "EVENTO_GRANDE" | "EVENTO_2DO_ORDEN"
     }
     CompositeTypes: {
@@ -464,7 +464,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
-      category_type: ["Femenino", "Masculino", "Mixto"],
+      category_type: ["Femenino", "Masculino"],
       league_type: ["LIGA", "EVENTO_GRANDE", "EVENTO_2DO_ORDEN"],
     },
   },
