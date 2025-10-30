@@ -275,9 +275,9 @@ export const AdminTeams = () => {
               <SelectValue placeholder="Selecciona un equipo" />
             </SelectTrigger>
             <SelectContent>
-              {teams.map((team) => (
+              {filteredTeams.map((team) => (
                 <SelectItem key={team.id} value={team.id}>
-                  {team.name}
+                  {team.name} ({team.category})
                 </SelectItem>
               ))}
             </SelectContent>
