@@ -102,7 +102,7 @@ const SobreNosotros = () => {
               <div className="space-y-4 text-muted-foreground">
                 <p className="flex items-center justify-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-primary" />
-                  Categorías para todos: Femenino, Masculino y Mixto
+                  Categorías: Femenino y Masculino
                 </p>
                 <p className="flex items-center justify-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-primary" />

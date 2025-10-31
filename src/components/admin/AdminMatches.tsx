@@ -5,12 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Filter } from "lucide-react";
+
+interface League {
+  id: string;
+  name: string;
+}
 
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino" | "Mixto";
+  category: "Femenino" | "Masculino";
+  league_id: string | null;
 }
 
 interface Match {
@@ -21,13 +27,16 @@ interface Match {
   team_b_id: string;
   score_a: number | null;
   score_b: number | null;
-  category: "Femenino" | "Masculino" | "Mixto";
+  category: "Femenino" | "Masculino";
   jornada: number;
+  league_id: string | null;
 }
 
 export const AdminMatches = () => {
+  const [leagues, setLeagues] = useState<League[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
+  const [filterLeague, setFilterLeague] = useState<string>("");
   const [newMatch, setNewMatch] = useState({
     date: "",
     time: "",
@@ -35,12 +44,28 @@ export const AdminMatches = () => {
     team_b_id: "",
     category: "Femenino" as const,
     jornada: 1,
+    league_id: "",
   });
 
   useEffect(() => {
+    loadLeagues();
     loadTeams();
     loadMatches();
   }, []);
+
+  const loadLeagues = async () => {
+    const { data, error } = await supabase
+      .from("leagues")
+      .select("id, name")
+      .eq("is_active", true)
+      .order("display_order");
+    
+    if (error) {
+      toast.error("Error al cargar ligas");
+    } else {
+      setLeagues(data || []);
+    }
+  };
 
   const loadTeams = async () => {
     const { data, error } = await supabase
@@ -69,7 +94,7 @@ export const AdminMatches = () => {
   };
 
   const createMatch = async () => {
-    if (!newMatch.date || !newMatch.time || !newMatch.team_a_id || !newMatch.team_b_id) {
+    if (!newMatch.date || !newMatch.time || !newMatch.team_a_id || !newMatch.team_b_id || !newMatch.league_id) {
       toast.error("Completa todos los campos");
       return;
     }
@@ -89,6 +114,7 @@ export const AdminMatches = () => {
         team_b_id: "",
         category: "Femenino",
         jornada: 1,
+        league_id: "",
       });
       loadMatches();
     }
@@ -126,13 +152,63 @@ export const AdminMatches = () => {
     return teams.find((t) => t.id === teamId)?.name || "Equipo";
   };
 
+  const getLeagueName = (leagueId: string | null) => {
+    if (!leagueId) return "Sin liga";
+    return leagues.find(l => l.id === leagueId)?.name || "Desconocida";
+  };
+
+  const filteredTeams = filterLeague && filterLeague !== "all"
+    ? teams.filter(team => team.league_id === filterLeague)
+    : teams;
+
+  const availableTeamsForMatch = filteredTeams.filter((t) => t.category === newMatch.category);
+
   return (
     <div className="space-y-6">
+      <Card className="gradient-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="w-5 h-5" />
+            Filtrar por Liga
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select value={filterLeague || "all"} onValueChange={setFilterLeague}>
+            <SelectTrigger>
+              <SelectValue placeholder="Todas las ligas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas las ligas</SelectItem>
+              {leagues.map((league) => (
+                <SelectItem key={league.id} value={league.id}>
+                  {league.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
       <Card className="gradient-card">
         <CardHeader>
           <CardTitle>Crear Nuevo Partido</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <Select
+            value={newMatch.league_id}
+            onValueChange={(value) => setNewMatch({ ...newMatch, league_id: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecciona liga" />
+            </SelectTrigger>
+            <SelectContent>
+              {leagues.map((league) => (
+                <SelectItem key={league.id} value={league.id}>
+                  {league.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="grid grid-cols-2 gap-4">
             <Input
               type="date"
@@ -155,7 +231,6 @@ export const AdminMatches = () => {
             <SelectContent>
               <SelectItem value="Femenino">Femenino</SelectItem>
               <SelectItem value="Masculino">Masculino</SelectItem>
-              <SelectItem value="Mixto">Mixto</SelectItem>
             </SelectContent>
           </Select>
           <Select
@@ -166,7 +241,7 @@ export const AdminMatches = () => {
               <SelectValue placeholder="Equipo A" />
             </SelectTrigger>
             <SelectContent>
-              {teams.filter((t) => t.category === newMatch.category).map((team) => (
+              {availableTeamsForMatch.map((team) => (
                 <SelectItem key={team.id} value={team.id}>
                   {team.name}
                 </SelectItem>
@@ -181,7 +256,7 @@ export const AdminMatches = () => {
               <SelectValue placeholder="Equipo B" />
             </SelectTrigger>
             <SelectContent>
-              {teams.filter((t) => t.category === newMatch.category).map((team) => (
+              {availableTeamsForMatch.map((team) => (
                 <SelectItem key={team.id} value={team.id}>
                   {team.name}
                 </SelectItem>

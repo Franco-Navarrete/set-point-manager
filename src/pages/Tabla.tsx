@@ -13,7 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino" | "Mixto";
+  category: "Femenino" | "Masculino";
 }
 
 interface TeamStat {
@@ -30,7 +30,7 @@ interface TeamStat {
 interface TeamStanding {
   position: number;
   team: string;
-  category: "Femenino" | "Masculino" | "Mixto";
+  category: "Femenino" | "Masculino";
   played: number;
   won: number;
   lost: number;
@@ -91,7 +91,7 @@ const Tabla = () => {
     }
   };
 
-  const categories = ["Femenino", "Masculino", "Mixto"] as const;
+  const categories = ["Femenino", "Masculino"] as const;
 
   const getCategoryColor = (category: typeof categories[number]) => {
     switch (category) {
@@ -99,8 +99,6 @@ const Tabla = () => {
         return "bg-pink-500/10 text-pink-700 dark:text-pink-400";
       case "Masculino":
         return "bg-blue-500/10 text-blue-700 dark:text-blue-400";
-      case "Mixto":
-        return "bg-purple-500/10 text-purple-700 dark:text-purple-400";
     }
   };
 

@@ -10,7 +10,7 @@ import { RefreshCw } from "lucide-react";
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino" | "Mixto";
+  category: "Femenino" | "Masculino";
 }
 
 interface TeamStat {

@@ -10,7 +10,7 @@ import { useLeague } from "@/contexts/LeagueContext";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-type Category = "Todos" | "Femenino" | "Masculino" | "Mixto";
+type Category = "Todos" | "Femenino" | "Masculino";
 
 interface Team {
   id: string;
@@ -70,7 +70,7 @@ const Fixture = () => {
     return teams.find((t) => t.id === teamId)?.name || "Equipo";
   };
 
-  const categories: Category[] = ["Todos", "Femenino", "Masculino", "Mixto"];
+  const categories: Category[] = ["Todos", "Femenino", "Masculino"];
 
   const filteredMatches = selectedCategory === "Todos" 
     ? matches 
@@ -82,8 +82,6 @@ const Fixture = () => {
         return "bg-pink-500/10 text-pink-700 dark:text-pink-400";
       case "Masculino":
         return "bg-blue-500/10 text-blue-700 dark:text-blue-400";
-      case "Mixto":
-        return "bg-purple-500/10 text-purple-700 dark:text-purple-400";
     }
   };
 

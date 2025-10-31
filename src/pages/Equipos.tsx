@@ -13,7 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino" | "Mixto";
+  category: "Femenino" | "Masculino";
   logo_url: string | null;
 }
 
@@ -70,8 +70,6 @@ const Equipos = () => {
         return "bg-pink-500/10 text-pink-700 dark:text-pink-400";
       case "Masculino":
         return "bg-blue-500/10 text-blue-700 dark:text-blue-400";
-      case "Mixto":
-        return "bg-purple-500/10 text-purple-700 dark:text-purple-400";
     }
   };
 
