@@ -35,8 +35,8 @@ export const AdminStats = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [stats, setStats] = useState<TeamStat[]>([]);
   const [selectedTeam, setSelectedTeam] = useState("");
-  const [filterLeague, setFilterLeague] = useState("");
-  const [filterTeam, setFilterTeam] = useState("");
+  const [filterLeague, setFilterLeague] = useState("all");
+  const [filterTeam, setFilterTeam] = useState("all");
   const [newStats, setNewStats] = useState({
     played: 0,
     won: 0,
@@ -117,7 +117,7 @@ export const AdminStats = () => {
     return leagues.find((l) => l.id === leagueId)?.name || "Sin liga";
   };
 
-  const filteredTeams = filterLeague
+  const filteredTeams = filterLeague && filterLeague !== "all"
     ? teams.filter((team) => team.league_id === filterLeague)
     : teams;
 
@@ -125,8 +125,8 @@ export const AdminStats = () => {
     const team = teams.find((t) => t.id === stat.team_id);
     if (!team) return false;
     
-    if (filterLeague && team.league_id !== filterLeague) return false;
-    if (filterTeam && stat.team_id !== filterTeam) return false;
+    if (filterLeague && filterLeague !== "all" && team.league_id !== filterLeague) return false;
+    if (filterTeam && filterTeam !== "all" && stat.team_id !== filterTeam) return false;
     
     return true;
   });
@@ -250,7 +250,7 @@ export const AdminStats = () => {
                 <SelectValue placeholder="Todas las ligas" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todas las ligas</SelectItem>
+                <SelectItem value="all">Todas las ligas</SelectItem>
                 {leagues.map((league) => (
                   <SelectItem key={league.id} value={league.id}>
                     {league.name}
@@ -267,7 +267,7 @@ export const AdminStats = () => {
                 <SelectValue placeholder="Todos los equipos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos los equipos</SelectItem>
+                <SelectItem value="all">Todos los equipos</SelectItem>
                 {filteredTeams.map((team) => (
                   <SelectItem key={team.id} value={team.id}>
                     {team.name}
