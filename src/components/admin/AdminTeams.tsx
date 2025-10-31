@@ -35,6 +35,7 @@ export const AdminTeams = () => {
   const [newTeam, setNewTeam] = useState({ name: "", category: "Femenino" as const, league_id: "" });
   const [newPlayer, setNewPlayer] = useState({ team_id: "", name: "" });
   const [filterLeague, setFilterLeague] = useState<string>("");
+  const [filterTeam, setFilterTeam] = useState<string>("");
 
   useEffect(() => {
     loadLeagues();
@@ -110,12 +111,21 @@ export const AdminTeams = () => {
     ? teams.filter(team => team.league_id === filterLeague)
     : teams;
 
-  const filteredPlayers = filterLeague && filterLeague !== "all"
-    ? players.filter(player => {
-        const team = teams.find(t => t.id === player.team_id);
-        return team?.league_id === filterLeague;
-      })
-    : players;
+  const filteredPlayers = players.filter(player => {
+    const team = teams.find(t => t.id === player.team_id);
+    
+    // Filter by league
+    if (filterLeague && filterLeague !== "all" && team?.league_id !== filterLeague) {
+      return false;
+    }
+    
+    // Filter by team
+    if (filterTeam && filterTeam !== "all" && player.team_id !== filterTeam) {
+      return false;
+    }
+    
+    return true;
+  });
 
   const deleteTeam = async (id: string) => {
     const { error } = await supabase
@@ -171,23 +181,43 @@ export const AdminTeams = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="w-5 h-5" />
-            Filtrar por Liga
+            Filtros
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <Select value={filterLeague || "all"} onValueChange={setFilterLeague}>
-            <SelectTrigger>
-              <SelectValue placeholder="Todas las ligas" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas las ligas</SelectItem>
-              {leagues.map((league) => (
-                <SelectItem key={league.id} value={league.id}>
-                  {league.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <CardContent className="space-y-4">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Filtrar por Liga</label>
+            <Select value={filterLeague || "all"} onValueChange={setFilterLeague}>
+              <SelectTrigger>
+                <SelectValue placeholder="Todas las ligas" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas las ligas</SelectItem>
+                {leagues.map((league) => (
+                  <SelectItem key={league.id} value={league.id}>
+                    {league.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div>
+            <label className="text-sm font-medium mb-2 block">Filtrar por Equipo</label>
+            <Select value={filterTeam || "all"} onValueChange={setFilterTeam}>
+              <SelectTrigger>
+                <SelectValue placeholder="Todos los equipos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los equipos</SelectItem>
+                {filteredTeams.map((team) => (
+                  <SelectItem key={team.id} value={team.id}>
+                    {team.name} ({team.category})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
