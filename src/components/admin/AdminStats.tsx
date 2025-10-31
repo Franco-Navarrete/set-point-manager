@@ -7,10 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
 
+interface League {
+  id: string;
+  name: string;
+}
+
 interface Team {
   id: string;
   name: string;
   category: "Femenino" | "Masculino";
+  league_id: string | null;
 }
 
 interface TeamStat {
@@ -25,9 +31,12 @@ interface TeamStat {
 }
 
 export const AdminStats = () => {
+  const [leagues, setLeagues] = useState<League[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [stats, setStats] = useState<TeamStat[]>([]);
   const [selectedTeam, setSelectedTeam] = useState("");
+  const [filterLeague, setFilterLeague] = useState("");
+  const [filterTeam, setFilterTeam] = useState("");
   const [newStats, setNewStats] = useState({
     played: 0,
     won: 0,
@@ -38,9 +47,23 @@ export const AdminStats = () => {
   });
 
   useEffect(() => {
+    loadLeagues();
     loadTeams();
     loadStats();
   }, []);
+
+  const loadLeagues = async () => {
+    const { data, error } = await supabase
+      .from("leagues")
+      .select("*")
+      .order("name");
+    
+    if (error) {
+      toast.error("Error al cargar ligas");
+    } else {
+      setLeagues(data || []);
+    }
+  };
 
   const loadTeams = async () => {
     const { data, error } = await supabase
@@ -88,6 +111,25 @@ export const AdminStats = () => {
   const getTeamName = (teamId: string) => {
     return teams.find((t) => t.id === teamId)?.name || "Equipo";
   };
+
+  const getLeagueName = (leagueId: string | null) => {
+    if (!leagueId) return "Sin liga";
+    return leagues.find((l) => l.id === leagueId)?.name || "Sin liga";
+  };
+
+  const filteredTeams = filterLeague
+    ? teams.filter((team) => team.league_id === filterLeague)
+    : teams;
+
+  const filteredStats = stats.filter((stat) => {
+    const team = teams.find((t) => t.id === stat.team_id);
+    if (!team) return false;
+    
+    if (filterLeague && team.league_id !== filterLeague) return false;
+    if (filterTeam && stat.team_id !== filterTeam) return false;
+    
+    return true;
+  });
 
   const loadTeamStats = (teamId: string) => {
     const stat = stats.find((s) => s.team_id === teamId);
@@ -198,23 +240,70 @@ export const AdminStats = () => {
 
       <Card className="gradient-card">
         <CardHeader>
+          <CardTitle>Filtros</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Filtrar por Liga</label>
+            <Select value={filterLeague} onValueChange={setFilterLeague}>
+              <SelectTrigger>
+                <SelectValue placeholder="Todas las ligas" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Todas las ligas</SelectItem>
+                {leagues.map((league) => (
+                  <SelectItem key={league.id} value={league.id}>
+                    {league.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div>
+            <label className="text-sm text-muted-foreground">Filtrar por Equipo</label>
+            <Select value={filterTeam} onValueChange={setFilterTeam}>
+              <SelectTrigger>
+                <SelectValue placeholder="Todos los equipos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Todos los equipos</SelectItem>
+                {filteredTeams.map((team) => (
+                  <SelectItem key={team.id} value={team.id}>
+                    {team.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="gradient-card">
+        <CardHeader>
           <CardTitle>Estadísticas Actuales</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {stats.map((stat) => (
-              <div key={stat.id} className="p-4 bg-muted rounded-lg">
-                <h3 className="font-semibold mb-2">{getTeamName(stat.team_id)}</h3>
-                <div className="grid grid-cols-3 gap-2 text-sm">
-                  <div>PJ: {stat.played}</div>
-                  <div>PG: {stat.won}</div>
-                  <div>PP: {stat.lost}</div>
-                  <div>SF: {stat.sets_for}</div>
-                  <div>SC: {stat.sets_against}</div>
-                  <div className="font-bold">Pts: {stat.points}</div>
+            {filteredStats.map((stat) => {
+              const team = teams.find((t) => t.id === stat.team_id);
+              return (
+                <div key={stat.id} className="p-4 bg-muted rounded-lg">
+                  <h3 className="font-semibold mb-2">{getTeamName(stat.team_id)}</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Liga: {getLeagueName(team?.league_id || null)}
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 text-sm">
+                    <div>PJ: {stat.played}</div>
+                    <div>PG: {stat.won}</div>
+                    <div>PP: {stat.lost}</div>
+                    <div>SF: {stat.sets_for}</div>
+                    <div>SC: {stat.sets_against}</div>
+                    <div className="font-bold">Pts: {stat.points}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>
