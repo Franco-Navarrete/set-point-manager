@@ -92,7 +92,6 @@ const Navigation = () => {
                 onError={() => setLogoError(true)}
               />
             )}
-            <span className="font-bold text-xl hidden lg:inline">El Ocampense</span>
           </Link>
 
           {/* Eliminamos el selector aquí para moverlo entre el menú y el botón Ingresar */}
