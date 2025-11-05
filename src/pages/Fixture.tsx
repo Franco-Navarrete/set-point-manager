@@ -32,7 +32,6 @@ interface Match {
 
 const Fixture = () => {
   const { selectedLeague } = useLeague();
-  const [selectedCategory, setSelectedCategory] = useState<Category>("Todos");
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,19 +70,21 @@ const Fixture = () => {
     return teams.find((t) => t.id === teamId)?.name || "Equipo";
   };
 
-  const categories: Category[] = ["Todos", "Femenino", "Masculino"];
+  const genderCategories = ["Femenino", "Masculino"] as const;
+  type AgeCategory = "SUB_16" | "LIBRE";
+  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16"];
 
-  const filteredMatches = selectedCategory === "Todos" 
-    ? matches 
-    : matches.filter(match => match.category === selectedCategory);
-
-  const getCategoryColor = (category: Exclude<Category, "Todos">) => {
+  const getCategoryColor = (category: "Femenino" | "Masculino") => {
     switch (category) {
       case "Femenino":
         return "bg-pink-500/10 text-pink-700 dark:text-pink-400";
       case "Masculino":
         return "bg-blue-500/10 text-blue-700 dark:text-blue-400";
     }
+  };
+
+  const getAgeCategoryLabel = (ageCategory: AgeCategory) => {
+    return ageCategory === "SUB_16" ? "Sub 16" : "Libre";
   };
 
   const formatDate = (dateStr: string) => {
@@ -94,10 +95,6 @@ const Fixture = () => {
       month: "long", 
       day: "numeric" 
     });
-  };
-
-  const getAgeCategoryLabel = (ageCategory: "SUB_16" | "LIBRE") => {
-    return ageCategory === "SUB_16" ? "Sub 16" : "Libre";
   };
 
   if (loading) {
@@ -132,77 +129,81 @@ const Fixture = () => {
             </Alert>
           )}
 
-          {/* Category Filters */}
-          <div className="flex flex-wrap gap-3 mb-8">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                onClick={() => setSelectedCategory(category)}
-                className="transition-all duration-200"
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
+          {/* Matches by Category and Age */}
+          <div className="space-y-8">
+            {genderCategories.map((genderCategory) => (
+              <div key={genderCategory} className="space-y-6">
+                <h2 className="text-3xl font-bold">{genderCategory}</h2>
+                {ageCategories.map((ageCategory) => {
+                  const categoryMatches = matches.filter(
+                    (m) => m.category === genderCategory && m.age_category === ageCategory
+                  );
 
-          {/* Matches List */}
-          <div className="space-y-6">
-            {filteredMatches.length > 0 ? (
-              filteredMatches.map((match) => (
-                <Card key={match.id} className="hover:shadow-card transition-all duration-300 gradient-card">
-                  <CardHeader>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <CardTitle className="text-lg">
-                        Jornada {match.jornada}
-                      </CardTitle>
-                      <div className="flex gap-2">
-                        <Badge className={getCategoryColor(match.category)}>
-                          {match.category}
-                        </Badge>
-                        <Badge variant="outline">
-                          {getAgeCategoryLabel(match.age_category)}
-                        </Badge>
-                      </div>
+                  if (categoryMatches.length === 0) return null;
+
+                  const jornadas = Array.from(new Set(categoryMatches.map(m => m.jornada))).sort((a, b) => a - b);
+
+                  return (
+                    <div key={`${genderCategory}-${ageCategory}`} className="space-y-4">
+                      <h3 className="text-2xl font-semibold text-muted-foreground">
+                        {getAgeCategoryLabel(ageCategory)}
+                      </h3>
+                      {jornadas.map((jornada) => {
+                        const jornadaMatches = categoryMatches.filter(m => m.jornada === jornada);
+
+                        return (
+                          <Card key={`${genderCategory}-${ageCategory}-${jornada}`} className="gradient-card">
+                            <CardHeader>
+                              <div className="flex items-center justify-between">
+                                <CardTitle className="text-xl">Jornada {jornada}</CardTitle>
+                                <Badge className={getCategoryColor(genderCategory)}>
+                                  {jornadaMatches.length} partidos
+                                </Badge>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                              {jornadaMatches.map((match) => (
+                                <div key={match.id} className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                                  <div className="flex flex-col sm:flex-row items-center gap-3 text-sm text-muted-foreground w-full sm:w-auto">
+                                    <span className="font-medium capitalize">
+                                      {formatDate(match.date)}
+                                    </span>
+                                    <span className="hidden sm:inline">•</span>
+                                    <span>{match.time}</span>
+                                  </div>
+                                  
+                                  <div className="flex items-center justify-between gap-4 w-full sm:flex-1">
+                                    <div className="flex-1 text-right">
+                                      <p className="font-semibold">{getTeamName(match.team_a_id)}</p>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-3 px-4 py-2 bg-background rounded-lg min-w-[100px] justify-center">
+                                      {match.score_a !== null && match.score_b !== null ? (
+                                        <>
+                                          <span className="text-xl font-bold text-primary">{match.score_a}</span>
+                                          <span className="text-muted-foreground">-</span>
+                                          <span className="text-xl font-bold text-primary">{match.score_b}</span>
+                                        </>
+                                      ) : (
+                                        <span className="text-muted-foreground font-medium">VS</span>
+                                      )}
+                                    </div>
+                                    
+                                    <div className="flex-1 text-left">
+                                      <p className="font-semibold">{getTeamName(match.team_b_id)}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
                     </div>
-                    <p className="text-sm text-muted-foreground capitalize">
-                      {formatDate(match.date)} • {match.time}
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex-1 text-right">
-                        <p className="font-semibold text-lg">{getTeamName(match.team_a_id)}</p>
-                      </div>
-                      
-                      <div className="flex items-center gap-4 px-6 py-3 bg-muted rounded-lg min-w-[120px] justify-center">
-                        {match.score_a !== null && match.score_b !== null ? (
-                          <>
-                            <span className="text-2xl font-bold">{match.score_a}</span>
-                            <span className="text-muted-foreground">-</span>
-                            <span className="text-2xl font-bold">{match.score_b}</span>
-                          </>
-                        ) : (
-                          <span className="text-muted-foreground font-medium">VS</span>
-                        )}
-                      </div>
-                      
-                      <div className="flex-1 text-left">
-                        <p className="font-semibold text-lg">{getTeamName(match.team_b_id)}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <Card className="gradient-card">
-                <CardContent className="py-12 text-center">
-                  <p className="text-muted-foreground">
-                    No hay partidos programados en esta categoría
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
       </main>

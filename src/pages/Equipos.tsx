@@ -78,6 +78,10 @@ const Equipos = () => {
     return ageCategory === "SUB_16" ? "Sub 16" : "Libre";
   };
 
+  const categories = ["Femenino", "Masculino"] as const;
+  type AgeCategory = "SUB_16" | "LIBRE";
+  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16"];
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -119,51 +123,73 @@ const Equipos = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {teams.map((team) => {
-                const teamPlayers = getTeamPlayers(team.id);
-                return (
-                  <Card key={team.id} className="hover:shadow-card transition-all duration-300 hover:-translate-y-1 gradient-card">
-                    <CardHeader className="text-center">
-                      <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-muted flex items-center justify-center">
-                        <img 
-                          src={team.logo_url || teamPlaceholder} 
-                          alt={`Logo de ${team.name}`}
-                          className="w-24 h-24 object-contain"
-                        />
-                      </div>
-                      <CardTitle className="text-xl">{team.name}</CardTitle>
-                      <div className="flex gap-2 mt-2 justify-center">
-                        <Badge className={getCategoryColor(team.category)}>
-                          {team.category}
-                        </Badge>
-                        <Badge variant="outline">
-                          {getAgeCategoryLabel(team.age_category)}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      {teamPlayers.length > 0 && (
-                        <div>
-                          <h4 className="font-semibold mb-3 text-sm text-muted-foreground uppercase tracking-wide">
-                            Plantel
-                          </h4>
-                          <ul className="space-y-2">
-                            {teamPlayers.map((player, index) => (
-                              <li key={index} className="text-sm flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
-                                  {index + 1}
-                                </span>
-                                {player}
-                              </li>
-                            ))}
-                          </ul>
+            <div className="space-y-8">
+              {categories.map((category) => (
+                <div key={category} className="space-y-6">
+                  <h2 className="text-3xl font-bold">{category}</h2>
+                  {ageCategories.map((ageCategory) => {
+                    const categoryTeams = teams.filter(
+                      (team) => team.category === category && team.age_category === ageCategory
+                    );
+
+                    if (categoryTeams.length === 0) return null;
+
+                    return (
+                      <div key={`${category}-${ageCategory}`} className="space-y-4">
+                        <h3 className="text-2xl font-semibold text-muted-foreground">
+                          {getAgeCategoryLabel(ageCategory)}
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {categoryTeams.map((team) => {
+                            const teamPlayers = getTeamPlayers(team.id);
+                            return (
+                              <Card key={team.id} className="hover:shadow-card transition-all duration-300 hover:-translate-y-1 gradient-card">
+                                <CardHeader className="text-center">
+                                  <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                                    <img 
+                                      src={team.logo_url || teamPlaceholder} 
+                                      alt={`Logo de ${team.name}`}
+                                      className="w-24 h-24 object-contain"
+                                    />
+                                  </div>
+                                  <CardTitle className="text-xl">{team.name}</CardTitle>
+                                  <div className="flex gap-2 mt-2 justify-center">
+                                    <Badge className={getCategoryColor(team.category)}>
+                                      {team.category}
+                                    </Badge>
+                                    <Badge variant="outline">
+                                      {getAgeCategoryLabel(team.age_category)}
+                                    </Badge>
+                                  </div>
+                                </CardHeader>
+                                <CardContent>
+                                  {teamPlayers.length > 0 && (
+                                    <div>
+                                      <h4 className="font-semibold mb-3 text-sm text-muted-foreground uppercase tracking-wide">
+                                        Plantel
+                                      </h4>
+                                      <ul className="space-y-2">
+                                        {teamPlayers.map((player, index) => (
+                                          <li key={index} className="text-sm flex items-center gap-2">
+                                            <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
+                                              {index + 1}
+                                            </span>
+                                            {player}
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            );
+                          })}
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           )}
         </div>
