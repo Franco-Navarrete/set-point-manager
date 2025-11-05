@@ -16,6 +16,7 @@ interface Team {
   id: string;
   name: string;
   category: "Femenino" | "Masculino";
+  age_category: "SUB_16" | "LIBRE";
   league_id: string | null;
 }
 
@@ -28,6 +29,7 @@ interface Match {
   score_a: number | null;
   score_b: number | null;
   category: "Femenino" | "Masculino";
+  age_category: "SUB_16" | "LIBRE";
   jornada: number;
   league_id: string | null;
 }
@@ -43,6 +45,7 @@ export const AdminMatches = () => {
     team_a_id: "",
     team_b_id: "",
     category: "Femenino" as const,
+    age_category: "LIBRE" as const,
     jornada: 1,
     league_id: "",
   });
@@ -113,6 +116,7 @@ export const AdminMatches = () => {
         team_a_id: "",
         team_b_id: "",
         category: "Femenino",
+        age_category: "LIBRE",
         jornada: 1,
         league_id: "",
       });
@@ -161,7 +165,9 @@ export const AdminMatches = () => {
     ? teams.filter(team => team.league_id === filterLeague)
     : teams;
 
-  const availableTeamsForMatch = filteredTeams.filter((t) => t.category === newMatch.category);
+  const availableTeamsForMatch = filteredTeams.filter((t) => 
+    t.category === newMatch.category && t.age_category === newMatch.age_category
+  );
 
   return (
     <div className="space-y-6">
@@ -226,11 +232,23 @@ export const AdminMatches = () => {
             onValueChange={(value: any) => setNewMatch({ ...newMatch, category: value })}
           >
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder="Género" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Femenino">Femenino</SelectItem>
               <SelectItem value="Masculino">Masculino</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={newMatch.age_category}
+            onValueChange={(value: any) => setNewMatch({ ...newMatch, age_category: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Categoría" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SUB_16">Sub 16</SelectItem>
+              <SelectItem value="LIBRE">Libre</SelectItem>
             </SelectContent>
           </Select>
           <Select

@@ -14,6 +14,7 @@ interface Team {
   id: string;
   name: string;
   category: "Femenino" | "Masculino";
+  age_category: "SUB_16" | "LIBRE";
   logo_url: string | null;
 }
 
@@ -73,6 +74,10 @@ const Equipos = () => {
     }
   };
 
+  const getAgeCategoryLabel = (ageCategory: Team["age_category"]) => {
+    return ageCategory === "SUB_16" ? "Sub 16" : "Libre";
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -128,9 +133,14 @@ const Equipos = () => {
                         />
                       </div>
                       <CardTitle className="text-xl">{team.name}</CardTitle>
-                      <Badge className={`${getCategoryColor(team.category)} mt-2 mx-auto`}>
-                        {team.category}
-                      </Badge>
+                      <div className="flex gap-2 mt-2 justify-center">
+                        <Badge className={getCategoryColor(team.category)}>
+                          {team.category}
+                        </Badge>
+                        <Badge variant="outline">
+                          {getAgeCategoryLabel(team.age_category)}
+                        </Badge>
+                      </div>
                     </CardHeader>
                     <CardContent>
                       {teamPlayers.length > 0 && (

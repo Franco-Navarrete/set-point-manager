@@ -26,6 +26,7 @@ interface Match {
   score_a: number | null;
   score_b: number | null;
   category: Exclude<Category, "Todos">;
+  age_category: "SUB_16" | "LIBRE";
   jornada: number;
 }
 
@@ -95,6 +96,10 @@ const Fixture = () => {
     });
   };
 
+  const getAgeCategoryLabel = (ageCategory: "SUB_16" | "LIBRE") => {
+    return ageCategory === "SUB_16" ? "Sub 16" : "Libre";
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -151,9 +156,14 @@ const Fixture = () => {
                       <CardTitle className="text-lg">
                         Jornada {match.jornada}
                       </CardTitle>
-                      <Badge className={getCategoryColor(match.category)}>
-                        {match.category}
-                      </Badge>
+                      <div className="flex gap-2">
+                        <Badge className={getCategoryColor(match.category)}>
+                          {match.category}
+                        </Badge>
+                        <Badge variant="outline">
+                          {getAgeCategoryLabel(match.age_category)}
+                        </Badge>
+                      </div>
                     </div>
                     <p className="text-sm text-muted-foreground capitalize">
                       {formatDate(match.date)} • {match.time}

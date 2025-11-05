@@ -49,6 +49,7 @@ export type Database = {
       }
       matches: {
         Row: {
+          age_category: Database["public"]["Enums"]["age_category_type"]
           category: Database["public"]["Enums"]["category_type"]
           created_at: string
           date: string
@@ -63,6 +64,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          age_category?: Database["public"]["Enums"]["age_category_type"]
           category: Database["public"]["Enums"]["category_type"]
           created_at?: string
           date: string
@@ -77,6 +79,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          age_category?: Database["public"]["Enums"]["age_category_type"]
           category?: Database["public"]["Enums"]["category_type"]
           created_at?: string
           date?: string
@@ -254,6 +257,7 @@ export type Database = {
       }
       teams: {
         Row: {
+          age_category: Database["public"]["Enums"]["age_category_type"]
           category: Database["public"]["Enums"]["category_type"]
           created_at: string
           id: string
@@ -263,6 +267,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          age_category?: Database["public"]["Enums"]["age_category_type"]
           category: Database["public"]["Enums"]["category_type"]
           created_at?: string
           id?: string
@@ -272,6 +277,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          age_category?: Database["public"]["Enums"]["age_category_type"]
           category?: Database["public"]["Enums"]["category_type"]
           created_at?: string
           id?: string
@@ -333,6 +339,7 @@ export type Database = {
       }
     }
     Enums: {
+      age_category_type: "SUB_16" | "LIBRE"
       app_role: "admin" | "user"
       category_type: "Femenino" | "Masculino"
       league_type: "LIGA" | "EVENTO_GRANDE" | "EVENTO_2DO_ORDEN"
@@ -463,6 +470,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      age_category_type: ["SUB_16", "LIBRE"],
       app_role: ["admin", "user"],
       category_type: ["Femenino", "Masculino"],
       league_type: ["LIGA", "EVENTO_GRANDE", "EVENTO_2DO_ORDEN"],

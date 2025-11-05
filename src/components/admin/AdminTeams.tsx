@@ -17,6 +17,7 @@ interface Team {
   id: string;
   name: string;
   category: "Femenino" | "Masculino";
+  age_category: "SUB_16" | "LIBRE";
   logo_url: string | null;
   league_id: string | null;
 }
@@ -32,7 +33,7 @@ export const AdminTeams = () => {
   const [leagues, setLeagues] = useState<League[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [newTeam, setNewTeam] = useState({ name: "", category: "Femenino" as const, league_id: "" });
+  const [newTeam, setNewTeam] = useState({ name: "", category: "Femenino" as const, age_category: "LIBRE" as const, league_id: "" });
   const [newPlayer, setNewPlayer] = useState({ team_id: "", name: "" });
   const [filterLeague, setFilterLeague] = useState<string>("");
   const [filterTeam, setFilterTeam] = useState<string>("");
@@ -97,7 +98,7 @@ export const AdminTeams = () => {
       toast.error("Error al crear equipo");
     } else {
       toast.success("Equipo creado");
-      setNewTeam({ name: "", category: "Femenino", league_id: "" });
+      setNewTeam({ name: "", category: "Femenino", age_category: "LIBRE", league_id: "" });
       loadTeams();
     }
   };
@@ -210,11 +211,11 @@ export const AdminTeams = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos los equipos</SelectItem>
-                {filteredTeams.map((team) => (
-                  <SelectItem key={team.id} value={team.id}>
-                    {team.name} ({team.category})
-                  </SelectItem>
-                ))}
+              {filteredTeams.map((team) => (
+                <SelectItem key={team.id} value={team.id}>
+                  {team.name} ({team.category} - {team.age_category === "SUB_16" ? "Sub 16" : "Libre"})
+                </SelectItem>
+              ))}
               </SelectContent>
             </Select>
           </div>
@@ -236,11 +237,23 @@ export const AdminTeams = () => {
             onValueChange={(value: any) => setNewTeam({ ...newTeam, category: value })}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecciona categoría" />
+              <SelectValue placeholder="Selecciona género" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Femenino">Femenino</SelectItem>
               <SelectItem value="Masculino">Masculino</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={newTeam.age_category}
+            onValueChange={(value: any) => setNewTeam({ ...newTeam, age_category: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecciona categoría" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SUB_16">Sub 16</SelectItem>
+              <SelectItem value="LIBRE">Libre</SelectItem>
             </SelectContent>
           </Select>
           <Select
@@ -276,7 +289,7 @@ export const AdminTeams = () => {
                 <div>
                   <p className="font-semibold">{team.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {team.category} • {getLeagueName(team.league_id)}
+                    {team.category} • {team.age_category === "SUB_16" ? "Sub 16" : "Libre"} • {getLeagueName(team.league_id)}
                   </p>
                 </div>
                 <Button
@@ -307,7 +320,7 @@ export const AdminTeams = () => {
             <SelectContent>
               {filteredTeams.map((team) => (
                 <SelectItem key={team.id} value={team.id}>
-                  {team.name} ({team.category})
+                  {team.name} ({team.category} - {team.age_category === "SUB_16" ? "Sub 16" : "Libre"})
                 </SelectItem>
               ))}
             </SelectContent>
