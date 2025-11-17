@@ -1,13 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import type { Tables } from '@/integrations/supabase/types';
 
-type League = {
-  id: string;
-  name: string;
-  type: 'LIGA' | 'EVENTO_GRANDE' | 'EVENTO_2DO_ORDEN';
-  description: string | null;
-  is_active: boolean;
-  display_order: number;
-};
+type League = Tables<'leagues'>;
 
 type LeagueContextType = {
   selectedLeague: League | null;

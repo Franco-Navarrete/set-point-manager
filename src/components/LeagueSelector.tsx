@@ -11,15 +11,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Trophy, Star, Award } from 'lucide-react';
+import type { Tables } from '@/integrations/supabase/types';
 
-type League = {
-  id: string;
-  name: string;
-  type: 'LIGA' | 'EVENTO_GRANDE' | 'EVENTO_2DO_ORDEN';
-  description: string | null;
-  is_active: boolean;
-  display_order: number;
-};
+type League = Tables<'leagues'>;
 
 const LeagueSelector = () => {
   const { selectedLeague, setSelectedLeague } = useLeague();
@@ -75,7 +69,20 @@ const LeagueSelector = () => {
       }}
     >
       <SelectTrigger className="w-full max-w-xs bg-card border-border">
-        <SelectValue placeholder="Seleccionar liga o evento" />
+        <SelectValue placeholder="Seleccionar liga o evento">
+          {selectedLeague && (
+            <div className="flex items-center gap-2">
+              {selectedLeague.logo_url && (
+                <img 
+                  src={selectedLeague.logo_url} 
+                  alt={selectedLeague.name}
+                  className="w-5 h-5 object-contain"
+                />
+              )}
+              <span>{selectedLeague.name}</span>
+            </div>
+          )}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent className="bg-popover border-border z-50">
         {ligas.length > 0 && (
@@ -86,7 +93,16 @@ const LeagueSelector = () => {
             </SelectLabel>
             {ligas.map((league) => (
               <SelectItem key={league.id} value={league.id}>
-                {league.name}
+                <div className="flex items-center gap-2">
+                  {league.logo_url && (
+                    <img 
+                      src={league.logo_url} 
+                      alt={league.name}
+                      className="w-5 h-5 object-contain"
+                    />
+                  )}
+                  <span>{league.name}</span>
+                </div>
               </SelectItem>
             ))}
           </SelectGroup>
@@ -100,7 +116,16 @@ const LeagueSelector = () => {
             </SelectLabel>
             {eventosGrandes.map((league) => (
               <SelectItem key={league.id} value={league.id}>
-                {league.name}
+                <div className="flex items-center gap-2">
+                  {league.logo_url && (
+                    <img 
+                      src={league.logo_url} 
+                      alt={league.name}
+                      className="w-5 h-5 object-contain"
+                    />
+                  )}
+                  <span>{league.name}</span>
+                </div>
               </SelectItem>
             ))}
           </SelectGroup>
@@ -114,7 +139,16 @@ const LeagueSelector = () => {
             </SelectLabel>
             {eventos2do.map((league) => (
               <SelectItem key={league.id} value={league.id}>
-                {league.name}
+                <div className="flex items-center gap-2">
+                  {league.logo_url && (
+                    <img 
+                      src={league.logo_url} 
+                      alt={league.name}
+                      className="w-5 h-5 object-contain"
+                    />
+                  )}
+                  <span>{league.name}</span>
+                </div>
               </SelectItem>
             ))}
           </SelectGroup>
