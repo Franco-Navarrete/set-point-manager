@@ -21,6 +21,7 @@ export type Database = {
           display_order: number
           id: string
           is_active: boolean
+          logo_url: string | null
           name: string
           type: Database["public"]["Enums"]["league_type"]
           updated_at: string
@@ -31,6 +32,7 @@ export type Database = {
           display_order?: number
           id?: string
           is_active?: boolean
+          logo_url?: string | null
           name: string
           type: Database["public"]["Enums"]["league_type"]
           updated_at?: string
@@ -41,6 +43,7 @@ export type Database = {
           display_order?: number
           id?: string
           is_active?: boolean
+          logo_url?: string | null
           name?: string
           type?: Database["public"]["Enums"]["league_type"]
           updated_at?: string
