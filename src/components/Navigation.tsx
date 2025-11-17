@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import LeagueSelector from "./LeagueSelector";
+import { useLeague } from "@/contexts/LeagueContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +21,7 @@ const Navigation = () => {
   const [logoError, setLogoError] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { selectedLeague } = useLeague();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -79,20 +81,29 @@ const Navigation = () => {
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between gap-4 h-16">
-          <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
-            {logoError ? (
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-glow">
-                <span className="text-primary-foreground font-bold text-xl">V</span>
-              </div>
-            ) : (
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Link to="/" className="flex items-center space-x-2">
+              {logoError ? (
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-glow">
+                  <span className="text-primary-foreground font-bold text-xl">V</span>
+                </div>
+              ) : (
+                <img
+                  src="/el-ocampense-logo.svg"
+                  alt="El Ocampense"
+                  className="h-10 w-auto object-contain"
+                  onError={() => setLogoError(true)}
+                />
+              )}
+            </Link>
+            {selectedLeague?.logo_url && (
               <img
-                src="/el-ocampense-logo.svg"
-                alt="El Ocampense"
-                className="h-10 w-auto object-contain"
-                onError={() => setLogoError(true)}
+                src={selectedLeague.logo_url}
+                alt={selectedLeague.name}
+                className="h-10 w-auto object-contain opacity-80"
               />
             )}
-          </Link>
+          </div>
 
           {/* Eliminamos el selector aquí para moverlo entre el menú y el botón Ingresar */}
 
