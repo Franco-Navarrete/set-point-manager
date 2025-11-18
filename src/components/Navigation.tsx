@@ -81,17 +81,17 @@ const Navigation = () => {
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between gap-4 h-16">
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-4 flex-shrink-0">
             <Link to="/" className="flex items-center space-x-2">
               {logoError ? (
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-glow">
-                  <span className="text-primary-foreground font-bold text-xl">V</span>
+                <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-glow">
+                  <span className="text-primary-foreground font-bold text-2xl">V</span>
                 </div>
               ) : (
                 <img
                   src="/el-ocampense-logo.svg"
                   alt="El Ocampense"
-                  className="h-10 w-auto object-contain"
+                  className="h-16 w-auto object-contain"
                   onError={() => setLogoError(true)}
                 />
               )}
@@ -100,7 +100,7 @@ const Navigation = () => {
               <img
                 src={selectedLeague.logo_url}
                 alt={selectedLeague.name}
-                className="h-10 w-auto object-contain opacity-80"
+                className="h-16 w-auto object-contain opacity-80"
               />
             )}
           </div>
