@@ -48,6 +48,26 @@ const Tabla = () => {
 
   useEffect(() => {
     loadStandings();
+
+    // Subscribe to realtime updates for team_stats
+    const channel = supabase
+      .channel('team-stats-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'team_stats'
+        },
+        () => {
+          loadStandings();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [selectedLeague]);
 
   const loadStandings = async () => {
