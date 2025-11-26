@@ -28,6 +28,7 @@ interface Match {
   category: Exclude<Category, "Todos">;
   age_category: "SUB_16" | "LIBRE";
   jornada: number;
+  venue: string | null;
 }
 
 const Fixture = () => {
@@ -170,6 +171,12 @@ const Fixture = () => {
                                     </span>
                                     <span className="hidden sm:inline">•</span>
                                     <span>{match.time}</span>
+                                    {match.venue && (
+                                      <>
+                                        <span className="hidden sm:inline">•</span>
+                                        <span className="text-xs">{match.venue}</span>
+                                      </>
+                                    )}
                                   </div>
                                   
                                   <div className="flex items-center justify-between gap-4 w-full sm:flex-1">

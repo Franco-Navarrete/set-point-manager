@@ -65,6 +65,7 @@ export type Database = {
           team_b_id: string
           time: string
           updated_at: string
+          venue: string | null
         }
         Insert: {
           age_category?: Database["public"]["Enums"]["age_category_type"]
@@ -80,6 +81,7 @@ export type Database = {
           team_b_id: string
           time: string
           updated_at?: string
+          venue?: string | null
         }
         Update: {
           age_category?: Database["public"]["Enums"]["age_category_type"]
@@ -95,6 +97,7 @@ export type Database = {
           team_b_id?: string
           time?: string
           updated_at?: string
+          venue?: string | null
         }
         Relationships: [
           {

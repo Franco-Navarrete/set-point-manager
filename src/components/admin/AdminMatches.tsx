@@ -32,6 +32,7 @@ interface Match {
   age_category: "SUB_16" | "LIBRE";
   jornada: number;
   league_id: string | null;
+  venue: string | null;
 }
 
 export const AdminMatches = () => {
@@ -48,6 +49,7 @@ export const AdminMatches = () => {
     age_category: "LIBRE" as const,
     jornada: 1,
     league_id: "",
+    venue: "",
   });
 
   useEffect(() => {
@@ -97,7 +99,7 @@ export const AdminMatches = () => {
   };
 
   const createMatch = async () => {
-    if (!newMatch.date || !newMatch.time || !newMatch.team_a_id || !newMatch.team_b_id || !newMatch.league_id) {
+    if (!newMatch.date || !newMatch.time || !newMatch.team_a_id || !newMatch.team_b_id || !newMatch.league_id || !newMatch.venue) {
       toast.error("Completa todos los campos");
       return;
     }
@@ -119,6 +121,7 @@ export const AdminMatches = () => {
         age_category: "LIBRE",
         jornada: 1,
         league_id: "",
+        venue: "",
       });
       loadMatches();
     }
@@ -287,6 +290,12 @@ export const AdminMatches = () => {
             value={newMatch.jornada}
             onChange={(e) => setNewMatch({ ...newMatch, jornada: parseInt(e.target.value) || 1 })}
           />
+          <Input
+            type="text"
+            placeholder="Ubicación/Sede"
+            value={newMatch.venue}
+            onChange={(e) => setNewMatch({ ...newMatch, venue: e.target.value })}
+          />
           <Button onClick={createMatch} className="w-full">
             <Plus className="w-4 h-4 mr-2" />
             Crear Partido
@@ -309,6 +318,7 @@ export const AdminMatches = () => {
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {match.date} • {match.time} • Jornada {match.jornada}
+                      {match.venue && ` • ${match.venue}`}
                     </p>
                   </div>
                   <Button
