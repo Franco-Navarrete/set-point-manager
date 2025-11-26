@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLeague } from "@/contexts/LeagueContext";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, MapPin, ExternalLink } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type Category = "Todos" | "Femenino" | "Masculino";
@@ -151,15 +151,33 @@ const Fixture = () => {
                       </h3>
                       {jornadas.map((jornada) => {
                         const jornadaMatches = categoryMatches.filter(m => m.jornada === jornada);
+                        const jornadaVenue = jornadaMatches[0]?.venue;
 
                         return (
                           <Card key={`${genderCategory}-${ageCategory}-${jornada}`} className="gradient-card">
                             <CardHeader>
-                              <div className="flex items-center justify-between">
-                                <CardTitle className="text-xl">Jornada {jornada}</CardTitle>
-                                <Badge className={getCategoryColor(genderCategory)}>
-                                  {jornadaMatches.length} partidos
-                                </Badge>
+                              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div className="flex items-center gap-3">
+                                  <CardTitle className="text-xl">Jornada {jornada}</CardTitle>
+                                  <Badge className={getCategoryColor(genderCategory)}>
+                                    {jornadaMatches.length} partidos
+                                  </Badge>
+                                </div>
+                                {jornadaVenue && (
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <MapPin className="w-4 h-4 text-primary" />
+                                    <span className="text-muted-foreground">{jornadaVenue}</span>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 px-2"
+                                      onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(jornadaVenue)}`, '_blank')}
+                                    >
+                                      <ExternalLink className="w-3 h-3 mr-1" />
+                                      Ver mapa
+                                    </Button>
+                                  </div>
+                                )}
                               </div>
                             </CardHeader>
                             <CardContent className="space-y-4">
@@ -171,12 +189,6 @@ const Fixture = () => {
                                     </span>
                                     <span className="hidden sm:inline">•</span>
                                     <span>{match.time}</span>
-                                    {match.venue && (
-                                      <>
-                                        <span className="hidden sm:inline">•</span>
-                                        <span className="text-xs">{match.venue}</span>
-                                      </>
-                                    )}
                                   </div>
                                   
                                   <div className="flex items-center justify-between gap-4 w-full sm:flex-1">
