@@ -16,16 +16,28 @@ const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-4">Enlaces rápidos</h3>
             <div className="space-y-2 text-sm">
-              <Link to="/fixture" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                to="/fixture" 
+                className="block text-muted-foreground hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
+              >
                 Fixture
               </Link>
-              <Link to="/tabla" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                to="/tabla" 
+                className="block text-muted-foreground hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
+              >
                 Tabla de posiciones
               </Link>
-              <Link to="/equipos" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                to="/equipos" 
+                className="block text-muted-foreground hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
+              >
                 Equipos
               </Link>
-              <Link to="/contacto" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                to="/contacto" 
+                className="block text-muted-foreground hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
+              >
                 Contacto
               </Link>
             </div>
@@ -38,7 +50,7 @@ const Footer = () => {
                 href="https://www.facebook.com/ElOcampense/?ref=_xav_ig_profile_page_web#"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200"
                 aria-label="Facebook"
               >
                 <Facebook className="w-6 h-6" />
@@ -47,12 +59,16 @@ const Footer = () => {
                 href="https://www.instagram.com/elocampense?igsh=amI4c2d0YmkzbDB4"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200"
                 aria-label="Instagram"
               >
                 <Instagram className="w-6 h-6" />
               </a>
-              <a href="mailto:contacto@ligaelocampense.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Email">
+              <a 
+                href="mailto:contacto@ligaelocampense.com" 
+                className="text-muted-foreground hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200" 
+                aria-label="Email"
+              >
                 <Mail className="w-6 h-6" />
               </a>
             </div>
