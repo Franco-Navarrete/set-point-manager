@@ -87,7 +87,7 @@ const Noticias = () => {
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Cargando noticias...</p>
+          <p className="text-foreground/80">Cargando noticias...</p>
         </main>
         <Footer />
       </div>
@@ -101,7 +101,7 @@ const Noticias = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Noticias</h1>
-          <p className="text-muted-foreground text-lg mb-4">
+          <p className="text-foreground/80 text-lg mb-4">
             Las últimas novedades de la liga
           </p>
 
@@ -117,7 +117,7 @@ const Noticias = () => {
           {news.length === 0 ? (
             <Card className="gradient-card">
               <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">
+                <p className="text-foreground/80">
                   No hay noticias publicadas aún
                 </p>
               </CardContent>
@@ -131,7 +131,7 @@ const Noticias = () => {
                       <Badge className={getCategoryColor(item.category)}>
                         {item.category}
                       </Badge>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-4 text-sm text-foreground/80">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
                           {formatDate(item.date)}
@@ -145,7 +145,7 @@ const Noticias = () => {
                     <CardTitle className="text-2xl">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <p className="text-foreground/80 leading-relaxed">
                       {item.summary}
                     </p>
                   </CardContent>

@@ -137,7 +137,7 @@ const Tabla = () => {
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Cargando tabla...</p>
+          <p className="text-foreground/80">Cargando tabla...</p>
         </main>
         <Footer />
       </div>
@@ -151,7 +151,7 @@ const Tabla = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Tabla de Posiciones</h1>
-          <p className="text-muted-foreground text-lg mb-4">
+          <p className="text-foreground/80 text-lg mb-4">
             Clasificación actual del torneo por categoría
           </p>
 
@@ -188,7 +188,7 @@ const Tabla = () => {
                       </CardHeader>
                       <CardContent>
                         {categoryTeams.length === 0 ? (
-                          <p className="text-center text-muted-foreground py-8">
+                          <p className="text-center text-foreground/80 py-8">
                             No hay equipos en esta categoría
                           </p>
                         ) : (
@@ -247,7 +247,7 @@ const Tabla = () => {
           <Card className="mt-8 bg-muted/30">
             <CardContent className="py-6">
               <h3 className="font-semibold mb-3">Leyenda:</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-foreground/80">
                 <div><span className="font-semibold">PJ:</span> Partidos Jugados</div>
                 <div><span className="font-semibold">PG:</span> Partidos Ganados</div>
                 <div><span className="font-semibold">PP:</span> Partidos Perdidos</div>

@@ -21,7 +21,7 @@ const AdSlot = ({ imageSrc, href }: { imageSrc?: string; href?: string }) => {
         </a>
       ) : (
         <div className="h-[280px] rounded-md border border-dashed border-border bg-muted/30 flex items-center justify-center text-center px-3">
-          <span className="text-sm text-muted-foreground">Espacio disponible para publicidad</span>
+          <span className="text-sm text-foreground/80">Espacio disponible para publicidad</span>
         </div>
       )}
     </div>
@@ -75,7 +75,7 @@ const Home = () => {
               <h1 className="text-5xl md:text-7xl font-bold mb-6 text-balance">
                 El Ocampense
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground mb-8 text-balance">
+              <p className="text-xl md:text-2xl text-foreground/80 mb-8 text-balance">
                 Uniendo comunidad, deporte y pasión. Competencia sana para todos los niveles.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -102,7 +102,7 @@ const Home = () => {
               <div>
                 <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-bold mb-4">Accesos rápidos</h2>
-                  <p className="text-muted-foreground text-lg">
+                  <p className="text-foreground/80 text-lg">
                     Toda la información que necesitas en un solo lugar
                   </p>
                 </div>
@@ -115,7 +115,7 @@ const Home = () => {
                             <feature.icon className="w-8 h-8 text-primary" />
                           </div>
                           <h3 className="font-bold text-xl mb-2">{feature.title}</h3>
-                          <p className="text-muted-foreground">{feature.description}</p>
+                          <p className="text-foreground/80">{feature.description}</p>
                         </CardContent>
                       </Card>
                     </Link>
@@ -135,7 +135,7 @@ const Home = () => {
               <div>
                 <div className="max-w-3xl mx-auto text-center">
                   <h2 className="text-3xl md:text-4xl font-bold mb-6">Nuestros Valores</h2>
-                  <div className="space-y-6 text-lg text-muted-foreground">
+                  <div className="space-y-6 text-lg text-foreground/80">
                 <p>
                   El Ocampense nace del amor por el vóley y el deseo de fortalecer nuestra comunidad deportiva.
                 </p>
