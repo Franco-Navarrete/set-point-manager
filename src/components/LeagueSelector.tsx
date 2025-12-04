@@ -79,7 +79,7 @@ const LeagueSelector = () => {
                   className="w-5 h-5 object-contain"
                 />
               )}
-              <span>{selectedLeague.name}</span>
+              <span className="text-black">{selectedLeague.name}</span>
             </div>
           )}
         </SelectValue>
