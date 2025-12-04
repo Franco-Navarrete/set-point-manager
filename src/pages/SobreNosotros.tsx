@@ -47,7 +47,7 @@ const SobreNosotros = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Nuestra Historia</h2>
-              <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
+              <div className="space-y-6 text-lg text-foreground/80 leading-relaxed">
                 <p>
                   La <span className="text-foreground font-semibold">Liga Elo Campense de Vóley</span> nace 
                   en 2024 con un sueño: crear un espacio donde la pasión por el voleibol se combine con el 
@@ -81,7 +81,7 @@ const SobreNosotros = () => {
                       <value.icon className="w-8 h-8 text-primary" />
                     </div>
                     <h3 className="font-bold text-xl mb-3">{value.title}</h3>
-                    <p className="text-muted-foreground">{value.description}</p>
+                    <p className="text-foreground/80">{value.description}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -94,12 +94,12 @@ const SobreNosotros = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl md:text-4xl font-bold mb-6">¿Quieres unirte?</h2>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-lg text-foreground/80 mb-8 leading-relaxed">
                 Si compartes nuestra pasión por el vóley y quieres ser parte de esta comunidad, 
                 te invitamos a conocernos. Participar es simple: solo necesitas ganas de jugar, 
                 aprender y disfrutar junto a otros amantes del deporte.
               </p>
-              <div className="space-y-4 text-muted-foreground">
+              <div className="space-y-4 text-foreground/80">
                 <p className="flex items-center justify-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-primary" />
                   Categorías: Femenino y Masculino

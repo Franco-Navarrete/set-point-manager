@@ -57,7 +57,7 @@ const Contacto = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Contacto</h1>
-          <p className="text-muted-foreground text-lg mb-8">
+          <p className="text-foreground/80 text-lg mb-8">
             ¿Tienes alguna consulta? Estamos aquí para ayudarte
           </p>
 
@@ -134,7 +134,7 @@ const Contacto = () => {
                       <h3 className="font-semibold mb-1">Email</h3>
                       <a 
                         href="mailto:contacto@ligaelocampense.com"
-                        className="text-muted-foreground hover:text-primary transition-colors"
+                        className="text-foreground/80 hover:text-primary transition-colors"
                       >
                         contacto@ligaelocampense.com
                       </a>
@@ -149,7 +149,7 @@ const Contacto = () => {
                       <h3 className="font-semibold mb-1">Teléfono</h3>
                       <a 
                         href="tel:+5493543556144"
-                        className="text-muted-foreground hover:text-primary transition-colors"
+                        className="text-foreground/80 hover:text-primary transition-colors"
                       >
                         +54 9 3543 55-6144
                       </a>
@@ -162,7 +162,7 @@ const Contacto = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Ubicación</h3>
-                      <p className="text-muted-foreground">
+                      <p className="text-foreground/80">
                         Gimnasio Municipal<br />
                         Av. Principal 1234<br />
                         Ciudad Campense
@@ -175,7 +175,7 @@ const Contacto = () => {
               <Card className="bg-muted/30">
                 <CardContent className="py-6">
                   <h3 className="font-semibold mb-3">Horarios de atención</h3>
-                  <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="space-y-2 text-sm text-foreground/80">
                     <p>Lunes a Viernes: 18:00 - 22:00</p>
                     <p>Sábados: 16:00 - 21:00</p>
                     <p>Domingos: Cerrado</p>

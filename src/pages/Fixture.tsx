@@ -103,7 +103,7 @@ const Fixture = () => {
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Cargando fixture...</p>
+          <p className="text-foreground/80">Cargando fixture...</p>
         </main>
         <Footer />
       </div>
@@ -117,7 +117,7 @@ const Fixture = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Fixture</h1>
-          <p className="text-muted-foreground text-lg mb-4">
+          <p className="text-foreground/80 text-lg mb-4">
             Calendario completo de partidos del torneo
           </p>
 
@@ -146,7 +146,7 @@ const Fixture = () => {
 
                   return (
                     <div key={`${genderCategory}-${ageCategory}`} className="space-y-4">
-                      <h3 className="text-2xl font-semibold text-muted-foreground">
+                      <h3 className="text-2xl font-semibold text-foreground/80">
                         {getAgeCategoryLabel(ageCategory)}
                       </h3>
                       {jornadas.map((jornada) => {
@@ -166,7 +166,7 @@ const Fixture = () => {
                                 {jornadaVenue && (
                                   <div className="flex items-center gap-2 text-sm">
                                     <MapPin className="w-4 h-4 text-primary" />
-                                    <span className="text-muted-foreground">{jornadaVenue}</span>
+                                    <span className="text-foreground/80">{jornadaVenue}</span>
                                     <Button
                                       variant="ghost"
                                       size="sm"
@@ -183,7 +183,7 @@ const Fixture = () => {
                             <CardContent className="space-y-4">
                               {jornadaMatches.map((match) => (
                                 <div key={match.id} className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                                  <div className="flex flex-col sm:flex-row items-center gap-3 text-sm text-muted-foreground w-full sm:w-auto">
+                                  <div className="flex flex-col sm:flex-row items-center gap-3 text-sm text-foreground/80 w-full sm:w-auto">
                                     <span className="font-medium capitalize">
                                       {formatDate(match.date)}
                                     </span>
@@ -200,11 +200,11 @@ const Fixture = () => {
                                       {match.score_a !== null && match.score_b !== null ? (
                                         <>
                                           <span className="text-xl font-bold text-primary">{match.score_a}</span>
-                                          <span className="text-muted-foreground">-</span>
+                                          <span className="text-foreground/80">-</span>
                                           <span className="text-xl font-bold text-primary">{match.score_b}</span>
                                         </>
                                       ) : (
-                                        <span className="text-muted-foreground font-medium">VS</span>
+                                        <span className="text-foreground/80 font-medium">VS</span>
                                       )}
                                     </div>
                                     

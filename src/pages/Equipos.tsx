@@ -87,7 +87,7 @@ const Equipos = () => {
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Cargando equipos...</p>
+          <p className="text-foreground/80">Cargando equipos...</p>
         </main>
         <Footer />
       </div>
@@ -101,7 +101,7 @@ const Equipos = () => {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Equipos</h1>
-          <p className="text-muted-foreground text-lg mb-4">
+          <p className="text-foreground/80 text-lg mb-4">
             Conoce a todos los equipos participantes del torneo
           </p>
 
@@ -117,7 +117,7 @@ const Equipos = () => {
           {teams.length === 0 ? (
             <Card className="gradient-card">
               <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">
+                <p className="text-foreground/80">
                   No hay equipos registrados aún
                 </p>
               </CardContent>
@@ -136,7 +136,7 @@ const Equipos = () => {
 
                     return (
                       <div key={`${category}-${ageCategory}`} className="space-y-4">
-                        <h3 className="text-2xl font-semibold text-muted-foreground">
+                        <h3 className="text-2xl font-semibold text-foreground/80">
                           {getAgeCategoryLabel(ageCategory)}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -165,7 +165,7 @@ const Equipos = () => {
                                 <CardContent>
                                   {teamPlayers.length > 0 && (
                                     <div>
-                                      <h4 className="font-semibold mb-3 text-sm text-muted-foreground uppercase tracking-wide">
+                                      <h4 className="font-semibold mb-3 text-sm text-foreground/80 uppercase tracking-wide">
                                         Plantel
                                       </h4>
                                       <ul className="space-y-2">
