@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="font-bold text-lg mb-4">El Ocampense</h3>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-foreground/80 text-sm">
               Promoviendo el vóley y la comunidad deportiva local desde 2024.
             </p>
           </div>
@@ -18,25 +18,25 @@ const Footer = () => {
             <div className="space-y-2 text-sm">
               <Link 
                 to="/fixture" 
-                className="block text-muted-foreground hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
+                className="block text-foreground/80 hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
               >
                 Fixture
               </Link>
               <Link 
                 to="/tabla" 
-                className="block text-muted-foreground hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
+                className="block text-foreground/80 hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
               >
                 Tabla de posiciones
               </Link>
               <Link 
                 to="/equipos" 
-                className="block text-muted-foreground hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
+                className="block text-foreground/80 hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
               >
                 Equipos
               </Link>
               <Link 
                 to="/contacto" 
-                className="block text-muted-foreground hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
+                className="block text-foreground/80 hover:text-primary hover:translate-x-2 hover:font-medium transition-all duration-200"
               >
                 Contacto
               </Link>
@@ -50,7 +50,7 @@ const Footer = () => {
                 href="https://www.facebook.com/ElOcampense/?ref=_xav_ig_profile_page_web#"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200"
+                className="text-foreground/80 hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200"
                 aria-label="Facebook"
               >
                 <Facebook className="w-6 h-6" />
@@ -59,14 +59,14 @@ const Footer = () => {
                 href="https://www.instagram.com/elocampense?igsh=amI4c2d0YmkzbDB4"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200"
+                className="text-foreground/80 hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200"
                 aria-label="Instagram"
               >
                 <Instagram className="w-6 h-6" />
               </a>
               <a 
                 href="mailto:contacto@ligaelocampense.com" 
-                className="text-muted-foreground hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200" 
+                className="text-foreground/80 hover:text-primary hover:scale-125 hover:drop-shadow-[0_0_8px_hsl(var(--primary))] transition-all duration-200" 
                 aria-label="Email"
               >
                 <Mail className="w-6 h-6" />
@@ -75,7 +75,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
+        <div className="border-t border-border mt-8 pt-8 text-center text-sm text-foreground/80">
           © 2025 El Ocampense. Todos los derechos reservados.
         </div>
       </div>
