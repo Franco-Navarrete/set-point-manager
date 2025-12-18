@@ -29,6 +29,7 @@ interface Match {
   age_category: "SUB_16" | "LIBRE";
   jornada: number;
   venue: string | null;
+  venue_maps_url: string | null;
 }
 
 const Fixture = () => {
@@ -152,6 +153,15 @@ const Fixture = () => {
                       {jornadas.map((jornada) => {
                         const jornadaMatches = categoryMatches.filter(m => m.jornada === jornada);
                         const jornadaVenue = jornadaMatches[0]?.venue;
+                        const jornadaMapsUrl = jornadaMatches[0]?.venue_maps_url;
+
+                        const handleOpenMap = () => {
+                          if (jornadaMapsUrl) {
+                            window.open(jornadaMapsUrl, '_blank');
+                          } else if (jornadaVenue) {
+                            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(jornadaVenue)}`, '_blank');
+                          }
+                        };
 
                         return (
                           <Card key={`${genderCategory}-${ageCategory}-${jornada}`} className="gradient-card">
@@ -171,7 +181,7 @@ const Fixture = () => {
                                       variant="ghost"
                                       size="sm"
                                       className="h-7 px-2"
-                                      onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(jornadaVenue)}`, '_blank')}
+                                      onClick={handleOpenMap}
                                     >
                                       <ExternalLink className="w-3 h-3 mr-1" />
                                       Ver mapa
