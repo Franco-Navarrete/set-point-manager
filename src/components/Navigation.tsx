@@ -79,19 +79,19 @@ const Navigation = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between gap-4 h-24">
-          <div className="flex items-center gap-4 flex-shrink-0">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="flex items-center justify-between gap-2 sm:gap-4 h-16 sm:h-20 md:h-24">
+          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             <Link to="/" className="flex items-center space-x-2">
               {logoError ? (
-                <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-glow">
-                  <span className="text-primary-foreground font-bold text-2xl">V</span>
+                <div className="w-10 h-10 sm:w-14 sm:h-14 md:w-20 md:h-20 rounded-full bg-primary flex items-center justify-center shadow-glow">
+                  <span className="text-primary-foreground font-bold text-lg sm:text-xl md:text-2xl">V</span>
                 </div>
               ) : (
                 <img
                   src="/el-ocampense-logo.svg"
                   alt="El Ocampense"
-                  className="h-16 w-auto object-contain"
+                  className="h-10 sm:h-12 md:h-16 w-auto object-contain"
                   onError={() => setLogoError(true)}
                 />
               )}
@@ -100,7 +100,7 @@ const Navigation = () => {
               <img
                 src={selectedLeague.logo_url}
                 alt={selectedLeague.name}
-                className="h-16 w-auto object-contain opacity-80"
+                className="h-8 sm:h-12 md:h-16 w-auto object-contain opacity-80 hidden sm:block"
               />
             )}
           </div>
@@ -192,40 +192,42 @@ const Navigation = () => {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-2 border-t border-border">
-            <div className="px-2 mb-4">
+          <div className="md:hidden py-3 space-y-1 border-t border-border max-h-[70vh] overflow-y-auto">
+            <div className="px-2 mb-3">
               <LeagueSelector />
             </div>
             {/* Menú móvil: Inicio, Fixture, Tabla y Más */}
             {[...desktopPrimary, ...fixtureTablaItems, ...moreNavItems].map((item) => (
               <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)}>
-                <Button variant={isActive(item.path) ? "default" : "ghost"} className="w-full justify-start">
+                <Button variant={isActive(item.path) ? "default" : "ghost"} className="w-full justify-start text-sm h-10">
                   {item.name}
                 </Button>
               </Link>
             ))}
-            {user ? (
-              <>
-                {isAdmin && (
-                  <Button variant="outline" className="w-full justify-start" onClick={() => { navigate("/admin"); setMobileMenuOpen(false); }}>
-                    <Shield className="w-4 h-4 mr-2" />
-                    Panel Admin
+            <div className="border-t border-border pt-2 mt-2">
+              {user ? (
+                <>
+                  {isAdmin && (
+                    <Button variant="outline" className="w-full justify-start text-sm h-10" onClick={() => { navigate("/admin"); setMobileMenuOpen(false); }}>
+                      <Shield className="w-4 h-4 mr-2" />
+                      Panel Admin
+                    </Button>
+                  )}
+                  <Button variant="outline" className="w-full justify-start text-sm h-10" onClick={() => { navigate("/change-password"); setMobileMenuOpen(false); }}>
+                    <KeyRound className="w-4 h-4 mr-2" />
+                    Cambiar Contraseña
                   </Button>
-                )}
-                <Button variant="outline" className="w-full justify-start" onClick={() => { navigate("/change-password"); setMobileMenuOpen(false); }}>
-                  <KeyRound className="w-4 h-4 mr-2" />
-                  Cambiar Contraseña
+                  <Button variant="outline" className="w-full justify-start text-sm h-10" onClick={() => { handleLogout(); setMobileMenuOpen(false); }}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Cerrar Sesión
+                  </Button>
+                </>
+              ) : (
+                <Button className="w-full text-sm h-10" onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}>
+                  Ingresar
                 </Button>
-                <Button variant="outline" className="w-full justify-start" onClick={() => { handleLogout(); setMobileMenuOpen(false); }}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Cerrar Sesión
-                </Button>
-              </>
-            ) : (
-              <Button className="w-full" onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}>
-                Ingresar
-              </Button>
-            )}
+              )}
+            </div>
           </div>
         )}
       </div>
