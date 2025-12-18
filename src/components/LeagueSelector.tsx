@@ -84,7 +84,7 @@ const LeagueSelector = () => {
           )}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent className="bg-popover border-border z-[9999]">
+      <SelectContent className="bg-card border-border z-[9999] shadow-lg">
         {ligas.length > 0 && (
           <SelectGroup>
             <SelectLabel className="flex items-center gap-2">
