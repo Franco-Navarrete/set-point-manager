@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Trash2, Plus, Filter } from "lucide-react";
+import { Trash2, Plus, Filter, MapPin, ExternalLink } from "lucide-react";
 
 interface League {
   id: string;
@@ -33,6 +33,7 @@ interface Match {
   jornada: number;
   league_id: string | null;
   venue: string | null;
+  venue_maps_url: string | null;
 }
 
 export const AdminMatches = () => {
@@ -50,6 +51,7 @@ export const AdminMatches = () => {
     jornada: 1,
     league_id: "",
     venue: "",
+    venue_maps_url: "",
   });
 
   useEffect(() => {
@@ -122,6 +124,7 @@ export const AdminMatches = () => {
         jornada: 1,
         league_id: "",
         venue: "",
+        venue_maps_url: "",
       });
       loadMatches();
     }
@@ -296,6 +299,21 @@ export const AdminMatches = () => {
             value={newMatch.venue}
             onChange={(e) => setNewMatch({ ...newMatch, venue: e.target.value })}
           />
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Link de Google Maps (opcional)</span>
+            </div>
+            <Input
+              type="url"
+              placeholder="https://maps.google.com/..."
+              value={newMatch.venue_maps_url}
+              onChange={(e) => setNewMatch({ ...newMatch, venue_maps_url: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">
+              Pega el link de Google Maps para que los usuarios puedan ver la ubicación exacta
+            </p>
+          </div>
           <Button onClick={createMatch} className="w-full">
             <Plus className="w-4 h-4 mr-2" />
             Crear Partido
@@ -320,6 +338,18 @@ export const AdminMatches = () => {
                       {match.date} • {match.time} • Jornada {match.jornada}
                       {match.venue && ` • ${match.venue}`}
                     </p>
+                    {match.venue_maps_url && (
+                      <a 
+                        href={match.venue_maps_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                      >
+                        <MapPin className="w-3 h-3" />
+                        Ver en mapa
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
                   </div>
                   <Button
                     variant="destructive"
