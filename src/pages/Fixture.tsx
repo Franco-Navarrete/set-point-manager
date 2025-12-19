@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLeague } from "@/contexts/LeagueContext";
-import { AlertCircle, MapPin, ExternalLink } from "lucide-react";
+import { AlertCircle, MapPin, ExternalLink, Calendar, Clock } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type Category = "Todos" | "Femenino" | "Masculino";
@@ -154,6 +154,7 @@ const Fixture = () => {
                         const jornadaMatches = categoryMatches.filter(m => m.jornada === jornada);
                         const jornadaVenue = jornadaMatches[0]?.venue;
                         const jornadaMapsUrl = jornadaMatches[0]?.venue_maps_url;
+                        const jornadaDate = jornadaMatches[0]?.date;
 
                         const handleOpenMap = () => {
                           if (jornadaMapsUrl) {
@@ -165,61 +166,73 @@ const Fixture = () => {
 
                         return (
                           <Card key={`${genderCategory}-${ageCategory}-${jornada}`} className="gradient-card">
-                            <CardHeader>
-                              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                                <div className="flex items-center gap-3">
-                                  <CardTitle className="text-xl">Jornada {jornada}</CardTitle>
-                                  <Badge className={getCategoryColor(genderCategory)}>
-                                    {jornadaMatches.length} partidos
-                                  </Badge>
-                                </div>
-                                {jornadaVenue && (
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <MapPin className="w-4 h-4 text-primary" />
-                                    <span className="text-foreground/80">{jornadaVenue}</span>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-7 px-2"
-                                      onClick={handleOpenMap}
-                                    >
-                                      <ExternalLink className="w-3 h-3 mr-1" />
-                                      Ver mapa
-                                    </Button>
+                            <CardHeader className="pb-3">
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                                  <div className="flex items-center gap-3">
+                                    <CardTitle className="text-xl">Jornada {jornada}</CardTitle>
+                                    <Badge className={getCategoryColor(genderCategory)}>
+                                      {jornadaMatches.length} partidos
+                                    </Badge>
                                   </div>
-                                )}
+                                </div>
+                                
+                                {/* Fecha y Ubicación destacados */}
+                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 pt-2 border-t border-border/50">
+                                  {jornadaDate && (
+                                    <div className="flex items-center gap-2">
+                                      <Calendar className="w-4 h-4 text-primary" />
+                                      <span className="text-sm font-medium capitalize">
+                                        {formatDate(jornadaDate)}
+                                      </span>
+                                    </div>
+                                  )}
+                                  
+                                  {jornadaVenue && (
+                                    <div className="flex items-center gap-2">
+                                      <MapPin className="w-4 h-4 text-primary" />
+                                      <span className="text-sm text-foreground/80">{jornadaVenue}</span>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-7 px-2 ml-1"
+                                        onClick={handleOpenMap}
+                                      >
+                                        <ExternalLink className="w-3 h-3 mr-1" />
+                                        Ver mapa
+                                      </Button>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </CardHeader>
-                            <CardContent className="space-y-4">
+                            <CardContent className="space-y-3 pt-0">
                               {jornadaMatches.map((match) => (
-                                <div key={match.id} className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                                  <div className="flex flex-col sm:flex-row items-center gap-3 text-sm text-foreground/80 w-full sm:w-auto">
-                                    <span className="font-medium capitalize">
-                                      {formatDate(match.date)}
-                                    </span>
-                                    <span className="hidden sm:inline">•</span>
-                                    <span>{match.time}</span>
+                                <div key={match.id} className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                                  <div className="flex items-center gap-2 text-sm text-foreground/70 w-full sm:w-auto justify-center sm:justify-start">
+                                    <Clock className="w-3.5 h-3.5" />
+                                    <span className="font-medium">{match.time}</span>
                                   </div>
                                   
-                                  <div className="flex items-center justify-between gap-4 w-full sm:flex-1">
+                                  <div className="flex items-center justify-between gap-3 w-full sm:flex-1">
                                     <div className="flex-1 text-right">
-                                      <p className="font-semibold">{getTeamName(match.team_a_id)}</p>
+                                      <p className="font-semibold text-sm sm:text-base">{getTeamName(match.team_a_id)}</p>
                                     </div>
                                     
-                                    <div className="flex items-center gap-3 px-4 py-2 bg-background rounded-lg min-w-[100px] justify-center">
+                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-background rounded-lg min-w-[80px] justify-center">
                                       {match.score_a !== null && match.score_b !== null ? (
                                         <>
-                                          <span className="text-xl font-bold text-primary">{match.score_a}</span>
-                                          <span className="text-foreground/80">-</span>
-                                          <span className="text-xl font-bold text-primary">{match.score_b}</span>
+                                          <span className="text-lg font-bold text-primary">{match.score_a}</span>
+                                          <span className="text-foreground/60">-</span>
+                                          <span className="text-lg font-bold text-primary">{match.score_b}</span>
                                         </>
                                       ) : (
-                                        <span className="text-foreground/80 font-medium">VS</span>
+                                        <span className="text-foreground/60 font-medium text-sm">VS</span>
                                       )}
                                     </div>
                                     
                                     <div className="flex-1 text-left">
-                                      <p className="font-semibold">{getTeamName(match.team_b_id)}</p>
+                                      <p className="font-semibold text-sm sm:text-base">{getTeamName(match.team_b_id)}</p>
                                     </div>
                                   </div>
                                 </div>
