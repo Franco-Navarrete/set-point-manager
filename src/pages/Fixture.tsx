@@ -147,92 +147,92 @@ const Fixture = () => {
 
               return dates.map((date) => {
                 const dateMatches = matches.filter(m => m.date === date);
-                const dateVenue = dateMatches[0]?.venue;
-                const dateMapsUrl = dateMatches[0]?.venue_maps_url;
-
-                const handleOpenMap = () => {
-                  if (dateMapsUrl) {
-                    window.open(dateMapsUrl, '_blank');
-                  } else if (dateVenue) {
-                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dateVenue)}`, '_blank');
-                  }
-                };
 
                 return (
                   <Card key={date} className="gradient-card">
                     <CardHeader className="pb-3">
-                      <div className="flex flex-col gap-3">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                          <div className="flex items-center gap-2">
-                            <Calendar className="w-5 h-5 text-primary" />
-                            <CardTitle className="text-xl capitalize">
-                              {formatDate(date)}
-                            </CardTitle>
-                          </div>
-                          <Badge variant="secondary">
-                            {dateMatches.length} partidos
-                          </Badge>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-5 h-5 text-primary" />
+                          <CardTitle className="text-xl capitalize">
+                            {formatDate(date)}
+                          </CardTitle>
                         </div>
-                        
-                        {/* Ubicación destacada */}
-                        {dateVenue && (
-                          <div className="flex items-center gap-2 pt-2 border-t border-border/50">
-                            <MapPin className="w-4 h-4 text-primary" />
-                            <span className="text-sm text-foreground/80">{dateVenue}</span>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-7 px-2 ml-1"
-                              onClick={handleOpenMap}
-                            >
-                              <ExternalLink className="w-3 h-3 mr-1" />
-                              Ver mapa
-                            </Button>
-                          </div>
-                        )}
+                        <Badge variant="secondary">
+                          {dateMatches.length} partidos
+                        </Badge>
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-3 pt-0">
-                      {dateMatches.map((match) => (
-                        <div key={match.id} className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                          <div className="flex items-center gap-2 text-sm w-full sm:w-auto justify-center sm:justify-start">
-                            <div className="flex items-center gap-2 text-foreground/70">
-                              <Clock className="w-3.5 h-3.5" />
-                              <span className="font-medium">{match.time}</span>
+                      {dateMatches.map((match) => {
+                        const handleOpenMap = () => {
+                          if (match.venue_maps_url) {
+                            window.open(match.venue_maps_url, '_blank');
+                          } else if (match.venue) {
+                            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(match.venue)}`, '_blank');
+                          }
+                        };
+
+                        return (
+                          <div key={match.id} className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors space-y-2">
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                              <div className="flex items-center gap-2 text-sm w-full sm:w-auto justify-center sm:justify-start">
+                                <div className="flex items-center gap-2 text-foreground/70">
+                                  <Clock className="w-3.5 h-3.5" />
+                                  <span className="font-medium">{match.time}</span>
+                                </div>
+                                <Badge className={`${getCategoryColor(match.category)} text-xs`}>
+                                  {match.category}
+                                </Badge>
+                                {match.age_category === "SUB_16" && (
+                                  <Badge variant="outline" className="text-xs">
+                                    Sub 16
+                                  </Badge>
+                                )}
+                              </div>
+                              
+                              <div className="flex items-center justify-between gap-3 w-full sm:flex-1">
+                                <div className="flex-1 text-right">
+                                  <p className="font-semibold text-sm sm:text-base">{getTeamName(match.team_a_id)}</p>
+                                </div>
+                                
+                                <div className="flex items-center gap-2 px-3 py-1.5 bg-background rounded-lg min-w-[80px] justify-center">
+                                  {match.score_a !== null && match.score_b !== null ? (
+                                    <>
+                                      <span className="text-lg font-bold text-primary">{match.score_a}</span>
+                                      <span className="text-foreground/60">-</span>
+                                      <span className="text-lg font-bold text-primary">{match.score_b}</span>
+                                    </>
+                                  ) : (
+                                    <span className="text-foreground/60 font-medium text-sm">VS</span>
+                                  )}
+                                </div>
+                                
+                                <div className="flex-1 text-left">
+                                  <p className="font-semibold text-sm sm:text-base">{getTeamName(match.team_b_id)}</p>
+                                </div>
+                              </div>
                             </div>
-                            <Badge className={`${getCategoryColor(match.category)} text-xs`}>
-                              {match.category}
-                            </Badge>
-                            {match.age_category === "SUB_16" && (
-                              <Badge variant="outline" className="text-xs">
-                                Sub 16
-                              </Badge>
+                            
+                            {/* Ubicación del partido */}
+                            {match.venue && (
+                              <div className="flex items-center justify-center sm:justify-start gap-2 pt-2 border-t border-border/30">
+                                <MapPin className="w-3.5 h-3.5 text-primary" />
+                                <span className="text-xs text-foreground/70">{match.venue}</span>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 px-2 text-xs"
+                                  onClick={handleOpenMap}
+                                >
+                                  <ExternalLink className="w-3 h-3 mr-1" />
+                                  Ver mapa
+                                </Button>
+                              </div>
                             )}
                           </div>
-                          
-                          <div className="flex items-center justify-between gap-3 w-full sm:flex-1">
-                            <div className="flex-1 text-right">
-                              <p className="font-semibold text-sm sm:text-base">{getTeamName(match.team_a_id)}</p>
-                            </div>
-                            
-                            <div className="flex items-center gap-2 px-3 py-1.5 bg-background rounded-lg min-w-[80px] justify-center">
-                              {match.score_a !== null && match.score_b !== null ? (
-                                <>
-                                  <span className="text-lg font-bold text-primary">{match.score_a}</span>
-                                  <span className="text-foreground/60">-</span>
-                                  <span className="text-lg font-bold text-primary">{match.score_b}</span>
-                                </>
-                              ) : (
-                                <span className="text-foreground/60 font-medium text-sm">VS</span>
-                              )}
-                            </div>
-                            
-                            <div className="flex-1 text-left">
-                              <p className="font-semibold text-sm sm:text-base">{getTeamName(match.team_b_id)}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </CardContent>
                   </Card>
                 );
