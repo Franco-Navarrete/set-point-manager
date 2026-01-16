@@ -21,7 +21,7 @@ const Navigation = () => {
   const [logoError, setLogoError] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const { selectedLeague } = useLeague();
+  const { selectedLeague, setSelectedLeague } = useLeague();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -82,7 +82,13 @@ const Navigation = () => {
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between gap-2 sm:gap-4 h-16 sm:h-20 md:h-24">
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-            <Link to="/" className="flex items-center space-x-2">
+            <button
+              onClick={() => {
+                setSelectedLeague(null);
+                navigate("/");
+              }}
+              className="flex items-center space-x-2 cursor-pointer"
+            >
               {logoError ? (
                 <div className="w-10 h-10 sm:w-14 sm:h-14 md:w-20 md:h-20 rounded-full bg-primary flex items-center justify-center shadow-glow">
                   <span className="text-primary-foreground font-bold text-lg sm:text-xl md:text-2xl">V</span>
@@ -95,7 +101,7 @@ const Navigation = () => {
                   onError={() => setLogoError(true)}
                 />
               )}
-            </Link>
+            </button>
             {selectedLeague?.logo_url && (
               <img
                 src={selectedLeague.logo_url}
