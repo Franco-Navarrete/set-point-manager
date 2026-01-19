@@ -56,8 +56,8 @@ const Contacto = () => {
       
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Contacto</h1>
-          <p className="text-foreground/80 text-lg mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">Contacto</h1>
+          <p className="text-white text-lg mb-8">
             ¿Tienes alguna consulta? Estamos aquí para ayudarte
           </p>
 
@@ -65,12 +65,12 @@ const Contacto = () => {
             {/* Contact Form */}
             <Card className="gradient-card">
               <CardHeader>
-                <CardTitle className="text-2xl">Envíanos un mensaje</CardTitle>
+                <CardTitle className="text-2xl text-white">Envíanos un mensaje</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Nombre completo</Label>
+                    <Label htmlFor="name" className="text-white">Nombre completo</Label>
                     <Input
                       id="name"
                       name="name"
@@ -79,11 +79,12 @@ const Contacto = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
+                      className="placeholder:text-white/70"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Correo electrónico</Label>
+                    <Label htmlFor="email" className="text-white">Correo electrónico</Label>
                     <Input
                       id="email"
                       name="email"
@@ -92,11 +93,12 @@ const Contacto = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
+                      className="placeholder:text-white/70"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message">Mensaje</Label>
+                    <Label htmlFor="message" className="text-white">Mensaje</Label>
                     <Textarea
                       id="message"
                       name="message"
@@ -105,6 +107,7 @@ const Contacto = () => {
                       onChange={handleChange}
                       rows={6}
                       required
+                      className="placeholder:text-white/70"
                     />
                   </div>
 
@@ -123,7 +126,7 @@ const Contacto = () => {
             <div className="space-y-6">
               <Card className="gradient-card">
                 <CardHeader>
-                  <CardTitle className="text-2xl">Información de contacto</CardTitle>
+                  <CardTitle className="text-2xl text-white">Información de contacto</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-start gap-4">
@@ -131,10 +134,10 @@ const Contacto = () => {
                       <Mail className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Email</h3>
+                      <h3 className="font-semibold mb-1 text-white">Email</h3>
                       <a 
                         href="mailto:contacto@ligaelocampense.com"
-                        className="text-foreground/80 hover:text-primary transition-colors"
+                        className="text-white/80 hover:text-white transition-colors"
                       >
                         contacto@ligaelocampense.com
                       </a>
@@ -146,10 +149,10 @@ const Contacto = () => {
                       <Phone className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Teléfono</h3>
+                      <h3 className="font-semibold mb-1 text-white">Teléfono</h3>
                       <a 
                         href="tel:+5493543556144"
-                        className="text-foreground/80 hover:text-primary transition-colors"
+                        className="text-white/80 hover:text-white transition-colors"
                       >
                         +54 9 3543 55-6144
                       </a>
@@ -161,8 +164,8 @@ const Contacto = () => {
                       <MapPin className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Ubicación</h3>
-                      <p className="text-foreground/80">
+                      <h3 className="font-semibold mb-1 text-white">Ubicación</h3>
+                      <p className="text-white/80">
                         Gimnasio Municipal<br />
                         Av. Principal 1234<br />
                         Ciudad Campense
@@ -174,8 +177,8 @@ const Contacto = () => {
 
               <Card className="bg-muted/30">
                 <CardContent className="py-6">
-                  <h3 className="font-semibold mb-3">Horarios de atención</h3>
-                  <div className="space-y-2 text-sm text-foreground/80">
+                  <h3 className="font-semibold mb-3 text-white">Horarios de atención</h3>
+                  <div className="space-y-2 text-sm text-white/80">
                     <p>Lunes a Viernes: 18:00 - 22:00</p>
                     <p>Sábados: 16:00 - 21:00</p>
                     <p>Domingos: Cerrado</p>
