@@ -101,7 +101,7 @@ const LeagueSelector = () => {
                       className="w-5 h-5 object-contain"
                     />
                   )}
-                  <span>{league.name}</span>
+                  <span className="text-black">{league.name}</span>
                 </div>
               </SelectItem>
             ))}
@@ -124,7 +124,7 @@ const LeagueSelector = () => {
                       className="w-5 h-5 object-contain"
                     />
                   )}
-                  <span>{league.name}</span>
+                  <span className="text-black">{league.name}</span>
                 </div>
               </SelectItem>
             ))}
@@ -147,7 +147,7 @@ const LeagueSelector = () => {
                       className="w-5 h-5 object-contain"
                     />
                   )}
-                  <span>{league.name}</span>
+                  <span className="text-black">{league.name}</span>
                 </div>
               </SelectItem>
             ))}
