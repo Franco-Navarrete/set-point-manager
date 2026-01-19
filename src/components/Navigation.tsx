@@ -82,6 +82,13 @@ const Navigation = () => {
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between gap-2 sm:gap-4 h-16 sm:h-20 md:h-24">
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+            {selectedLeague?.logo_url && (
+              <img
+                src={selectedLeague.logo_url}
+                alt={selectedLeague.name}
+                className="h-8 sm:h-12 md:h-16 w-auto object-contain hidden sm:block"
+              />
+            )}
             <button
               onClick={() => {
                 setSelectedLeague(null);
@@ -102,13 +109,6 @@ const Navigation = () => {
                 />
               )}
             </button>
-            {selectedLeague?.logo_url && (
-              <img
-                src={selectedLeague.logo_url}
-                alt={selectedLeague.name}
-                className="h-8 sm:h-12 md:h-16 w-auto object-contain opacity-80 hidden sm:block"
-              />
-            )}
           </div>
 
           {/* Eliminamos el selector aquí para moverlo entre el menú y el botón Ingresar */}
