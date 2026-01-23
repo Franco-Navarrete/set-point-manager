@@ -107,7 +107,7 @@ const Contacto = () => {
                       onChange={handleChange}
                       rows={6}
                       required
-                      className="placeholder:text-black/70"
+                      className="bg-white border-2 border-black/20 placeholder:text-black/50 text-black focus:border-primary"
                     />
                   </div>
 
