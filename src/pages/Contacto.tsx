@@ -65,12 +65,12 @@ const Contacto = () => {
             {/* Contact Form */}
             <Card className="gradient-card">
               <CardHeader>
-                <CardTitle className="text-2xl text-black">Envíanos un mensaje</CardTitle>
+                <CardTitle className="text-2xl text-white">Envíanos un mensaje</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-black">Nombre completo</Label>
+                    <Label htmlFor="name" className="text-white">Nombre completo</Label>
                     <Input
                       id="name"
                       name="name"
@@ -79,12 +79,12 @@ const Contacto = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="placeholder:text-black/70"
+                      className="placeholder:text-white/70"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-black">Correo electrónico</Label>
+                    <Label htmlFor="email" className="text-white">Correo electrónico</Label>
                     <Input
                       id="email"
                       name="email"
@@ -93,12 +93,12 @@ const Contacto = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="placeholder:text-black/70"
+                      className="placeholder:text-white/70"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-black">Mensaje</Label>
+                    <Label htmlFor="message" className="text-white">Mensaje</Label>
                     <Textarea
                       id="message"
                       name="message"
@@ -107,7 +107,7 @@ const Contacto = () => {
                       onChange={handleChange}
                       rows={6}
                       required
-                      className="placeholder:text-black/70"
+                      className="placeholder:text-white/70"
                     />
                   </div>
 
