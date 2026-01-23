@@ -56,21 +56,21 @@ const Contacto = () => {
       
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">Contacto</h1>
-          <p className="text-white text-lg mb-8">
-            ¿Tienes alguna consulta? Estamos aquí para ayudarte
-          </p>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-black">Contacto</h1>
+        <p className="text-black text-lg mb-8">
+          ¿Tienes alguna consulta? Estamos aquí para ayudarte
+        </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Contact Form */}
             <Card className="gradient-card">
               <CardHeader>
-                <CardTitle className="text-2xl text-white">Envíanos un mensaje</CardTitle>
+                <CardTitle className="text-2xl text-black">Envíanos un mensaje</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-white">Nombre completo</Label>
+                    <Label htmlFor="name" className="text-black">Nombre completo</Label>
                     <Input
                       id="name"
                       name="name"
@@ -79,12 +79,12 @@ const Contacto = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="placeholder:text-white/70"
+                      className="placeholder:text-black/70"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white">Correo electrónico</Label>
+                    <Label htmlFor="email" className="text-black">Correo electrónico</Label>
                     <Input
                       id="email"
                       name="email"
@@ -93,12 +93,12 @@ const Contacto = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="placeholder:text-white/70"
+                      className="placeholder:text-black/70"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-white">Mensaje</Label>
+                    <Label htmlFor="message" className="text-black">Mensaje</Label>
                     <Textarea
                       id="message"
                       name="message"
@@ -107,7 +107,7 @@ const Contacto = () => {
                       onChange={handleChange}
                       rows={6}
                       required
-                      className="placeholder:text-white/70"
+                      className="placeholder:text-black/70"
                     />
                   </div>
 
