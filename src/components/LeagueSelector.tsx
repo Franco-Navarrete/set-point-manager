@@ -69,7 +69,7 @@ const LeagueSelector = () => {
       }}
     >
       <SelectTrigger className="w-full min-w-[200px] max-w-sm bg-card border-border">
-        <SelectValue placeholder="Seleccionar liga o evento">
+        <SelectValue placeholder="Ligas">
           {selectedLeague && (
             <div className="flex items-center gap-2">
               {selectedLeague.logo_url && (
