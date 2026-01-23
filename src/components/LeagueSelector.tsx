@@ -84,11 +84,11 @@ const LeagueSelector = () => {
           )}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent className="bg-card border-border z-[9999] shadow-lg">
+      <SelectContent className="bg-white border-border z-[9999] shadow-lg">
         {ligas.length > 0 && (
           <SelectGroup>
-            <SelectLabel className="flex items-center gap-2">
-              <Trophy className="w-4 h-4" />
+            <SelectLabel className="flex items-center gap-2 text-black font-semibold">
+              <Trophy className="w-4 h-4 text-black" />
               Ligas
             </SelectLabel>
             {ligas.map((league) => (
@@ -110,8 +110,8 @@ const LeagueSelector = () => {
         
         {eventosGrandes.length > 0 && (
           <SelectGroup>
-            <SelectLabel className="flex items-center gap-2">
-              <Star className="w-4 h-4" />
+            <SelectLabel className="flex items-center gap-2 text-black font-semibold">
+              <Star className="w-4 h-4 text-black" />
               Eventos Grandes
             </SelectLabel>
             {eventosGrandes.map((league) => (
@@ -133,8 +133,8 @@ const LeagueSelector = () => {
         
         {eventos2do.length > 0 && (
           <SelectGroup>
-            <SelectLabel className="flex items-center gap-2">
-              <Award className="w-4 h-4" />
+            <SelectLabel className="flex items-center gap-2 text-black font-semibold">
+              <Award className="w-4 h-4 text-black" />
               Eventos 2do Orden
             </SelectLabel>
             {eventos2do.map((league) => (
