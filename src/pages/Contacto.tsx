@@ -126,7 +126,7 @@ const Contacto = () => {
             <div className="space-y-6">
               <Card className="gradient-card">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-white">Información de contacto</CardTitle>
+                  <CardTitle className="text-2xl text-black">Información de contacto</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-start gap-4">
@@ -134,10 +134,10 @@ const Contacto = () => {
                       <Mail className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1 text-white">Email</h3>
+                      <h3 className="font-semibold mb-1 text-black">Email</h3>
                       <a 
                         href="mailto:contacto@ligaelocampense.com"
-                        className="text-white/80 hover:text-white transition-colors"
+                        className="text-black/80 hover:text-black transition-colors"
                       >
                         contacto@ligaelocampense.com
                       </a>
@@ -149,10 +149,10 @@ const Contacto = () => {
                       <Phone className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1 text-white">Teléfono</h3>
+                      <h3 className="font-semibold mb-1 text-black">Teléfono</h3>
                       <a 
                         href="tel:+5493543556144"
-                        className="text-white/80 hover:text-white transition-colors"
+                        className="text-black/80 hover:text-black transition-colors"
                       >
                         +54 9 3543 55-6144
                       </a>
@@ -164,8 +164,8 @@ const Contacto = () => {
                       <MapPin className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1 text-white">Ubicación</h3>
-                      <p className="text-white/80">
+                      <h3 className="font-semibold mb-1 text-black">Ubicación</h3>
+                      <p className="text-black/80">
                         Gimnasio Municipal<br />
                         Av. Principal 1234<br />
                         Ciudad Campense
@@ -177,8 +177,8 @@ const Contacto = () => {
 
               <Card className="bg-muted/30">
                 <CardContent className="py-6">
-                  <h3 className="font-semibold mb-3 text-white">Horarios de atención</h3>
-                  <div className="space-y-2 text-sm text-white/80">
+                  <h3 className="font-semibold mb-3 text-black">Horarios de atención</h3>
+                  <div className="space-y-2 text-sm text-black/80">
                     <p>Lunes a Viernes: 18:00 - 22:00</p>
                     <p>Sábados: 16:00 - 21:00</p>
                     <p>Domingos: Cerrado</p>
