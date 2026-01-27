@@ -179,7 +179,7 @@ export const AdminMatches = () => {
     <div className="space-y-6">
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <Filter className="w-5 h-5" />
             Filtrar por Liga
           </CardTitle>
@@ -203,7 +203,7 @@ export const AdminMatches = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Crear Nuevo Partido</CardTitle>
+          <CardTitle className="text-white">Crear Nuevo Partido</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Select
@@ -301,8 +301,8 @@ export const AdminMatches = () => {
           />
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Link de Google Maps (opcional)</span>
+              <MapPin className="w-4 h-4 text-white/70" />
+              <span className="text-sm text-white/70">Link de Google Maps (opcional)</span>
             </div>
             <Input
               type="url"
@@ -310,7 +310,7 @@ export const AdminMatches = () => {
               value={newMatch.venue_maps_url}
               onChange={(e) => setNewMatch({ ...newMatch, venue_maps_url: e.target.value })}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-white/60">
               Pega el link de Google Maps para que los usuarios puedan ver la ubicación exacta
             </p>
           </div>
