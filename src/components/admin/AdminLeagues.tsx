@@ -120,13 +120,13 @@ export const AdminLeagues = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Crear Nueva Liga/Evento</CardTitle>
+          <CardTitle className="text-white">Crear Nueva Liga/Evento</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>Nombre</Label>
+            <Label className="text-white">Nombre</Label>
             <Input
               placeholder="Nombre de la liga o evento"
               value={newLeague.name}
@@ -134,7 +134,7 @@ export const AdminLeagues = () => {
             />
           </div>
           <div>
-            <Label>Tipo</Label>
+            <Label className="text-white">Tipo</Label>
             <Select
               value={newLeague.type}
               onValueChange={(value: any) => setNewLeague({ ...newLeague, type: value })}
@@ -150,7 +150,7 @@ export const AdminLeagues = () => {
             </Select>
           </div>
           <div>
-            <Label>Descripción (opcional)</Label>
+            <Label className="text-white">Descripción (opcional)</Label>
             <Textarea
               placeholder="Descripción de la liga o evento"
               value={newLeague.description}
@@ -162,10 +162,10 @@ export const AdminLeagues = () => {
               checked={newLeague.is_active}
               onCheckedChange={(checked) => setNewLeague({ ...newLeague, is_active: checked })}
             />
-            <Label>Activa</Label>
+            <Label className="text-white">Activa</Label>
           </div>
           <div>
-            <Label>Orden de visualización</Label>
+            <Label className="text-white">Orden de visualización</Label>
             <Input
               type="number"
               value={newLeague.display_order}
