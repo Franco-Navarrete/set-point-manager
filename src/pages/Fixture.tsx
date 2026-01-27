@@ -39,20 +39,22 @@ const Fixture = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadData();
+    if (selectedLeague) {
+      loadData();
+    } else {
+      setMatches([]);
+      setTeams([]);
+      setLoading(false);
+    }
   }, [selectedLeague]);
 
   const loadData = async () => {
+    if (!selectedLeague) return;
+    
     setLoading(true);
     try {
-      let matchesQuery = supabase.from("matches").select("*").order("date");
-      
-      if (selectedLeague) {
-        matchesQuery = matchesQuery.eq("league_id", selectedLeague.id);
-      }
-
       const [matchesResponse, teamsResponse] = await Promise.all([
-        matchesQuery,
+        supabase.from("matches").select("*").eq("league_id", selectedLeague.id).order("date"),
         supabase.from("teams").select("id, name"),
       ]);
 
@@ -122,24 +124,22 @@ const Fixture = () => {
             Calendario completo de partidos del torneo
           </p>
 
-          {!selectedLeague && (
-            <Alert className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                Selecciona una liga o evento desde el menú superior para ver los partidos
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Matches grouped by Date */}
-          <div className="space-y-6">
-            {(() => {
-              // Group all matches by date
-              const dates = Array.from(new Set(matches.map(m => m.date))).sort();
-              
-              if (dates.length === 0 && selectedLeague) {
-                return (
-                  <p className="text-center text-foreground/60 py-8">
+          {!selectedLeague ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-xl font-semibold text-foreground mb-2">Selecciona liga</p>
+              <p className="text-foreground/60 text-center">
+                Elige una liga desde el menú superior para ver el fixture
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {(() => {
+                const dates = Array.from(new Set(matches.map(m => m.date))).sort();
+                
+                if (dates.length === 0) {
+                  return (
+                    <p className="text-center text-foreground/60 py-8">
                     No hay partidos programados para esta liga
                   </p>
                 );
@@ -238,7 +238,8 @@ const Fixture = () => {
                 );
               });
             })()}
-          </div>
+            </div>
+          )}
         </div>
       </main>
 
