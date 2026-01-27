@@ -47,7 +47,12 @@ const Tabla = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStandings();
+    if (selectedLeague) {
+      loadStandings();
+    } else {
+      setStandings([]);
+      setLoading(false);
+    }
 
     // Subscribe to realtime updates for team_stats
     const channel = supabase
@@ -60,7 +65,9 @@ const Tabla = () => {
           table: 'team_stats'
         },
         () => {
-          loadStandings();
+          if (selectedLeague) {
+            loadStandings();
+          }
         }
       )
       .subscribe();
@@ -71,16 +78,13 @@ const Tabla = () => {
   }, [selectedLeague]);
 
   const loadStandings = async () => {
+    if (!selectedLeague) return;
+    
     setLoading(true);
     try {
-      let teamsQuery = supabase.from("teams").select("*");
-      
-      if (selectedLeague) {
-        teamsQuery = teamsQuery.eq("league_id", selectedLeague.id);
-      }
-
       const [teamsResponse, statsResponse] = await Promise.all([
-        teamsQuery,
+        supabase.from("teams").select("*").eq("league_id", selectedLeague.id),
+        
         supabase.from("team_stats").select("*"),
       ]);
 
@@ -155,94 +159,95 @@ const Tabla = () => {
             Clasificación actual del torneo por categoría
           </p>
 
-          {!selectedLeague && (
-            <Alert className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                Selecciona una liga o evento desde el menú superior para ver las posiciones
-              </AlertDescription>
-            </Alert>
-          )}
+          {!selectedLeague ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-xl font-semibold text-foreground mb-2">Selecciona liga</p>
+              <p className="text-foreground/60 text-center">
+                Elige una liga desde el menú superior para ver la tabla de posiciones
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {categories.map((category) => (
+                <div key={category} className="space-y-6">
+                  <h2 className="text-3xl font-bold">{category}</h2>
+                  {ageCategories.map((ageCategory) => {
+                    const categoryTeams = standings
+                      .filter((team) => team.category === category && team.age_category === ageCategory)
+                      .sort((a, b) => b.points - a.points)
+                      .map((team, index) => ({ ...team, position: index + 1 }));
 
-          <div className="space-y-8">
-            {categories.map((category) => (
-              <div key={category} className="space-y-6">
-                <h2 className="text-3xl font-bold">{category}</h2>
-                {ageCategories.map((ageCategory) => {
-                  const categoryTeams = standings
-                    .filter((team) => team.category === category && team.age_category === ageCategory)
-                    .sort((a, b) => b.points - a.points)
-                    .map((team, index) => ({ ...team, position: index + 1 }));
-
-                  return (
-                    <Card key={`${category}-${ageCategory}`} className="gradient-card">
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-xl">
-                            {category} - {getAgeCategoryLabel(ageCategory)}
-                          </CardTitle>
-                          <Badge className={getCategoryColor(category)}>
-                            {categoryTeams.length} equipos
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        {categoryTeams.length === 0 ? (
-                          <p className="text-center text-foreground/80 py-8">
-                            No hay equipos en esta categoría
-                          </p>
-                        ) : (
-                          <div className="overflow-x-auto">
-                            <Table>
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead className="w-16 text-center">Pos</TableHead>
-                                  <TableHead>Equipo</TableHead>
-                                  <TableHead className="text-center">PJ</TableHead>
-                                  <TableHead className="text-center">PG</TableHead>
-                                  <TableHead className="text-center">PP</TableHead>
-                                  <TableHead className="text-center">SF</TableHead>
-                                  <TableHead className="text-center">SC</TableHead>
-                                  <TableHead className="text-center font-bold">Pts</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {categoryTeams.map((team) => (
-                                  <TableRow key={`${team.category}-${team.age_category}-${team.team}`} className="hover:bg-muted/50">
-                                    <TableCell className="text-center font-medium">
-                                      <div className="flex items-center justify-center gap-1">
-                                        {team.position === 1 && (
-                                          <Trophy className="w-4 h-4 text-primary" />
-                                        )}
-                                        {team.position}
-                                      </div>
-                                    </TableCell>
-                                    <TableCell className="font-semibold">{team.team}</TableCell>
-                                    <TableCell className="text-center">{team.played}</TableCell>
-                                    <TableCell className="text-center text-green-600 dark:text-green-400 font-medium">
-                                      {team.won}
-                                    </TableCell>
-                                    <TableCell className="text-center text-red-600 dark:text-red-400 font-medium">
-                                      {team.lost}
-                                    </TableCell>
-                                    <TableCell className="text-center">{team.setsFor}</TableCell>
-                                    <TableCell className="text-center">{team.setsAgainst}</TableCell>
-                                    <TableCell className="text-center font-bold text-lg text-primary">
-                                      {team.points}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
+                    return (
+                      <Card key={`${category}-${ageCategory}`} className="gradient-card">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-xl">
+                              {category} - {getAgeCategoryLabel(ageCategory)}
+                            </CardTitle>
+                            <Badge className={getCategoryColor(category)}>
+                              {categoryTeams.length} equipos
+                            </Badge>
                           </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
+                        </CardHeader>
+                        <CardContent>
+                          {categoryTeams.length === 0 ? (
+                            <p className="text-center text-foreground/80 py-8">
+                              No hay equipos en esta categoría
+                            </p>
+                          ) : (
+                            <div className="overflow-x-auto">
+                              <Table>
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableHead className="w-16 text-center">Pos</TableHead>
+                                    <TableHead>Equipo</TableHead>
+                                    <TableHead className="text-center">PJ</TableHead>
+                                    <TableHead className="text-center">PG</TableHead>
+                                    <TableHead className="text-center">PP</TableHead>
+                                    <TableHead className="text-center">SF</TableHead>
+                                    <TableHead className="text-center">SC</TableHead>
+                                    <TableHead className="text-center font-bold">Pts</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {categoryTeams.map((team) => (
+                                    <TableRow key={`${team.category}-${team.age_category}-${team.team}`} className="hover:bg-muted/50">
+                                      <TableCell className="text-center font-medium">
+                                        <div className="flex items-center justify-center gap-1">
+                                          {team.position === 1 && (
+                                            <Trophy className="w-4 h-4 text-primary" />
+                                          )}
+                                          {team.position}
+                                        </div>
+                                      </TableCell>
+                                      <TableCell className="font-semibold">{team.team}</TableCell>
+                                      <TableCell className="text-center">{team.played}</TableCell>
+                                      <TableCell className="text-center text-green-600 dark:text-green-400 font-medium">
+                                        {team.won}
+                                      </TableCell>
+                                      <TableCell className="text-center text-red-600 dark:text-red-400 font-medium">
+                                        {team.lost}
+                                      </TableCell>
+                                      <TableCell className="text-center">{team.setsFor}</TableCell>
+                                      <TableCell className="text-center">{team.setsAgainst}</TableCell>
+                                      <TableCell className="text-center font-bold text-lg text-primary">
+                                        {team.points}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          )}
 
           <Card className="mt-8 bg-muted/30">
             <CardContent className="py-6">
