@@ -84,38 +84,50 @@ export const AdminNews = () => {
     <div className="space-y-6">
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Crear Nueva Noticia</CardTitle>
+          <CardTitle className="text-white">Crear Nueva Noticia</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Input
-            placeholder="Título"
-            value={newNews.title}
-            onChange={(e) => setNewNews({ ...newNews, title: e.target.value })}
-          />
-          <Textarea
-            placeholder="Resumen de la noticia"
-            value={newNews.summary}
-            onChange={(e) => setNewNews({ ...newNews, summary: e.target.value })}
-            rows={4}
-          />
-          <Input
-            type="date"
-            value={newNews.date}
-            onChange={(e) => setNewNews({ ...newNews, date: e.target.value })}
-          />
-          <Select
-            value={newNews.category}
-            onValueChange={(value) => setNewNews({ ...newNews, category: value })}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Torneo">Torneo</SelectItem>
-              <SelectItem value="Resultados">Resultados</SelectItem>
-              <SelectItem value="Comunicados">Comunicados</SelectItem>
-            </SelectContent>
-          </Select>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-white">Título</label>
+            <Input
+              placeholder="Título"
+              value={newNews.title}
+              onChange={(e) => setNewNews({ ...newNews, title: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-white">Resumen</label>
+            <Textarea
+              placeholder="Resumen de la noticia"
+              value={newNews.summary}
+              onChange={(e) => setNewNews({ ...newNews, summary: e.target.value })}
+              rows={4}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-white">Fecha</label>
+            <Input
+              type="date"
+              value={newNews.date}
+              onChange={(e) => setNewNews({ ...newNews, date: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-white">Categoría</label>
+            <Select
+              value={newNews.category}
+              onValueChange={(value) => setNewNews({ ...newNews, category: value })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Torneo">Torneo</SelectItem>
+                <SelectItem value="Resultados">Resultados</SelectItem>
+                <SelectItem value="Comunicados">Comunicados</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button onClick={createNews} className="w-full">
             <Plus className="w-4 h-4 mr-2" />
             Crear Noticia
@@ -125,7 +137,7 @@ export const AdminNews = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Noticias Publicadas</CardTitle>
+          <CardTitle className="text-white">Noticias Publicadas</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -133,9 +145,9 @@ export const AdminNews = () => {
               <div key={item.id} className="p-4 bg-muted rounded-lg">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{item.summary}</p>
-                    <p className="text-xs text-muted-foreground mt-2">
+                    <h3 className="font-semibold text-white">{item.title}</h3>
+                    <p className="text-sm text-white/70 mt-1">{item.summary}</p>
+                    <p className="text-xs text-white/60 mt-2">
                       {item.date} • {item.category}
                     </p>
                   </div>

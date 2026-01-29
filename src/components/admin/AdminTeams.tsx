@@ -230,12 +230,12 @@ export const AdminTeams = () => {
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="bg-card border-border">
           <DialogHeader>
-            <DialogTitle>Editar Equipo</DialogTitle>
+            <DialogTitle className="text-white">Editar Equipo</DialogTitle>
           </DialogHeader>
           {editingTeam && (
             <div className="space-y-4 py-4">
               <div>
-                <label className="text-sm font-medium mb-2 block">Nombre del equipo</label>
+                <label className="text-sm font-medium mb-2 block text-white">Nombre del equipo</label>
                 <Input
                   placeholder="Nombre del equipo"
                   value={editingTeam.name}
@@ -243,7 +243,7 @@ export const AdminTeams = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">URL del Logo/Escudo</label>
+                <label className="text-sm font-medium mb-2 block text-white">URL del Logo/Escudo</label>
                 <Input
                   placeholder="https://ejemplo.com/logo.png"
                   value={editingTeam.logo_url || ""}
@@ -257,12 +257,12 @@ export const AdminTeams = () => {
                       className="w-12 h-12 object-contain rounded border border-border"
                       onError={(e) => (e.currentTarget.style.display = 'none')}
                     />
-                    <span className="text-sm text-muted-foreground">Vista previa</span>
+                    <span className="text-sm text-white/70">Vista previa</span>
                   </div>
                 )}
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Género</label>
+                <label className="text-sm font-medium mb-2 block text-white">Género</label>
                 <Select
                   value={editingTeam.category}
                   onValueChange={(value: "Femenino" | "Masculino") => setEditingTeam({ ...editingTeam, category: value })}
@@ -277,7 +277,7 @@ export const AdminTeams = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Categoría de edad</label>
+                <label className="text-sm font-medium mb-2 block text-white">Categoría de edad</label>
                 <Select
                   value={editingTeam.age_category}
                   onValueChange={(value: "SUB_16" | "LIBRE") => setEditingTeam({ ...editingTeam, age_category: value })}
@@ -292,7 +292,7 @@ export const AdminTeams = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Liga</label>
+                <label className="text-sm font-medium mb-2 block text-white">Liga</label>
                 <Select
                   value={editingTeam.league_id || ""}
                   onValueChange={(value) => setEditingTeam({ ...editingTeam, league_id: value })}
