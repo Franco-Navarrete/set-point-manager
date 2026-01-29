@@ -158,31 +158,34 @@ export const AdminStats = () => {
     <div className="space-y-6">
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Actualizar Estadísticas</CardTitle>
+          <CardTitle className="text-white">Actualizar Estadísticas</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Select
-            value={selectedTeam}
-            onValueChange={(value) => {
-              setSelectedTeam(value);
-              loadTeamStats(value);
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecciona un equipo" />
-            </SelectTrigger>
-            <SelectContent>
-              {teams.map((team) => (
-                <SelectItem key={team.id} value={team.id}>
-                  {team.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-white">Equipo</label>
+            <Select
+              value={selectedTeam}
+              onValueChange={(value) => {
+                setSelectedTeam(value);
+                loadTeamStats(value);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona un equipo" />
+              </SelectTrigger>
+              <SelectContent>
+                {teams.map((team) => (
+                  <SelectItem key={team.id} value={team.id}>
+                    {team.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm text-muted-foreground">Partidos Jugados</label>
+              <label className="text-sm text-white">Partidos Jugados</label>
               <Input
                 type="number"
                 value={newStats.played}
@@ -190,7 +193,7 @@ export const AdminStats = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted-foreground">Partidos Ganados</label>
+              <label className="text-sm text-white">Partidos Ganados</label>
               <Input
                 type="number"
                 value={newStats.won}
@@ -198,7 +201,7 @@ export const AdminStats = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted-foreground">Partidos Perdidos</label>
+              <label className="text-sm text-white">Partidos Perdidos</label>
               <Input
                 type="number"
                 value={newStats.lost}
@@ -206,7 +209,7 @@ export const AdminStats = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted-foreground">Sets a Favor</label>
+              <label className="text-sm text-white">Sets a Favor</label>
               <Input
                 type="number"
                 value={newStats.sets_for}
@@ -214,7 +217,7 @@ export const AdminStats = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted-foreground">Sets en Contra</label>
+              <label className="text-sm text-white">Sets en Contra</label>
               <Input
                 type="number"
                 value={newStats.sets_against}
@@ -222,7 +225,7 @@ export const AdminStats = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted-foreground">Puntos</label>
+              <label className="text-sm text-white">Puntos</label>
               <Input
                 type="number"
                 value={newStats.points}
@@ -240,11 +243,11 @@ export const AdminStats = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Filtros</CardTitle>
+          <CardTitle className="text-white">Filtros</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm text-muted-foreground">Filtrar por Liga</label>
+            <label className="text-sm text-white">Filtrar por Liga</label>
             <Select value={filterLeague} onValueChange={setFilterLeague}>
               <SelectTrigger>
                 <SelectValue placeholder="Todas las ligas" />
@@ -261,7 +264,7 @@ export const AdminStats = () => {
           </div>
           
           <div>
-            <label className="text-sm text-muted-foreground">Filtrar por Equipo</label>
+            <label className="text-sm text-white">Filtrar por Equipo</label>
             <Select value={filterTeam} onValueChange={setFilterTeam}>
               <SelectTrigger>
                 <SelectValue placeholder="Todos los equipos" />
@@ -281,7 +284,7 @@ export const AdminStats = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Estadísticas Actuales</CardTitle>
+          <CardTitle className="text-white">Estadísticas Actuales</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -289,11 +292,11 @@ export const AdminStats = () => {
               const team = teams.find((t) => t.id === stat.team_id);
               return (
                 <div key={stat.id} className="p-4 bg-muted rounded-lg">
-                  <h3 className="font-semibold mb-2">{getTeamName(stat.team_id)}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">
+                  <h3 className="font-semibold mb-2 text-white">{getTeamName(stat.team_id)}</h3>
+                  <p className="text-sm text-white/70 mb-2">
                     Liga: {getLeagueName(team?.league_id || null)}
                   </p>
-                  <div className="grid grid-cols-3 gap-2 text-sm">
+                  <div className="grid grid-cols-3 gap-2 text-sm text-white">
                     <div>PJ: {stat.played}</div>
                     <div>PG: {stat.won}</div>
                     <div>PP: {stat.lost}</div>
