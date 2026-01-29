@@ -179,7 +179,7 @@ export const AdminMatches = () => {
     <div className="space-y-6">
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
+          <CardTitle className="flex items-center gap-2 text-black">
             <Filter className="w-5 h-5" />
             Filtrar por Liga
           </CardTitle>
@@ -203,106 +203,133 @@ export const AdminMatches = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-white">Crear Nuevo Partido</CardTitle>
+          <CardTitle className="text-black">Crear Nuevo Partido</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Select
-            value={newMatch.league_id}
-            onValueChange={(value) => setNewMatch({ ...newMatch, league_id: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecciona liga" />
-            </SelectTrigger>
-            <SelectContent>
-              {leagues.map((league) => (
-                <SelectItem key={league.id} value={league.id}>
-                  {league.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-black">Liga</label>
+            <Select
+              value={newMatch.league_id}
+              onValueChange={(value) => setNewMatch({ ...newMatch, league_id: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona liga" />
+              </SelectTrigger>
+              <SelectContent>
+                {leagues.map((league) => (
+                  <SelectItem key={league.id} value={league.id}>
+                    {league.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block text-black">Fecha</label>
+              <Input
+                type="date"
+                value={newMatch.date}
+                onChange={(e) => setNewMatch({ ...newMatch, date: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block text-black">Hora</label>
+              <Input
+                type="time"
+                value={newMatch.time}
+                onChange={(e) => setNewMatch({ ...newMatch, time: e.target.value })}
+              />
+            </div>
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-black">Género</label>
+            <Select
+              value={newMatch.category}
+              onValueChange={(value: any) => setNewMatch({ ...newMatch, category: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Género" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Femenino">Femenino</SelectItem>
+                <SelectItem value="Masculino">Masculino</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-black">Categoría de edad</label>
+            <Select
+              value={newMatch.age_category}
+              onValueChange={(value: any) => setNewMatch({ ...newMatch, age_category: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Categoría" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SUB_16">Sub 16</SelectItem>
+                <SelectItem value="LIBRE">Libre</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-black">Equipo A</label>
+            <Select
+              value={newMatch.team_a_id}
+              onValueChange={(value) => setNewMatch({ ...newMatch, team_a_id: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Equipo A" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableTeamsForMatch.map((team) => (
+                  <SelectItem key={team.id} value={team.id}>
+                    {team.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-black">Equipo B</label>
+            <Select
+              value={newMatch.team_b_id}
+              onValueChange={(value) => setNewMatch({ ...newMatch, team_b_id: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Equipo B" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableTeamsForMatch.map((team) => (
+                  <SelectItem key={team.id} value={team.id}>
+                    {team.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-black">Jornada</label>
             <Input
-              type="date"
-              value={newMatch.date}
-              onChange={(e) => setNewMatch({ ...newMatch, date: e.target.value })}
-            />
-            <Input
-              type="time"
-              value={newMatch.time}
-              onChange={(e) => setNewMatch({ ...newMatch, time: e.target.value })}
+              type="number"
+              placeholder="Jornada"
+              value={newMatch.jornada}
+              onChange={(e) => setNewMatch({ ...newMatch, jornada: parseInt(e.target.value) || 1 })}
             />
           </div>
-          <Select
-            value={newMatch.category}
-            onValueChange={(value: any) => setNewMatch({ ...newMatch, category: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Género" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Femenino">Femenino</SelectItem>
-              <SelectItem value="Masculino">Masculino</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
-            value={newMatch.age_category}
-            onValueChange={(value: any) => setNewMatch({ ...newMatch, age_category: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Categoría" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="SUB_16">Sub 16</SelectItem>
-              <SelectItem value="LIBRE">Libre</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
-            value={newMatch.team_a_id}
-            onValueChange={(value) => setNewMatch({ ...newMatch, team_a_id: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Equipo A" />
-            </SelectTrigger>
-            <SelectContent>
-              {availableTeamsForMatch.map((team) => (
-                <SelectItem key={team.id} value={team.id}>
-                  {team.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={newMatch.team_b_id}
-            onValueChange={(value) => setNewMatch({ ...newMatch, team_b_id: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Equipo B" />
-            </SelectTrigger>
-            <SelectContent>
-              {availableTeamsForMatch.map((team) => (
-                <SelectItem key={team.id} value={team.id}>
-                  {team.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            type="number"
-            placeholder="Jornada"
-            value={newMatch.jornada}
-            onChange={(e) => setNewMatch({ ...newMatch, jornada: parseInt(e.target.value) || 1 })}
-          />
-          <Input
-            type="text"
-            placeholder="Ubicación/Sede"
-            value={newMatch.venue}
-            onChange={(e) => setNewMatch({ ...newMatch, venue: e.target.value })}
-          />
+          <div>
+            <label className="text-sm font-medium mb-2 block text-black">Ubicación/Sede</label>
+            <Input
+              type="text"
+              placeholder="Ubicación/Sede"
+              value={newMatch.venue}
+              onChange={(e) => setNewMatch({ ...newMatch, venue: e.target.value })}
+            />
+          </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-white/70" />
-              <span className="text-sm text-white/70">Link de Google Maps (opcional)</span>
+              <MapPin className="w-4 h-4 text-black/70" />
+              <span className="text-sm text-black/70">Link de Google Maps (opcional)</span>
             </div>
             <Input
               type="url"
@@ -310,7 +337,7 @@ export const AdminMatches = () => {
               value={newMatch.venue_maps_url}
               onChange={(e) => setNewMatch({ ...newMatch, venue_maps_url: e.target.value })}
             />
-            <p className="text-xs text-white/60">
+            <p className="text-xs text-black/60">
               Pega el link de Google Maps para que los usuarios puedan ver la ubicación exacta
             </p>
           </div>
@@ -323,7 +350,7 @@ export const AdminMatches = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Partidos Programados</CardTitle>
+          <CardTitle className="text-black">Partidos Programados</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
