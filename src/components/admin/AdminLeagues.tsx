@@ -176,19 +176,19 @@ export const AdminLeagues = () => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="gradient-card">
         <CardHeader>
-          <CardTitle>Ligas y Eventos Existentes</CardTitle>
+          <CardTitle className="text-black">Ligas y Eventos Existentes</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Activa</TableHead>
-                <TableHead>Orden</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
+                <TableHead className="text-black">Nombre</TableHead>
+                <TableHead className="text-black">Tipo</TableHead>
+                <TableHead className="text-black">Activa</TableHead>
+                <TableHead className="text-black">Orden</TableHead>
+                <TableHead className="text-right text-black">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -245,14 +245,14 @@ export const AdminLeagues = () => {
                   </TableRow>
                 ) : (
                   <TableRow key={league.id}>
-                    <TableCell className="font-medium">{league.name}</TableCell>
-                    <TableCell>{getTypeLabel(league.type)}</TableCell>
+                    <TableCell className="font-medium text-black">{league.name}</TableCell>
+                    <TableCell className="text-black">{getTypeLabel(league.type)}</TableCell>
                     <TableCell>
                       <span className={league.is_active ? "text-green-600" : "text-red-600"}>
                         {league.is_active ? "Sí" : "No"}
                       </span>
                     </TableCell>
-                    <TableCell>{league.display_order}</TableCell>
+                    <TableCell className="text-black">{league.display_order}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-2 justify-end">
                         <Button size="sm" variant="outline" onClick={() => startEdit(league)}>

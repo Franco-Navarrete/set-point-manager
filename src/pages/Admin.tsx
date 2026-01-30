@@ -70,8 +70,8 @@ const Admin = () => {
       
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Panel Administrativo</h1>
-          <p className="text-muted-foreground text-lg mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Panel Administrativo</h1>
+          <p className="text-foreground/70 text-lg mb-8">
             Gestiona todos los aspectos de la liga
           </p>
 
