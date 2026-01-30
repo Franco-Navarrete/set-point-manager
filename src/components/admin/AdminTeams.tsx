@@ -36,7 +36,7 @@ export const AdminTeams = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [newTeam, setNewTeam] = useState({ name: "", category: "Femenino" as const, age_category: "LIBRE" as const, league_id: "", logo_url: "" });
-  const [newPlayer, setNewPlayer] = useState({ team_id: "", name: "" });
+  const [newPlayer, setNewPlayer] = useState({ team_id: "", name: "", dni: "" });
   const [filterLeague, setFilterLeague] = useState<string>("");
   const [filterTeam, setFilterTeam] = useState<string>("");
   
@@ -192,20 +192,20 @@ export const AdminTeams = () => {
   };
 
   const createPlayer = async () => {
-    if (!newPlayer.team_id || !newPlayer.name) {
-      toast.error("Completa todos los campos");
+    if (!newPlayer.team_id || !newPlayer.name || !newPlayer.dni) {
+      toast.error("Completa todos los campos (nombre y DNI son obligatorios)");
       return;
     }
 
     const { error } = await supabase
       .from("players")
-      .insert([newPlayer]);
+      .insert([{ team_id: newPlayer.team_id, name: newPlayer.name }]);
 
     if (error) {
       toast.error("Error al agregar jugador");
     } else {
       toast.success("Jugador agregado");
-      setNewPlayer({ team_id: "", name: "" });
+      setNewPlayer({ team_id: "", name: "", dni: "" });
       loadPlayers();
     }
   };
@@ -502,6 +502,11 @@ export const AdminTeams = () => {
           <CardTitle className="text-black">Agregar Jugador</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="p-3 bg-amber-100 border border-amber-300 rounded-lg">
+            <p className="text-sm text-amber-800">
+              <strong>Importante:</strong> Es obligatorio cargar el nombre completo y el DNI del jugador.
+            </p>
+          </div>
           <div>
             <label className="text-sm font-medium mb-2 block text-black">Equipo</label>
             <Select
@@ -521,11 +526,19 @@ export const AdminTeams = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Nombre del jugador</label>
+            <label className="text-sm font-medium mb-2 block text-black">Nombre del jugador *</label>
             <Input
-              placeholder="Nombre del jugador"
+              placeholder="Nombre completo del jugador"
               value={newPlayer.name}
               onChange={(e) => setNewPlayer({ ...newPlayer, name: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block text-black">DNI *</label>
+            <Input
+              placeholder="Número de DNI"
+              value={newPlayer.dni}
+              onChange={(e) => setNewPlayer({ ...newPlayer, dni: e.target.value })}
             />
           </div>
           <Button onClick={createPlayer} className="w-full">
