@@ -8,77 +8,79 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 98%;
+    /* Modo Claro: Fondo claro + Texto oscuro */
+    --background: 0 0% 98%;
+    --foreground: 220 15% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 220 15% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 220 15% 20%;
 
-    --primary: 18 95% 55%;
+    --primary: 18 70% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 18 100% 65%;
+    --primary-glow: 18 75% 60%;
 
-    --secondary: 217 91% 60%;
+    --secondary: 217 50% 55%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 10% 45%;
 
-    --accent: 18 95% 55%;
+    --accent: 18 70% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 18 95% 55%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 18 70% 50%;
 
     --radius: 0.75rem;
 
-    --gradient-hero: linear-gradient(135deg, hsl(18 95% 55%) 0%, hsl(217 91% 60%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
-    --shadow-card: 0 10px 30px -10px hsl(18 95% 55% / 0.2);
-    --shadow-glow: 0 0 40px hsl(18 100% 65% / 0.3);
+    --gradient-hero: linear-gradient(135deg, hsl(18 70% 50%) 0%, hsl(217 50% 55%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 15% 98%) 100%);
+    --shadow-card: 0 4px 20px -4px hsl(220 15% 20% / 0.12);
+    --shadow-glow: 0 0 30px hsl(18 75% 60% / 0.25);
   }
 
   .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 98%;
+    /* Modo Oscuro: Fondo oscuro + Texto claro */
+    --background: 220 18% 15%;
+    --foreground: 0 0% 95%;
 
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 18% 18%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 18% 18%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 18 95% 55%;
+    --primary: 18 75% 55%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 18 100% 65%;
+    --primary-glow: 18 80% 65%;
 
-    --secondary: 217 91% 60%;
+    --secondary: 217 55% 60%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 217 33% 20%;
-    --muted-foreground: 0 0% 100%;
+    --muted: 220 18% 22%;
+    --muted-foreground: 220 10% 70%;
 
-    --accent: 18 95% 55%;
+    --accent: 18 75% 55%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 20%;
-    --input: 217 33% 20%;
-    --ring: 18 95% 55%;
+    --border: 220 18% 28%;
+    --input: 220 18% 25%;
+    --ring: 18 75% 55%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(18 95% 55%) 0%, hsl(217 91% 60%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(217 33% 17%) 0%, hsl(217 33% 15%) 100%);
-    --shadow-card: 0 10px 30px -10px hsl(18 95% 55% / 0.3);
-    --shadow-glow: 0 0 40px hsl(18 100% 65% / 0.4);
+    --gradient-hero: linear-gradient(135deg, hsl(18 75% 55%) 0%, hsl(217 55% 60%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(220 18% 18%) 0%, hsl(220 18% 16%) 100%);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 30px hsl(18 80% 65% / 0.3);
   }
 }
 
@@ -92,7 +94,12 @@ All colors MUST be HSL.
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-bold;
   }
 }
@@ -101,19 +108,19 @@ All colors MUST be HSL.
   .gradient-hero {
     background: var(--gradient-hero);
   }
-  
+
   .gradient-card {
     background: var(--gradient-card);
   }
-  
+
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
-  
+
   .shadow-glow {
     box-shadow: var(--shadow-glow);
   }
-  
+
   .text-balance {
     text-wrap: balance;
   }
