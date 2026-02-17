@@ -30,6 +30,17 @@ const Equipos = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -62,7 +73,9 @@ const Equipos = () => {
   };
 
   const getTeamPlayers = (teamId: string) => {
-    return players.filter((p) => p.team_id === teamId).map((p) => p.name);
+    return players.filter((p) => p.team_id === teamId).map((p, i) => 
+      isLoggedIn ? p.name : `Jugador ${i + 1}`
+    );
   };
 
   const getCategoryColor = (category: Team["category"]) => {

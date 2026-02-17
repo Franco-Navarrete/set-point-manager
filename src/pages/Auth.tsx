@@ -15,7 +15,6 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -58,24 +57,13 @@ const Auth = () => {
         if (error) throw error;
         toast.success("¡Revisa tu email para recuperar tu contraseña!");
         setIsForgotPassword(false);
-      } else if (isLogin) {
+      } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
         toast.success("¡Bienvenido!");
-        navigate("/");
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-          },
-        });
-        if (error) throw error;
-        toast.success("¡Cuenta creada exitosamente!");
         navigate("/");
       }
     } catch (error: any) {
@@ -95,9 +83,7 @@ const Auth = () => {
           <CardDescription className="mt-2">
             {isForgotPassword
               ? "Recupera tu contraseña"
-              : isLogin
-              ? "Inicia sesión en tu cuenta"
-              : "Crea tu cuenta"}
+              : "Inicia sesión en tu cuenta"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -135,30 +121,18 @@ const Auth = () => {
                 ? "Cargando..."
                 : isForgotPassword
                 ? "Enviar email de recuperación"
-                : isLogin
-                ? "Iniciar Sesión"
-                : "Registrarse"}
+                : "Iniciar Sesión"}
             </Button>
           </form>
           
           <div className="mt-4 space-y-2 text-center">
             {!isForgotPassword && (
-              <>
-                <button
-                  onClick={() => setIsLogin(!isLogin)}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors block w-full"
-                >
-                  {isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión"}
-                </button>
-                {isLogin && (
-                  <button
-                    onClick={() => setIsForgotPassword(true)}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors block w-full"
-                  >
-                    ¿Olvidaste tu contraseña?
-                  </button>
-                )}
-              </>
+              <button
+                onClick={() => setIsForgotPassword(true)}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors block w-full"
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
             )}
             {isForgotPassword && (
               <button
