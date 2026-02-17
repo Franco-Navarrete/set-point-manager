@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Eye, EyeOff } from "lucide-react";
 
 const emailSchema = z.string().email("Email inválido");
 const passwordSchema = z.string().min(6, "La contraseña debe tener al menos 6 caracteres");
@@ -13,6 +14,7 @@ const passwordSchema = z.string().min(6, "La contraseña debe tener al menos 6 c
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -110,15 +112,22 @@ const Auth = () => {
               />
             </div>
             {!isForgotPassword && (
-              <div>
+              <div className="relative">
                 <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Contraseña"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
