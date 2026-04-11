@@ -100,8 +100,8 @@ const Noticias = () => {
       
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-black">Noticias</h1>
-          <p className="text-black text-lg mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Noticias</h1>
+          <p className="text-foreground/80 text-lg mb-4">
             Las últimas novedades de la liga
           </p>
 
@@ -131,7 +131,7 @@ const Noticias = () => {
                       <Badge className={getCategoryColor(item.category)}>
                         {item.category}
                       </Badge>
-                      <div className="flex items-center gap-4 text-sm text-black">
+                      <div className="flex items-center gap-4 text-sm text-foreground/70">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
                           {formatDate(item.date)}
@@ -142,10 +142,10 @@ const Noticias = () => {
                         </span>
                       </div>
                     </div>
-                    <CardTitle className="text-2xl text-black">{item.title}</CardTitle>
+                    <CardTitle className="text-2xl text-foreground">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-black leading-relaxed">
+                    <p className="text-foreground/80 leading-relaxed">
                       {item.summary}
                     </p>
                   </CardContent>
