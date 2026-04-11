@@ -32,7 +32,6 @@ const Contacto = () => {
 
     setIsSubmitting(true);
 
-    // Simular envío (aquí se conectaría con un backend real)
     setTimeout(() => {
       toast({
         title: "¡Mensaje enviado!",
@@ -56,21 +55,20 @@ const Contacto = () => {
       
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-black">Contacto</h1>
-        <p className="text-black text-lg mb-8">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Contacto</h1>
+        <p className="text-foreground/80 text-lg mb-8">
           ¿Tienes alguna consulta? Estamos aquí para ayudarte
         </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Contact Form */}
             <Card className="gradient-card">
               <CardHeader>
-                <CardTitle className="text-2xl text-black">Envíanos un mensaje</CardTitle>
+                <CardTitle className="text-2xl text-foreground">Envíanos un mensaje</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-black">Nombre completo</Label>
+                    <Label htmlFor="name" className="text-foreground">Nombre completo</Label>
                     <Input
                       id="name"
                       name="name"
@@ -79,12 +77,11 @@ const Contacto = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="placeholder:text-black/70"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-black">Correo electrónico</Label>
+                    <Label htmlFor="email" className="text-foreground">Correo electrónico</Label>
                     <Input
                       id="email"
                       name="email"
@@ -93,12 +90,11 @@ const Contacto = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="placeholder:text-black/70"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-black">Mensaje</Label>
+                    <Label htmlFor="message" className="text-foreground">Mensaje</Label>
                     <Textarea
                       id="message"
                       name="message"
@@ -107,7 +103,7 @@ const Contacto = () => {
                       onChange={handleChange}
                       rows={6}
                       required
-                      className="bg-white border-2 border-black/20 placeholder:text-black/50 text-black focus:border-primary"
+                      className="border-border focus:border-primary"
                     />
                   </div>
 
@@ -122,11 +118,10 @@ const Contacto = () => {
               </CardContent>
             </Card>
 
-            {/* Contact Info */}
             <div className="space-y-6">
               <Card className="gradient-card">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-black">Información de contacto</CardTitle>
+                  <CardTitle className="text-2xl text-foreground">Información de contacto</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-start gap-4">
@@ -134,10 +129,10 @@ const Contacto = () => {
                       <Mail className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1 text-black">Email</h3>
+                      <h3 className="font-semibold mb-1 text-foreground">Email</h3>
                       <a 
                         href="mailto:contacto@ligaelocampense.com"
-                        className="text-black/80 hover:text-black transition-colors"
+                        className="text-foreground/80 hover:text-foreground transition-colors"
                       >
                         contacto@ligaelocampense.com
                       </a>
@@ -149,10 +144,10 @@ const Contacto = () => {
                       <Phone className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1 text-black">Teléfono</h3>
+                      <h3 className="font-semibold mb-1 text-foreground">Teléfono</h3>
                       <a 
                         href="tel:+5493543556144"
-                        className="text-black/80 hover:text-black transition-colors"
+                        className="text-foreground/80 hover:text-foreground transition-colors"
                       >
                         +54 9 3543 55-6144
                       </a>
@@ -164,8 +159,8 @@ const Contacto = () => {
                       <MapPin className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1 text-black">Ubicación</h3>
-                      <p className="text-black/80">
+                      <h3 className="font-semibold mb-1 text-foreground">Ubicación</h3>
+                      <p className="text-foreground/80">
                         Gimnasio Municipal<br />
                         Av. Principal 1234<br />
                         Ciudad Campense
@@ -177,8 +172,8 @@ const Contacto = () => {
 
               <Card className="bg-muted/30">
                 <CardContent className="py-6">
-                  <h3 className="font-semibold mb-3 text-black">Horarios de atención</h3>
-                  <div className="space-y-2 text-sm text-black/80">
+                  <h3 className="font-semibold mb-3 text-foreground">Horarios de atención</h3>
+                  <div className="space-y-2 text-sm text-foreground/80">
                     <p>Lunes a Viernes: 18:00 - 22:00</p>
                     <p>Sábados: 16:00 - 21:00</p>
                     <p>Domingos: Cerrado</p>
