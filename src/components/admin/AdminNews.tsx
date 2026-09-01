@@ -84,11 +84,11 @@ export const AdminNews = () => {
     <div className="space-y-6">
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Crear Nueva Noticia</CardTitle>
+          <CardTitle className="text-foreground">Crear Nueva Noticia</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Título</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Título</label>
             <Input
               placeholder="Título"
               value={newNews.title}
@@ -96,7 +96,7 @@ export const AdminNews = () => {
             />
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Resumen</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Resumen</label>
             <Textarea
               placeholder="Resumen de la noticia"
               value={newNews.summary}
@@ -105,7 +105,7 @@ export const AdminNews = () => {
             />
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Fecha</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Fecha</label>
             <Input
               type="date"
               value={newNews.date}
@@ -113,7 +113,7 @@ export const AdminNews = () => {
             />
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Categoría</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Categoría</label>
             <Select
               value={newNews.category}
               onValueChange={(value) => setNewNews({ ...newNews, category: value })}
@@ -137,7 +137,7 @@ export const AdminNews = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Noticias Publicadas</CardTitle>
+          <CardTitle className="text-foreground">Noticias Publicadas</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -145,9 +145,9 @@ export const AdminNews = () => {
               <div key={item.id} className="p-4 bg-muted rounded-lg">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-black">{item.title}</h3>
-                    <p className="text-sm text-black/70 mt-1">{item.summary}</p>
-                    <p className="text-xs text-black/60 mt-2">
+                    <h3 className="font-semibold text-foreground">{item.title}</h3>
+                    <p className="text-sm text-foreground/70 mt-1">{item.summary}</p>
+                    <p className="text-xs text-foreground/60 mt-2">
                       {item.date} • {item.category}
                     </p>
                   </div>

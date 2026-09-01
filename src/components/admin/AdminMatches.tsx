@@ -179,7 +179,7 @@ export const AdminMatches = () => {
     <div className="space-y-6">
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-black">
+          <CardTitle className="flex items-center gap-2 text-foreground">
             <Filter className="w-5 h-5" />
             Filtrar por Liga
           </CardTitle>
@@ -203,11 +203,11 @@ export const AdminMatches = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Crear Nuevo Partido</CardTitle>
+          <CardTitle className="text-foreground">Crear Nuevo Partido</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Liga</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Liga</label>
             <Select
               value={newMatch.league_id}
               onValueChange={(value) => setNewMatch({ ...newMatch, league_id: value })}
@@ -226,7 +226,7 @@ export const AdminMatches = () => {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium mb-2 block text-black">Fecha</label>
+              <label className="text-sm font-medium mb-2 block text-foreground">Fecha</label>
               <Input
                 type="date"
                 value={newMatch.date}
@@ -234,7 +234,7 @@ export const AdminMatches = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block text-black">Hora</label>
+              <label className="text-sm font-medium mb-2 block text-foreground">Hora</label>
               <Input
                 type="time"
                 value={newMatch.time}
@@ -243,7 +243,7 @@ export const AdminMatches = () => {
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Género</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Género</label>
             <Select
               value={newMatch.category}
               onValueChange={(value: any) => setNewMatch({ ...newMatch, category: value })}
@@ -258,7 +258,7 @@ export const AdminMatches = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Categoría de edad</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Categoría de edad</label>
             <Select
               value={newMatch.age_category}
               onValueChange={(value: any) => setNewMatch({ ...newMatch, age_category: value })}
@@ -273,7 +273,7 @@ export const AdminMatches = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Equipo A</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Equipo A</label>
             <Select
               value={newMatch.team_a_id}
               onValueChange={(value) => setNewMatch({ ...newMatch, team_a_id: value })}
@@ -291,7 +291,7 @@ export const AdminMatches = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Equipo B</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Equipo B</label>
             <Select
               value={newMatch.team_b_id}
               onValueChange={(value) => setNewMatch({ ...newMatch, team_b_id: value })}
@@ -309,7 +309,7 @@ export const AdminMatches = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Jornada</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Jornada</label>
             <Input
               type="number"
               placeholder="Jornada"
@@ -318,7 +318,7 @@ export const AdminMatches = () => {
             />
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Ubicación/Sede</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Ubicación/Sede</label>
             <Input
               type="text"
               placeholder="Ubicación/Sede"
@@ -328,8 +328,8 @@ export const AdminMatches = () => {
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-black/70" />
-              <span className="text-sm text-black/70">Link de Google Maps (opcional)</span>
+              <MapPin className="w-4 h-4 text-foreground/70" />
+              <span className="text-sm text-foreground/70">Link de Google Maps (opcional)</span>
             </div>
             <Input
               type="url"
@@ -337,7 +337,7 @@ export const AdminMatches = () => {
               value={newMatch.venue_maps_url}
               onChange={(e) => setNewMatch({ ...newMatch, venue_maps_url: e.target.value })}
             />
-            <p className="text-xs text-black/60">
+            <p className="text-xs text-foreground/60">
               Pega el link de Google Maps para que los usuarios puedan ver la ubicación exacta
             </p>
           </div>
@@ -350,7 +350,7 @@ export const AdminMatches = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Partidos Programados</CardTitle>
+          <CardTitle className="text-foreground">Partidos Programados</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
