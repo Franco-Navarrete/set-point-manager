@@ -198,8 +198,11 @@ const Navigation = () => {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden py-3 space-y-1 border-t border-border max-h-[70vh] overflow-y-auto">
+          <div className="md:hidden py-3 space-y-1 border-t border-border max-h-[75vh] overflow-y-auto">
             <div className="px-2 mb-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-foreground/70 mb-1.5">
+                Seleccionar liga
+              </p>
               <LeagueSelector />
             </div>
             {/* Menú móvil: Inicio, Fixture, Tabla y Más */}
