@@ -122,11 +122,11 @@ export const AdminLeagues = () => {
     <div className="space-y-6">
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Crear Nueva Liga/Evento</CardTitle>
+          <CardTitle className="text-foreground">Crear Nueva Liga/Evento</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label className="text-black">Nombre</Label>
+            <Label className="text-foreground">Nombre</Label>
             <Input
               placeholder="Nombre de la liga o evento"
               value={newLeague.name}
@@ -134,7 +134,7 @@ export const AdminLeagues = () => {
             />
           </div>
           <div>
-            <Label className="text-black">Tipo</Label>
+            <Label className="text-foreground">Tipo</Label>
             <Select
               value={newLeague.type}
               onValueChange={(value: any) => setNewLeague({ ...newLeague, type: value })}
@@ -150,7 +150,7 @@ export const AdminLeagues = () => {
             </Select>
           </div>
           <div>
-            <Label className="text-black">Descripción (opcional)</Label>
+            <Label className="text-foreground">Descripción (opcional)</Label>
             <Textarea
               placeholder="Descripción de la liga o evento"
               value={newLeague.description}
@@ -162,10 +162,10 @@ export const AdminLeagues = () => {
               checked={newLeague.is_active}
               onCheckedChange={(checked) => setNewLeague({ ...newLeague, is_active: checked })}
             />
-            <Label className="text-black">Activa</Label>
+            <Label className="text-foreground">Activa</Label>
           </div>
           <div>
-            <Label className="text-black">Orden de visualización</Label>
+            <Label className="text-foreground">Orden de visualización</Label>
             <Input
               type="number"
               value={newLeague.display_order}
@@ -178,17 +178,17 @@ export const AdminLeagues = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Ligas y Eventos Existentes</CardTitle>
+          <CardTitle className="text-foreground">Ligas y Eventos Existentes</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-black">Nombre</TableHead>
-                <TableHead className="text-black">Tipo</TableHead>
-                <TableHead className="text-black">Activa</TableHead>
-                <TableHead className="text-black">Orden</TableHead>
-                <TableHead className="text-right text-black">Acciones</TableHead>
+                <TableHead className="text-foreground">Nombre</TableHead>
+                <TableHead className="text-foreground">Tipo</TableHead>
+                <TableHead className="text-foreground">Activa</TableHead>
+                <TableHead className="text-foreground">Orden</TableHead>
+                <TableHead className="text-right text-foreground">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -245,14 +245,14 @@ export const AdminLeagues = () => {
                   </TableRow>
                 ) : (
                   <TableRow key={league.id}>
-                    <TableCell className="font-medium text-black">{league.name}</TableCell>
-                    <TableCell className="text-black">{getTypeLabel(league.type)}</TableCell>
+                    <TableCell className="font-medium text-foreground">{league.name}</TableCell>
+                    <TableCell className="text-foreground">{getTypeLabel(league.type)}</TableCell>
                     <TableCell>
                       <span className={league.is_active ? "text-green-600" : "text-red-600"}>
                         {league.is_active ? "Sí" : "No"}
                       </span>
                     </TableCell>
-                    <TableCell className="text-black">{league.display_order}</TableCell>
+                    <TableCell className="text-foreground">{league.display_order}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-2 justify-end">
                         <Button size="sm" variant="outline" onClick={() => startEdit(league)}>
