@@ -230,12 +230,12 @@ export const AdminTeams = () => {
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-black">Editar Equipo</DialogTitle>
+            <DialogTitle className="text-foreground">Editar Equipo</DialogTitle>
           </DialogHeader>
           {editingTeam && (
             <div className="space-y-4 py-4">
               <div>
-                <label className="text-sm font-medium mb-2 block text-black">Nombre del equipo</label>
+                <label className="text-sm font-medium mb-2 block text-foreground">Nombre del equipo</label>
                 <Input
                   placeholder="Nombre del equipo"
                   value={editingTeam.name}
@@ -243,7 +243,7 @@ export const AdminTeams = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block text-black">URL del Logo/Escudo</label>
+                <label className="text-sm font-medium mb-2 block text-foreground">URL del Logo/Escudo</label>
                 <Input
                   placeholder="https://ejemplo.com/logo.png"
                   value={editingTeam.logo_url || ""}
@@ -257,12 +257,12 @@ export const AdminTeams = () => {
                       className="w-12 h-12 object-contain rounded border border-border"
                       onError={(e) => (e.currentTarget.style.display = 'none')}
                     />
-                    <span className="text-sm text-black/70">Vista previa</span>
+                    <span className="text-sm text-foreground/70">Vista previa</span>
                   </div>
                 )}
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block text-black">Género</label>
+                <label className="text-sm font-medium mb-2 block text-foreground">Género</label>
                 <Select
                   value={editingTeam.category}
                   onValueChange={(value: "Femenino" | "Masculino") => setEditingTeam({ ...editingTeam, category: value })}
@@ -277,7 +277,7 @@ export const AdminTeams = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block text-black">Categoría de edad</label>
+                <label className="text-sm font-medium mb-2 block text-foreground">Categoría de edad</label>
                 <Select
                   value={editingTeam.age_category}
                   onValueChange={(value: "SUB_16" | "LIBRE") => setEditingTeam({ ...editingTeam, age_category: value })}
@@ -292,7 +292,7 @@ export const AdminTeams = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block text-black">Liga</label>
+                <label className="text-sm font-medium mb-2 block text-foreground">Liga</label>
                 <Select
                   value={editingTeam.league_id || ""}
                   onValueChange={(value) => setEditingTeam({ ...editingTeam, league_id: value })}
@@ -329,14 +329,14 @@ export const AdminTeams = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-black">
+          <CardTitle className="flex items-center gap-2 text-foreground">
             <Filter className="w-5 h-5" />
             Filtros
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Filtrar por Liga</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Filtrar por Liga</label>
             <Select value={filterLeague || "all"} onValueChange={setFilterLeague}>
               <SelectTrigger>
                 <SelectValue placeholder="Todas las ligas" />
@@ -353,7 +353,7 @@ export const AdminTeams = () => {
           </div>
           
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Filtrar por Equipo</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Filtrar por Equipo</label>
             <Select value={filterTeam || "all"} onValueChange={setFilterTeam}>
               <SelectTrigger>
                 <SelectValue placeholder="Todos los equipos" />
@@ -373,11 +373,11 @@ export const AdminTeams = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Crear Nuevo Equipo</CardTitle>
+          <CardTitle className="text-foreground">Crear Nuevo Equipo</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Nombre del equipo</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Nombre del equipo</label>
             <Input
               placeholder="Nombre del equipo"
               value={newTeam.name}
@@ -385,7 +385,7 @@ export const AdminTeams = () => {
             />
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">URL del Logo/Escudo (opcional)</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">URL del Logo/Escudo (opcional)</label>
             <Input
               placeholder="https://ejemplo.com/logo.png"
               value={newTeam.logo_url}
@@ -393,7 +393,7 @@ export const AdminTeams = () => {
             />
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Género</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Género</label>
             <Select
               value={newTeam.category}
               onValueChange={(value: any) => setNewTeam({ ...newTeam, category: value })}
@@ -408,7 +408,7 @@ export const AdminTeams = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Categoría de edad</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Categoría de edad</label>
             <Select
               value={newTeam.age_category}
               onValueChange={(value: any) => setNewTeam({ ...newTeam, age_category: value })}
@@ -423,7 +423,7 @@ export const AdminTeams = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Liga</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Liga</label>
             <Select
               value={newTeam.league_id}
               onValueChange={(value) => setNewTeam({ ...newTeam, league_id: value })}
@@ -449,7 +449,7 @@ export const AdminTeams = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Equipos Existentes ({filteredTeams.length})</CardTitle>
+          <CardTitle className="text-foreground">Equipos Existentes ({filteredTeams.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -464,13 +464,13 @@ export const AdminTeams = () => {
                       onError={(e) => (e.currentTarget.style.display = 'none')}
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-background/50 rounded flex items-center justify-center text-black/60 text-xs">
+                    <div className="w-10 h-10 bg-background/50 rounded flex items-center justify-center text-foreground/60 text-xs">
                       Sin logo
                     </div>
                   )}
                   <div>
-                    <p className="font-semibold text-black">{team.name}</p>
-                    <p className="text-sm text-black/70">
+                    <p className="font-semibold text-foreground">{team.name}</p>
+                    <p className="text-sm text-foreground/70">
                       {team.category} • {team.age_category === "SUB_16" ? "Sub 16" : "Libre"} • {getLeagueName(team.league_id)}
                     </p>
                   </div>
@@ -499,7 +499,7 @@ export const AdminTeams = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Agregar Jugador</CardTitle>
+          <CardTitle className="text-foreground">Agregar Jugador</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="p-3 bg-amber-100 border border-amber-300 rounded-lg">
@@ -508,7 +508,7 @@ export const AdminTeams = () => {
             </p>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Equipo</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Equipo</label>
             <Select
               value={newPlayer.team_id}
               onValueChange={(value) => setNewPlayer({ ...newPlayer, team_id: value })}
@@ -526,7 +526,7 @@ export const AdminTeams = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">Nombre del jugador *</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Nombre del jugador *</label>
             <Input
               placeholder="Nombre completo del jugador"
               value={newPlayer.name}
@@ -534,7 +534,7 @@ export const AdminTeams = () => {
             />
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block text-black">DNI *</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">DNI *</label>
             <Input
               placeholder="Número de DNI"
               value={newPlayer.dni}
@@ -550,7 +550,7 @@ export const AdminTeams = () => {
 
       <Card className="gradient-card">
         <CardHeader>
-          <CardTitle className="text-black">Jugadores ({filteredPlayers.length})</CardTitle>
+          <CardTitle className="text-foreground">Jugadores ({filteredPlayers.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -559,8 +559,8 @@ export const AdminTeams = () => {
               return (
                 <div key={player.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                   <div>
-                    <p className="font-semibold text-black">{player.name}</p>
-                    <p className="text-sm text-black/70">
+                    <p className="font-semibold text-foreground">{player.name}</p>
+                    <p className="text-sm text-foreground/70">
                       {team?.name} • {getLeagueName(team?.league_id || null)}
                     </p>
                   </div>
