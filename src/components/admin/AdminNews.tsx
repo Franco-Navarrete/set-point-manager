@@ -147,7 +147,7 @@ export const AdminNews = () => {
                   <div className="flex-1">
                     <h3 className="font-semibold text-foreground">{item.title}</h3>
                     <p className="text-sm text-foreground/70 mt-1">{item.summary}</p>
-                    <p className="text-xs text-foreground/60 mt-2">
+                    <p className="text-xs text-foreground/80 mt-2">
                       {item.date} • {item.category}
                     </p>
                   </div>

@@ -128,7 +128,7 @@ const Fixture = () => {
             <div className="flex flex-col items-center justify-center py-16">
               <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-xl font-semibold text-foreground mb-2">Selecciona liga</p>
-              <p className="text-foreground/60 text-center">
+              <p className="text-foreground/80 text-center">
                 Elige una liga desde el menú superior para ver el fixture
               </p>
             </div>
@@ -139,7 +139,7 @@ const Fixture = () => {
                 
                 if (dates.length === 0) {
                   return (
-                    <p className="text-center text-foreground/60 py-8">
+                    <p className="text-center text-foreground/80 py-8">
                     No hay partidos programados para esta liga
                   </p>
                 );
@@ -200,11 +200,11 @@ const Fixture = () => {
                                   {match.score_a !== null && match.score_b !== null ? (
                                     <>
                                       <span className="text-lg font-bold text-primary">{match.score_a}</span>
-                                      <span className="text-foreground/60">-</span>
+                                      <span className="text-foreground/80">-</span>
                                       <span className="text-lg font-bold text-primary">{match.score_b}</span>
                                     </>
                                   ) : (
-                                    <span className="text-foreground/60 font-medium text-sm">VS</span>
+                                    <span className="text-foreground/80 font-medium text-sm">VS</span>
                                   )}
                                 </div>
                                 
