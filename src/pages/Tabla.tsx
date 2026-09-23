@@ -163,7 +163,7 @@ const Tabla = () => {
             <div className="flex flex-col items-center justify-center py-16">
               <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-xl font-semibold text-foreground mb-2">Selecciona liga</p>
-              <p className="text-foreground/60 text-center">
+              <p className="text-foreground/80 text-center">
                 Elige una liga desde el menú superior para ver la tabla de posiciones
               </p>
             </div>

@@ -464,7 +464,7 @@ export const AdminTeams = () => {
                       onError={(e) => (e.currentTarget.style.display = 'none')}
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-background/50 rounded flex items-center justify-center text-foreground/60 text-xs">
+                    <div className="w-10 h-10 bg-background/50 rounded flex items-center justify-center text-foreground/80 text-xs">
                       Sin logo
                     </div>
                   )}

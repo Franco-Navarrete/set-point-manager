@@ -337,7 +337,7 @@ export const AdminMatches = () => {
               value={newMatch.venue_maps_url}
               onChange={(e) => setNewMatch({ ...newMatch, venue_maps_url: e.target.value })}
             />
-            <p className="text-xs text-foreground/60">
+            <p className="text-xs text-foreground/80">
               Pega el link de Google Maps para que los usuarios puedan ver la ubicación exacta
             </p>
           </div>
