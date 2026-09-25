@@ -224,7 +224,7 @@ export const AdminTeams = () => {
             : `${teams.length} ${teams.length === 1 ? "equipo" : "equipos"}`}
         </p>
         {hasFilters && (
-          <button className="text-sm text-primary hover:underline" onClick={() => { setSearch(""); setFLeague("all"); setFGender("all"); setFAge("all"); }}>
+          <button className="text-sm text-primary hover:underline" onClick={() => { setSearch(""); setFLeague("all"); setFLevel("all"); setFGender("all"); setFAge("all"); }}>
             Limpiar filtros
           </button>
         )}
