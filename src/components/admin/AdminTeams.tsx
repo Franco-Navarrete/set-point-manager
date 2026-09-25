@@ -55,6 +55,8 @@ export const AdminTeams = () => {
   const [fLeague, setFLeague] = useState("all");
   const [fGender, setFGender] = useState("all");
   const [fAge, setFAge] = useState("all");
+  const [fLevel, setFLevel] = useState("all");
+  const { levels: filterLevels } = useLeagueLevels(fLeague !== "all" ? fLeague : "");
 
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -88,15 +90,16 @@ export const AdminTeams = () => {
     return teams.filter((t) =>
       (!q || t.name.toLowerCase().includes(q)) &&
       (fLeague === "all" || t.league_id === fLeague) &&
+      (fLevel === "all" || (fLevel === "none" ? !t.level_id : t.level_id === fLevel)) &&
       (fGender === "all" || t.category === fGender) &&
       (fAge === "all" || t.age_category === fAge)
     );
-  }, [teams, search, fLeague, fGender, fAge]);
+  }, [teams, search, fLeague, fLevel, fGender, fAge]);
 
-  const hasFilters = !!search.trim() || fLeague !== "all" || fGender !== "all" || fAge !== "all";
+  const hasFilters = !!search.trim() || fLeague !== "all" || fLevel !== "all" || fGender !== "all" || fAge !== "all";
 
   const openCreate = () => {
-    setForm({ ...emptyForm, league_id: fLeague !== "all" ? fLeague : "" });
+    setForm({ ...emptyForm, league_id: fLeague !== "all" ? fLeague : "", level_id: fLevel !== "all" && fLevel !== "none" ? fLevel : "" });
     setFormOpen(true);
   };
   const openEdit = (t: Team) => {
@@ -108,6 +111,10 @@ export const AdminTeams = () => {
     const name = form.name.trim().replace(/\s+/g, " ");
     if (!name || !form.category || !form.age_category || !form.league_id) {
       toast.error("Completá nombre, género, categoría y liga.");
+      return;
+    }
+    if (formLevels.length > 0 && !form.level_id) {
+      toast.error("Seleccioná el nivel / división de la liga.");
       return;
     }
     const dup = teams.some((t) => t.id !== form.id && t.name.toLowerCase() === name.toLowerCase() &&
@@ -172,16 +179,24 @@ export const AdminTeams = () => {
 
       {/* Filters */}
       <div className="rounded-xl border border-border bg-card p-3 md:p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1.2fr_1fr_1fr] gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1.2fr_1fr_1fr_1fr] gap-3">
           <div className="relative sm:col-span-2 lg:col-span-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar equipo..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
           </div>
-          <Select value={fLeague} onValueChange={setFLeague}>
+          <Select value={fLeague} onValueChange={(v) => { setFLeague(v); setFLevel("all"); }}>
             <SelectTrigger aria-label="Liga"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas las ligas</SelectItem>
               {leagues.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fLevel} onValueChange={setFLevel} disabled={fLeague === "all"}>
+            <SelectTrigger aria-label="Nivel / División"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los niveles</SelectItem>
+              <SelectItem value="none">Sin división</SelectItem>
+              {filterLevels.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={fGender} onValueChange={setFGender}>
@@ -240,7 +255,7 @@ export const AdminTeams = () => {
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-foreground leading-tight truncate" title={team.name}>{team.name}</p>
                 <p className="text-sm text-muted-foreground mt-1">{team.category} · {ageLabel(team.age_category)}</p>
-                <p className="text-xs text-muted-foreground/80 truncate">{leagueName(team.league_id)}{levelName(team.level_id) ? ` · ${levelName(team.level_id)}` : ""}</p>
+                <p className="text-xs text-muted-foreground/80 truncate">{leagueName(team.league_id)} · {levelName(team.level_id) || "Sin división"}</p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <Button variant="outline" size="sm" onClick={() => openEdit(team)}>
@@ -303,25 +318,31 @@ export const AdminTeams = () => {
                 </Select>
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Liga *</Label>
-              <Select value={form.league_id} onValueChange={(v) => setForm({ ...form, league_id: v, level_id: "" })}>
-                <SelectTrigger><SelectValue placeholder="Selecciona liga" /></SelectTrigger>
-                <SelectContent>{leagues.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            {formLevels.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Nivel</Label>
-                <Select value={form.level_id || "none"} onValueChange={(v) => setForm({ ...form, level_id: v === "none" ? "" : v })}>
-                  <SelectTrigger><SelectValue placeholder="Selecciona nivel" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sin nivel</SelectItem>
-                    {formLevels.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
-                  </SelectContent>
+                <Label>Liga *</Label>
+                <Select value={form.league_id} onValueChange={(v) => setForm({ ...form, league_id: v, level_id: "" })}>
+                  <SelectTrigger><SelectValue placeholder="Selecciona liga" /></SelectTrigger>
+                  <SelectContent>{leagues.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-            )}
+              <div className="space-y-2">
+                <Label>Nivel / División{formLevels.length > 0 ? " *" : ""}</Label>
+                {formLevels.length > 0 ? (
+                  <Select value={form.level_id} onValueChange={(v) => setForm({ ...form, level_id: v })}>
+                    <SelectTrigger><SelectValue placeholder="Selecciona división" /></SelectTrigger>
+                    <SelectContent>
+                      {formLevels.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Select value="none" disabled>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent><SelectItem value="none">Sin división</SelectItem></SelectContent>
+                  </Select>
+                )}
+              </div>
+            </div>
           </div>
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setFormOpen(false)}>Cancelar</Button>
