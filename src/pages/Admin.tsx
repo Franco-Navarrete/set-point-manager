@@ -11,6 +11,7 @@ import { AdminMatches } from "@/components/admin/AdminMatches";
 import { AdminNews } from "@/components/admin/AdminNews";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { AdminLeagues } from "@/components/admin/AdminLeagues";
+import { AdminPlayers } from "@/components/admin/AdminPlayers";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -76,9 +77,10 @@ const Admin = () => {
           </p>
 
           <Tabs defaultValue="leagues" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="flex w-full h-auto flex-wrap justify-start gap-1">
               <TabsTrigger value="leagues">Ligas</TabsTrigger>
               <TabsTrigger value="teams">Equipos</TabsTrigger>
+              <TabsTrigger value="players">Jugadores</TabsTrigger>
               <TabsTrigger value="matches">Fixture</TabsTrigger>
               <TabsTrigger value="news">Noticias</TabsTrigger>
               <TabsTrigger value="stats">Estadísticas</TabsTrigger>
@@ -90,6 +92,10 @@ const Admin = () => {
 
             <TabsContent value="teams">
               <AdminTeams />
+            </TabsContent>
+
+            <TabsContent value="players">
+              <AdminPlayers />
             </TabsContent>
 
             <TabsContent value="matches">

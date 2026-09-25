@@ -1,590 +1,356 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { Trash2, Plus, Filter, Pencil } from "lucide-react";
+import { Plus, Pencil, MoreVertical, Trash2, Search, Volleyball, AlertTriangle, Loader2 } from "lucide-react";
 
-interface League {
-  id: string;
-  name: string;
-  type: string;
-  logo_url: string | null;
-}
+type Gender = "Femenino" | "Masculino" | "Mixto";
+type AgeCat = "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
 
+interface League { id: string; name: string; logo_url: string | null }
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino" | "Mixto";
-  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
+  category: Gender;
+  age_category: AgeCat;
   logo_url: string | null;
   league_id: string | null;
 }
 
-interface Player {
-  id: string;
-  team_id: string;
-  name: string;
-  position: number;
-}
+const GENDERS: Gender[] = ["Femenino", "Masculino", "Mixto"];
+const AGES: AgeCat[] = ["SUB_12", "SUB_14", "SUB_16", "SUB_18", "LIBRE"];
+const ageLabel = (a: string) => (a === "LIBRE" ? "Libre" : a.replace("SUB_", "Sub "));
+
+type FormState = { id?: string; name: string; category: Gender | ""; age_category: AgeCat | ""; league_id: string; logo_url: string };
+const emptyForm: FormState = { name: "", category: "", age_category: "", league_id: "", logo_url: "" };
+
+const TeamLogo = ({ url, name, size = "md" }: { url: string | null; name: string; size?: "md" | "lg" }) => {
+  const [broken, setBroken] = useState(false);
+  const dim = size === "lg" ? "w-16 h-16" : "w-14 h-14";
+  return (
+    <div className={`${dim} shrink-0 rounded-lg bg-background border border-border flex items-center justify-center overflow-hidden`}>
+      {url && !broken ? (
+        <img src={url} alt={name} className="w-full h-full object-contain p-1.5" onError={() => setBroken(true)} />
+      ) : (
+        <Volleyball className="w-6 h-6 text-muted-foreground" />
+      )}
+    </div>
+  );
+};
 
 export const AdminTeams = () => {
   const [leagues, setLeagues] = useState<League[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [newTeam, setNewTeam] = useState({ name: "", category: "Femenino" as const, age_category: "LIBRE" as const, league_id: "", logo_url: "" });
-  const [newPlayer, setNewPlayer] = useState({ team_id: "", name: "", dni: "" });
-  const [filterLeague, setFilterLeague] = useState<string>("");
-  const [filterTeam, setFilterTeam] = useState<string>("");
-  
-  // Edit team state
-  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadLeagues();
-    loadTeams();
-    loadPlayers();
-  }, []);
+  const [search, setSearch] = useState("");
+  const [fLeague, setFLeague] = useState("all");
+  const [fGender, setFGender] = useState("all");
+  const [fAge, setFAge] = useState("all");
 
-  const loadLeagues = async () => {
-    const { data, error } = await supabase
-      .from("leagues")
-      .select("*")
-      .eq("is_active", true)
-      .order("display_order");
-    
-    if (error) {
-      toast.error("Error al cargar ligas");
-    } else {
-      setLeagues(data || []);
-    }
+  const [formOpen, setFormOpen] = useState(false);
+  const [form, setForm] = useState<FormState>(emptyForm);
+  const [saving, setSaving] = useState(false);
+
+  const [toDelete, setToDelete] = useState<Team | null>(null);
+  const [related, setRelated] = useState<{ matches: number; players: number } | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const load = async () => {
+    const [l, t] = await Promise.all([
+      supabase.from("leagues").select("id,name,logo_url").eq("is_active", true).order("display_order"),
+      supabase.from("teams").select("*").order("name"),
+    ]);
+    if (l.error || t.error) toast.error("No se pudieron cargar los equipos. Intentá nuevamente.");
+    setLeagues(l.data || []);
+    setTeams((t.data as Team[]) || []);
+    setLoading(false);
   };
 
-  const loadTeams = async () => {
-    const { data, error } = await supabase
-      .from("teams")
-      .select("*")
-      .order("name");
-    
-    if (error) {
-      toast.error("Error al cargar equipos");
-    } else {
-      setTeams(data || []);
-    }
+  useEffect(() => { load(); }, []);
+
+  const leagueName = (id: string | null) => leagues.find((l) => l.id === id)?.name || "Sin liga";
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return teams.filter((t) =>
+      (!q || t.name.toLowerCase().includes(q)) &&
+      (fLeague === "all" || t.league_id === fLeague) &&
+      (fGender === "all" || t.category === fGender) &&
+      (fAge === "all" || t.age_category === fAge)
+    );
+  }, [teams, search, fLeague, fGender, fAge]);
+
+  const hasFilters = !!search.trim() || fLeague !== "all" || fGender !== "all" || fAge !== "all";
+
+  const openCreate = () => {
+    setForm({ ...emptyForm, league_id: fLeague !== "all" ? fLeague : "" });
+    setFormOpen(true);
+  };
+  const openEdit = (t: Team) => {
+    setForm({ id: t.id, name: t.name, category: t.category, age_category: t.age_category, league_id: t.league_id || "", logo_url: t.logo_url || "" });
+    setFormOpen(true);
   };
 
-  const loadPlayers = async () => {
-    const { data, error } = await supabase
-      .from("players")
-      .select("*")
-      .order("position");
-    
-    if (error) {
-      toast.error("Error al cargar jugadores");
-    } else {
-      setPlayers(data || []);
-    }
-  };
-
-  const createTeam = async () => {
-    if (!newTeam.name || !newTeam.league_id) {
-      toast.error("Completa todos los campos");
+  const save = async () => {
+    const name = form.name.trim().replace(/\s+/g, " ");
+    if (!name || !form.category || !form.age_category || !form.league_id) {
+      toast.error("Completá nombre, género, categoría y liga.");
       return;
     }
-
-    const teamData = {
-      name: newTeam.name,
-      category: newTeam.category,
-      age_category: newTeam.age_category,
-      league_id: newTeam.league_id,
-      logo_url: newTeam.logo_url || null
-    };
-
-    const { error } = await supabase
-      .from("teams")
-      .insert([teamData]);
-
-    if (error) {
-      toast.error("Error al crear equipo");
-    } else {
-      toast.success("Equipo creado");
-      setNewTeam({ name: "", category: "Femenino", age_category: "LIBRE", league_id: "", logo_url: "" });
-      loadTeams();
-    }
-  };
-
-  const openEditDialog = (team: Team) => {
-    setEditingTeam({ ...team });
-    setEditDialogOpen(true);
-  };
-
-  const updateTeam = async () => {
-    if (!editingTeam) return;
-
-    if (!editingTeam.name || !editingTeam.league_id) {
-      toast.error("Completa todos los campos obligatorios");
+    const dup = teams.some((t) => t.id !== form.id && t.name.toLowerCase() === name.toLowerCase() &&
+      t.league_id === form.league_id && t.category === form.category && t.age_category === form.age_category);
+    if (dup) {
+      toast.error("Ya existe un equipo con ese nombre en esa liga y categoría.");
       return;
     }
-
-    const { error } = await supabase
-      .from("teams")
-      .update({
-        name: editingTeam.name,
-        category: editingTeam.category,
-        age_category: editingTeam.age_category,
-        league_id: editingTeam.league_id,
-        logo_url: editingTeam.logo_url || null
-      })
-      .eq("id", editingTeam.id);
-
+    setSaving(true);
+    const payload = { name, category: form.category, age_category: form.age_category, league_id: form.league_id, logo_url: form.logo_url.trim() || null };
+    const { error } = form.id
+      ? await supabase.from("teams").update(payload).eq("id", form.id)
+      : await supabase.from("teams").insert([payload]);
+    setSaving(false);
     if (error) {
-      toast.error("Error al actualizar equipo");
-    } else {
-      toast.success("Equipo actualizado");
-      setEditDialogOpen(false);
-      setEditingTeam(null);
-      loadTeams();
-    }
-  };
-
-  const getLeagueName = (leagueId: string | null) => {
-    if (!leagueId) return "Sin liga";
-    return leagues.find(l => l.id === leagueId)?.name || "Desconocida";
-  };
-
-  const filteredTeams = filterLeague && filterLeague !== "all"
-    ? teams.filter(team => team.league_id === filterLeague)
-    : teams;
-
-  const filteredPlayers = players.filter(player => {
-    const team = teams.find(t => t.id === player.team_id);
-    
-    // Filter by league
-    if (filterLeague && filterLeague !== "all" && team?.league_id !== filterLeague) {
-      return false;
-    }
-    
-    // Filter by team
-    if (filterTeam && filterTeam !== "all" && player.team_id !== filterTeam) {
-      return false;
-    }
-    
-    return true;
-  });
-
-  const deleteTeam = async (id: string) => {
-    const { error } = await supabase
-      .from("teams")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      toast.error("Error al eliminar equipo");
-    } else {
-      toast.success("Equipo eliminado");
-      loadTeams();
-      loadPlayers();
-    }
-  };
-
-  const createPlayer = async () => {
-    if (!newPlayer.team_id || !newPlayer.name || !newPlayer.dni) {
-      toast.error("Completa todos los campos (nombre y DNI son obligatorios)");
+      toast.error(form.id ? "No se pudo actualizar el equipo. Intentá nuevamente." : "No se pudo crear el equipo. Intentá nuevamente.");
       return;
     }
-
-    const { error } = await supabase
-      .from("players")
-      .insert([{ team_id: newPlayer.team_id, name: newPlayer.name }]);
-
-    if (error) {
-      toast.error("Error al agregar jugador");
-    } else {
-      toast.success("Jugador agregado");
-      setNewPlayer({ team_id: "", name: "", dni: "" });
-      loadPlayers();
-    }
+    toast.success(form.id ? "Equipo actualizado correctamente." : "Equipo creado correctamente.");
+    setFormOpen(false);
+    load();
   };
 
-  const deletePlayer = async (id: string) => {
-    const { error } = await supabase
-      .from("players")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      toast.error("Error al eliminar jugador");
-    } else {
-      toast.success("Jugador eliminado");
-      loadPlayers();
-    }
+  const askDelete = async (t: Team) => {
+    setToDelete(t);
+    setRelated(null);
+    const [m, p] = await Promise.all([
+      supabase.from("matches").select("id", { count: "exact", head: true }).or(`team_a_id.eq.${t.id},team_b_id.eq.${t.id}`),
+      supabase.from("players").select("id", { count: "exact", head: true }).eq("team_id", t.id),
+    ]);
+    setRelated({ matches: m.count || 0, players: p.count || 0 });
   };
+
+  const confirmDelete = async () => {
+    if (!toDelete) return;
+    setDeleting(true);
+    const { error } = await supabase.from("teams").delete().eq("id", toDelete.id);
+    setDeleting(false);
+    if (error) {
+      toast.error("No se pudo eliminar el equipo. Si tiene partidos cargados, eliminá esos partidos primero.");
+      return;
+    }
+    toast.success("Equipo eliminado correctamente.");
+    setToDelete(null);
+    load();
+  };
+
+  const hasRelated = related && (related.matches > 0 || related.players > 0);
 
   return (
     <div className="space-y-6">
-      {/* Edit Team Dialog */}
-      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="bg-card border-border">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Gestión de equipos</h2>
+          <p className="text-muted-foreground mt-1">Administra los equipos registrados en las diferentes ligas.</p>
+        </div>
+        <Button onClick={openCreate} className="w-full sm:w-auto">
+          <Plus className="w-4 h-4 mr-2" /> Nuevo equipo
+        </Button>
+      </div>
+
+      {/* Filters */}
+      <div className="rounded-xl border border-border bg-card p-3 md:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1.2fr_1fr_1fr] gap-3">
+          <div className="relative sm:col-span-2 lg:col-span-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input placeholder="Buscar equipo..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+          </div>
+          <Select value={fLeague} onValueChange={setFLeague}>
+            <SelectTrigger aria-label="Liga"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas las ligas</SelectItem>
+              {leagues.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fGender} onValueChange={setFGender}>
+            <SelectTrigger aria-label="Género"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los géneros</SelectItem>
+              {GENDERS.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fAge} onValueChange={setFAge}>
+            <SelectTrigger aria-label="Categoría"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas las categorías</SelectItem>
+              {AGES.map((a) => <SelectItem key={a} value={a}>{ageLabel(a)}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Counter */}
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          {loading ? "Cargando equipos..." : hasFilters
+            ? `${filtered.length} ${filtered.length === 1 ? "equipo encontrado" : "equipos encontrados"}`
+            : `${teams.length} ${teams.length === 1 ? "equipo" : "equipos"}`}
+        </p>
+        {hasFilters && (
+          <button className="text-sm text-primary hover:underline" onClick={() => { setSearch(""); setFLeague("all"); setFGender("all"); setFAge("all"); }}>
+            Limpiar filtros
+          </button>
+        )}
+      </div>
+
+      {/* List */}
+      {loading ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card">
+              <Skeleton className="w-14 h-14 rounded-lg" />
+              <div className="flex-1 space-y-2"><Skeleton className="h-4 w-2/3" /><Skeleton className="h-3 w-1/2" /></div>
+            </div>
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border bg-card py-14 px-6 text-center">
+          <Volleyball className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+          <p className="font-semibold text-foreground">No encontramos equipos</p>
+          <p className="text-sm text-muted-foreground mt-1 mb-5">Probá cambiar los filtros o crear un nuevo equipo.</p>
+          <Button onClick={openCreate}><Plus className="w-4 h-4 mr-2" /> Nuevo equipo</Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {filtered.map((team) => (
+            <div key={team.id} className="group flex items-center gap-4 p-4 rounded-xl border border-border bg-card transition-colors hover:border-primary/50 hover:bg-secondary/40">
+              <TeamLogo url={team.logo_url} name={team.name} />
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-foreground leading-tight truncate" title={team.name}>{team.name}</p>
+                <p className="text-sm text-muted-foreground mt-1">{team.category} · {ageLabel(team.age_category)}</p>
+                <p className="text-xs text-muted-foreground/80 truncate">{leagueName(team.league_id)}</p>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <Button variant="outline" size="sm" onClick={() => openEdit(team)}>
+                  <Pencil className="w-4 h-4 sm:mr-1.5" /><span className="hidden sm:inline">Editar</span>
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Más acciones"><MoreVertical className="w-4 h-4" /></Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => openEdit(team)}><Pencil className="w-4 h-4 mr-2" />Editar</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => askDelete(team)} className="text-destructive focus:text-destructive">
+                      <Trash2 className="w-4 h-4 mr-2" />Eliminar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Create / Edit modal */}
+      <Dialog open={formOpen} onOpenChange={setFormOpen}>
+        <DialogContent className="bg-card border-border w-[calc(100vw-2rem)] max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Editar Equipo</DialogTitle>
+            <DialogTitle className="text-foreground">{form.id ? "Editar equipo" : "Nuevo equipo"}</DialogTitle>
           </DialogHeader>
-          {editingTeam && (
-            <div className="space-y-4 py-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block text-foreground">Nombre del equipo</label>
-                <Input
-                  placeholder="Nombre del equipo"
-                  value={editingTeam.name}
-                  onChange={(e) => setEditingTeam({ ...editingTeam, name: e.target.value })}
-                />
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="team-name">Nombre del equipo *</Label>
+              <Input id="team-name" placeholder="Ej: Club Ateneo La Puerta" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="team-logo">Escudo del equipo (URL de la imagen)</Label>
+              <div className="flex items-center gap-3">
+                <TeamLogo url={form.logo_url.trim() || null} name="Vista previa" size="lg" key={form.logo_url} />
+                <div className="flex-1 space-y-1.5">
+                  <Input id="team-logo" placeholder="https://ejemplo.com/escudo.png" value={form.logo_url} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} />
+                  {form.logo_url && (
+                    <button type="button" className="text-xs text-muted-foreground hover:text-destructive" onClick={() => setForm({ ...form, logo_url: "" })}>Quitar escudo</button>
+                  )}
+                </div>
               </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block text-foreground">URL del Logo/Escudo</label>
-                <Input
-                  placeholder="https://ejemplo.com/logo.png"
-                  value={editingTeam.logo_url || ""}
-                  onChange={(e) => setEditingTeam({ ...editingTeam, logo_url: e.target.value })}
-                />
-                {editingTeam.logo_url && (
-                  <div className="mt-2 flex items-center gap-2">
-                    <img 
-                      src={editingTeam.logo_url} 
-                      alt="Preview" 
-                      className="w-12 h-12 object-contain rounded border border-border"
-                      onError={(e) => (e.currentTarget.style.display = 'none')}
-                    />
-                    <span className="text-sm text-foreground/70">Vista previa</span>
-                  </div>
-                )}
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block text-foreground">Género</label>
-                <Select
-                  value={editingTeam.category}
-                  onValueChange={(value: "Femenino" | "Masculino" | "Mixto") => setEditingTeam({ ...editingTeam, category: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona género" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Femenino">Femenino</SelectItem>
-                    <SelectItem value="Masculino">Masculino</SelectItem>
-                    <SelectItem value="Mixto">Mixto</SelectItem>
-                  </SelectContent>
+              <p className="text-xs text-muted-foreground">Formatos PNG, JPG o WEBP. Opcional.</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Género *</Label>
+                <Select value={form.category} onValueChange={(v: Gender) => setForm({ ...form, category: v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecciona género" /></SelectTrigger>
+                  <SelectContent>{GENDERS.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block text-foreground">Categoría de edad</label>
-                <Select
-                  value={editingTeam.age_category}
-                  onValueChange={(value: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE") => setEditingTeam({ ...editingTeam, age_category: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona categoría" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SUB_18">Sub 18</SelectItem>
-                    <SelectItem value="SUB_16">Sub 16</SelectItem>
-                    <SelectItem value="SUB_14">Sub 14</SelectItem>
-                    <SelectItem value="SUB_12">Sub 12</SelectItem>
-                    <SelectItem value="LIBRE">Libre</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block text-foreground">Liga</label>
-                <Select
-                  value={editingTeam.league_id || ""}
-                  onValueChange={(value) => setEditingTeam({ ...editingTeam, league_id: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona liga" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {leagues.map((league) => (
-                      <SelectItem key={league.id} value={league.id}>
-                        <div className="flex items-center gap-2">
-                          {league.logo_url && (
-                            <img src={league.logo_url} alt="" className="w-4 h-4 object-contain" />
-                          )}
-                          {league.name}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+              <div className="space-y-2">
+                <Label>Categoría de edad *</Label>
+                <Select value={form.age_category} onValueChange={(v: AgeCat) => setForm({ ...form, age_category: v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecciona categoría" /></SelectTrigger>
+                  <SelectContent>{AGES.map((a) => <SelectItem key={a} value={a}>{ageLabel(a)}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={updateTeam}>
-              Guardar Cambios
+            <div className="space-y-2">
+              <Label>Liga *</Label>
+              <Select value={form.league_id} onValueChange={(v) => setForm({ ...form, league_id: v })}>
+                <SelectTrigger><SelectValue placeholder="Selecciona liga" /></SelectTrigger>
+                <SelectContent>{leagues.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setFormOpen(false)}>Cancelar</Button>
+            <Button onClick={save} disabled={saving}>
+              {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {form.id ? "Guardar cambios" : "Crear equipo"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <Card className="gradient-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-foreground">
-            <Filter className="w-5 h-5" />
-            Filtros
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Filtrar por Liga</label>
-            <Select value={filterLeague || "all"} onValueChange={setFilterLeague}>
-              <SelectTrigger>
-                <SelectValue placeholder="Todas las ligas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas las ligas</SelectItem>
-                {leagues.map((league) => (
-                  <SelectItem key={league.id} value={league.id}>
-                    {league.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Filtrar por Equipo</label>
-            <Select value={filterTeam || "all"} onValueChange={setFilterTeam}>
-              <SelectTrigger>
-                <SelectValue placeholder="Todos los equipos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los equipos</SelectItem>
-              {filteredTeams.map((team) => (
-                <SelectItem key={team.id} value={team.id}>
-                  {team.name} ({team.category} - {(team.age_category === "LIBRE" ? "Libre" : team.age_category.replace("SUB_", "Sub "))})
-                </SelectItem>
-              ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="gradient-card">
-        <CardHeader>
-          <CardTitle className="text-foreground">Crear Nuevo Equipo</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Nombre del equipo</label>
-            <Input
-              placeholder="Nombre del equipo"
-              value={newTeam.name}
-              onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">URL del Logo/Escudo (opcional)</label>
-            <Input
-              placeholder="https://ejemplo.com/logo.png"
-              value={newTeam.logo_url}
-              onChange={(e) => setNewTeam({ ...newTeam, logo_url: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Género</label>
-            <Select
-              value={newTeam.category}
-              onValueChange={(value: any) => setNewTeam({ ...newTeam, category: value })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecciona género" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Femenino">Femenino</SelectItem>
-                <SelectItem value="Masculino">Masculino</SelectItem>
-                <SelectItem value="Mixto">Mixto</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Categoría de edad</label>
-            <Select
-              value={newTeam.age_category}
-              onValueChange={(value: any) => setNewTeam({ ...newTeam, age_category: value })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecciona categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SUB_18">Sub 18</SelectItem>
-                <SelectItem value="SUB_16">Sub 16</SelectItem>
-                <SelectItem value="SUB_14">Sub 14</SelectItem>
-                <SelectItem value="SUB_12">Sub 12</SelectItem>
-                <SelectItem value="LIBRE">Libre</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Liga</label>
-            <Select
-              value={newTeam.league_id}
-              onValueChange={(value) => setNewTeam({ ...newTeam, league_id: value })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecciona liga" />
-              </SelectTrigger>
-              <SelectContent>
-                {leagues.map((league) => (
-                  <SelectItem key={league.id} value={league.id}>
-                    {league.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <Button onClick={createTeam} className="w-full">
-            <Plus className="w-4 h-4 mr-2" />
-            Crear Equipo
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card className="gradient-card">
-        <CardHeader>
-          <CardTitle className="text-foreground">Equipos Existentes ({filteredTeams.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {filteredTeams.map((team) => (
-              <div key={team.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div className="flex items-center gap-3">
-                  {team.logo_url ? (
-                    <img 
-                      src={team.logo_url} 
-                      alt={team.name}
-                      className="w-10 h-10 object-contain rounded"
-                      onError={(e) => (e.currentTarget.style.display = 'none')}
-                    />
-                  ) : (
-                    <div className="w-10 h-10 bg-background/50 rounded flex items-center justify-center text-foreground/80 text-xs">
-                      Sin logo
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-semibold text-foreground">{team.name}</p>
-                    <p className="text-sm text-foreground/70">
-                      {team.category} • {(team.age_category === "LIBRE" ? "Libre" : team.age_category.replace("SUB_", "Sub "))} • {getLeagueName(team.league_id)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEditDialog(team)}
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => deleteTeam(team.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
+      {/* Delete confirmation */}
+      <Dialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
+        <DialogContent className="bg-card border-border w-[calc(100vw-2rem)] max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">¿Eliminar equipo?</DialogTitle>
+            <DialogDescription>
+              Esta acción eliminará el equipo de la administración. Verificá que sea el equipo correcto antes de continuar.
+            </DialogDescription>
+          </DialogHeader>
+          {toDelete && (
+            <div className="flex items-center gap-4 p-3 rounded-lg border border-border bg-background">
+              <TeamLogo url={toDelete.logo_url} name={toDelete.name} />
+              <div className="min-w-0">
+                <p className="font-semibold text-foreground truncate">{toDelete.name}</p>
+                <p className="text-sm text-muted-foreground">{toDelete.category} · {ageLabel(toDelete.age_category)}</p>
+                <p className="text-xs text-muted-foreground/80">{leagueName(toDelete.league_id)}</p>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="gradient-card">
-        <CardHeader>
-          <CardTitle className="text-foreground">Agregar Jugador</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="p-3 bg-amber-100 border border-amber-300 rounded-lg">
-            <p className="text-sm text-amber-800">
-              <strong>Importante:</strong> Es obligatorio cargar el nombre completo y el DNI del jugador.
-            </p>
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Equipo</label>
-            <Select
-              value={newPlayer.team_id}
-              onValueChange={(value) => setNewPlayer({ ...newPlayer, team_id: value })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecciona un equipo" />
-              </SelectTrigger>
-              <SelectContent>
-                {filteredTeams.map((team) => (
-                  <SelectItem key={team.id} value={team.id}>
-                    {team.name} ({team.category} - {(team.age_category === "LIBRE" ? "Libre" : team.age_category.replace("SUB_", "Sub "))})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Nombre del jugador *</label>
-            <Input
-              placeholder="Nombre completo del jugador"
-              value={newPlayer.name}
-              onChange={(e) => setNewPlayer({ ...newPlayer, name: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">DNI *</label>
-            <Input
-              placeholder="Número de DNI"
-              value={newPlayer.dni}
-              onChange={(e) => setNewPlayer({ ...newPlayer, dni: e.target.value })}
-            />
-          </div>
-          <Button onClick={createPlayer} className="w-full">
-            <Plus className="w-4 h-4 mr-2" />
-            Agregar Jugador
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card className="gradient-card">
-        <CardHeader>
-          <CardTitle className="text-foreground">Jugadores ({filteredPlayers.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {filteredPlayers.map((player) => {
-              const team = teams.find((t) => t.id === player.team_id);
-              return (
-                <div key={player.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <div>
-                    <p className="font-semibold text-foreground">{player.name}</p>
-                    <p className="text-sm text-foreground/70">
-                      {team?.name} • {getLeagueName(team?.league_id || null)}
-                    </p>
-                  </div>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => deletePlayer(player.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+            </div>
+          )}
+          {hasRelated && (
+            <div className="flex gap-2 p-3 rounded-lg border border-destructive/40 bg-destructive/10 text-sm text-foreground">
+              <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+              <p>
+                Este equipo tiene información asociada ({related!.matches} partido{related!.matches === 1 ? "" : "s"}, {related!.players} jugador{related!.players === 1 ? "" : "es"}). Al eliminarlo podrían verse afectados registros relacionados.
+              </p>
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setToDelete(null)}>Cancelar</Button>
+            <Button variant="destructive" onClick={confirmDelete} disabled={deleting || !related}>
+              {deleting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              Eliminar equipo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
