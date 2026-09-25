@@ -18,8 +18,8 @@ interface League {
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino";
-  age_category: "SUB_16" | "LIBRE";
+  category: "Femenino" | "Masculino" | "Mixto";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
   logo_url: string | null;
   league_id: string | null;
 }
@@ -265,7 +265,7 @@ export const AdminTeams = () => {
                 <label className="text-sm font-medium mb-2 block text-foreground">Género</label>
                 <Select
                   value={editingTeam.category}
-                  onValueChange={(value: "Femenino" | "Masculino") => setEditingTeam({ ...editingTeam, category: value })}
+                  onValueChange={(value: "Femenino" | "Masculino" | "Mixto") => setEditingTeam({ ...editingTeam, category: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona género" />
@@ -273,6 +273,7 @@ export const AdminTeams = () => {
                   <SelectContent>
                     <SelectItem value="Femenino">Femenino</SelectItem>
                     <SelectItem value="Masculino">Masculino</SelectItem>
+                    <SelectItem value="Mixto">Mixto</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -280,13 +281,15 @@ export const AdminTeams = () => {
                 <label className="text-sm font-medium mb-2 block text-foreground">Categoría de edad</label>
                 <Select
                   value={editingTeam.age_category}
-                  onValueChange={(value: "SUB_16" | "LIBRE") => setEditingTeam({ ...editingTeam, age_category: value })}
+                  onValueChange={(value: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE") => setEditingTeam({ ...editingTeam, age_category: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona categoría" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="SUB_16">Sub 16</SelectItem>
+                    <SelectItem value="SUB_14">Sub 14</SelectItem>
+                    <SelectItem value="SUB_12">Sub 12</SelectItem>
                     <SelectItem value="LIBRE">Libre</SelectItem>
                   </SelectContent>
                 </Select>
@@ -362,7 +365,7 @@ export const AdminTeams = () => {
                 <SelectItem value="all">Todos los equipos</SelectItem>
               {filteredTeams.map((team) => (
                 <SelectItem key={team.id} value={team.id}>
-                  {team.name} ({team.category} - {team.age_category === "SUB_16" ? "Sub 16" : "Libre"})
+                  {team.name} ({team.category} - {(team.age_category === "LIBRE" ? "Libre" : team.age_category.replace("SUB_", "Sub "))})
                 </SelectItem>
               ))}
               </SelectContent>
@@ -404,6 +407,7 @@ export const AdminTeams = () => {
               <SelectContent>
                 <SelectItem value="Femenino">Femenino</SelectItem>
                 <SelectItem value="Masculino">Masculino</SelectItem>
+                <SelectItem value="Mixto">Mixto</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -418,6 +422,8 @@ export const AdminTeams = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="SUB_16">Sub 16</SelectItem>
+                <SelectItem value="SUB_14">Sub 14</SelectItem>
+                <SelectItem value="SUB_12">Sub 12</SelectItem>
                 <SelectItem value="LIBRE">Libre</SelectItem>
               </SelectContent>
             </Select>
@@ -471,7 +477,7 @@ export const AdminTeams = () => {
                   <div>
                     <p className="font-semibold text-foreground">{team.name}</p>
                     <p className="text-sm text-foreground/70">
-                      {team.category} • {team.age_category === "SUB_16" ? "Sub 16" : "Libre"} • {getLeagueName(team.league_id)}
+                      {team.category} • {(team.age_category === "LIBRE" ? "Libre" : team.age_category.replace("SUB_", "Sub "))} • {getLeagueName(team.league_id)}
                     </p>
                   </div>
                 </div>
@@ -519,7 +525,7 @@ export const AdminTeams = () => {
               <SelectContent>
                 {filteredTeams.map((team) => (
                   <SelectItem key={team.id} value={team.id}>
-                    {team.name} ({team.category} - {team.age_category === "SUB_16" ? "Sub 16" : "Libre"})
+                    {team.name} ({team.category} - {(team.age_category === "LIBRE" ? "Libre" : team.age_category.replace("SUB_", "Sub "))})
                   </SelectItem>
                 ))}
               </SelectContent>

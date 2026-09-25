@@ -10,8 +10,8 @@ export interface HomeMatch {
   team_b_id: string;
   score_a: number | null;
   score_b: number | null;
-  category: "Femenino" | "Masculino";
-  age_category: "SUB_16" | "LIBRE";
+  category: "Femenino" | "Masculino" | "Mixto";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
   jornada: number;
   venue: string | null;
   venue_maps_url: string | null;
@@ -22,8 +22,8 @@ export interface HomeTeam {
   id: string;
   name: string;
   logo_url: string | null;
-  category: "Femenino" | "Masculino";
-  age_category: "SUB_16" | "LIBRE";
+  category: "Femenino" | "Masculino" | "Mixto";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
 }
 
 export interface HomeStat {
@@ -185,4 +185,4 @@ export const formatShortDate = (dateStr: string) =>
     year: "numeric",
   });
 
-export const ageLabel = (age: "SUB_16" | "LIBRE") => (age === "SUB_16" ? "Sub 16" : "Libre");
+export const ageLabel = (age: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE") => (age === "LIBRE" ? "Libre" : age.replace("SUB_", "Sub "));

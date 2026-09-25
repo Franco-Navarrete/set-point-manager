@@ -10,7 +10,7 @@ import { useLeague } from "@/contexts/LeagueContext";
 import { AlertCircle, MapPin, ExternalLink, Calendar, Clock } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-type Category = "Todos" | "Femenino" | "Masculino";
+type Category = "Todos" | "Femenino" | "Masculino" | "Mixto";
 
 interface Team {
   id: string;
@@ -26,7 +26,7 @@ interface Match {
   score_a: number | null;
   score_b: number | null;
   category: Exclude<Category, "Todos">;
-  age_category: "SUB_16" | "LIBRE";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
   jornada: number;
   venue: string | null;
   venue_maps_url: string | null;
@@ -74,11 +74,11 @@ const Fixture = () => {
     return teams.find((t) => t.id === teamId)?.name || "Equipo";
   };
 
-  const genderCategories = ["Femenino", "Masculino"] as const;
-  type AgeCategory = "SUB_16" | "LIBRE";
-  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16"];
+  const genderCategories = ["Femenino", "Masculino", "Mixto"] as const;
+  type AgeCategory = "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16", "SUB_14", "SUB_12"];
 
-  const getCategoryColor = (category: "Femenino" | "Masculino") => {
+  const getCategoryColor = (category: "Femenino" | "Masculino" | "Mixto") => {
     switch (category) {
       case "Femenino":
         return "bg-pink-500/10 text-pink-700 dark:text-pink-400";
@@ -88,7 +88,7 @@ const Fixture = () => {
   };
 
   const getAgeCategoryLabel = (ageCategory: AgeCategory) => {
-    return ageCategory === "SUB_16" ? "Sub 16" : "Libre";
+    return (ageCategory === "LIBRE" ? "Libre" : ageCategory.replace("SUB_", "Sub "));
   };
 
   const formatDate = (dateStr: string) => {
@@ -184,7 +184,7 @@ const Fixture = () => {
                                 <Badge className={`${getCategoryColor(match.category)} text-xs`}>
                                   {match.category}
                                 </Badge>
-                                {match.age_category === "SUB_16" && (
+                                {match.age_category !== "LIBRE" && (
                                   <Badge variant="outline" className="text-xs">
                                     Sub 16
                                   </Badge>

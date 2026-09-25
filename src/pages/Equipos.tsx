@@ -13,8 +13,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino";
-  age_category: "SUB_16" | "LIBRE";
+  category: "Femenino" | "Masculino" | "Mixto";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
   logo_url: string | null;
 }
 
@@ -88,12 +88,12 @@ const Equipos = () => {
   };
 
   const getAgeCategoryLabel = (ageCategory: Team["age_category"]) => {
-    return ageCategory === "SUB_16" ? "Sub 16" : "Libre";
+    return (ageCategory === "LIBRE" ? "Libre" : ageCategory.replace("SUB_", "Sub "));
   };
 
-  const categories = ["Femenino", "Masculino"] as const;
-  type AgeCategory = "SUB_16" | "LIBRE";
-  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16"];
+  const categories = ["Femenino", "Masculino", "Mixto"] as const;
+  type AgeCategory = "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16", "SUB_14", "SUB_12"];
 
   if (loading) {
     return (
