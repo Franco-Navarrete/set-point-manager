@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { useLeagueLevels } from "@/hooks/useLeagueLevels";
 import { Plus, Pencil, MoreVertical, Trash2, Search, Volleyball, AlertTriangle, Loader2 } from "lucide-react";
 
 type Gender = "Femenino" | "Masculino" | "Mixto";
@@ -21,14 +22,15 @@ interface Team {
   age_category: AgeCat;
   logo_url: string | null;
   league_id: string | null;
+  level_id: string | null;
 }
 
 const GENDERS: Gender[] = ["Femenino", "Masculino", "Mixto"];
 const AGES: AgeCat[] = ["SUB_12", "SUB_14", "SUB_16", "SUB_18", "LIBRE"];
 const ageLabel = (a: string) => (a === "LIBRE" ? "Libre" : a.replace("SUB_", "Sub "));
 
-type FormState = { id?: string; name: string; category: Gender | ""; age_category: AgeCat | ""; league_id: string; logo_url: string };
-const emptyForm: FormState = { name: "", category: "", age_category: "", league_id: "", logo_url: "" };
+type FormState = { id?: string; name: string; category: Gender | ""; age_category: AgeCat | ""; league_id: string; level_id: string; logo_url: string };
+const emptyForm: FormState = { name: "", category: "", age_category: "", league_id: "", level_id: "", logo_url: "" };
 
 const TeamLogo = ({ url, name, size = "md" }: { url: string | null; name: string; size?: "md" | "lg" }) => {
   const [broken, setBroken] = useState(false);
@@ -57,6 +59,10 @@ export const AdminTeams = () => {
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [saving, setSaving] = useState(false);
+  const { levels: formLevels } = useLeagueLevels(form.league_id);
+  const [allLevels, setAllLevels] = useState<{ id: string; name: string }[]>([]);
+  useEffect(() => { supabase.from("league_levels").select("id,name").then(({ data }) => setAllLevels(data || [])); }, [formOpen]);
+  const levelName = (id: string | null) => allLevels.find((l) => l.id === id)?.name;
 
   const [toDelete, setToDelete] = useState<Team | null>(null);
   const [related, setRelated] = useState<{ matches: number; players: number } | null>(null);
@@ -94,7 +100,7 @@ export const AdminTeams = () => {
     setFormOpen(true);
   };
   const openEdit = (t: Team) => {
-    setForm({ id: t.id, name: t.name, category: t.category, age_category: t.age_category, league_id: t.league_id || "", logo_url: t.logo_url || "" });
+    setForm({ id: t.id, name: t.name, category: t.category, age_category: t.age_category, league_id: t.league_id || "", level_id: t.level_id || "", logo_url: t.logo_url || "" });
     setFormOpen(true);
   };
 
@@ -111,7 +117,7 @@ export const AdminTeams = () => {
       return;
     }
     setSaving(true);
-    const payload = { name, category: form.category, age_category: form.age_category, league_id: form.league_id, logo_url: form.logo_url.trim() || null };
+    const payload = { name, category: form.category, age_category: form.age_category, league_id: form.league_id, level_id: form.level_id || null, logo_url: form.logo_url.trim() || null };
     const { error } = form.id
       ? await supabase.from("teams").update(payload).eq("id", form.id)
       : await supabase.from("teams").insert([payload]);
@@ -234,7 +240,7 @@ export const AdminTeams = () => {
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-foreground leading-tight truncate" title={team.name}>{team.name}</p>
                 <p className="text-sm text-muted-foreground mt-1">{team.category} · {ageLabel(team.age_category)}</p>
-                <p className="text-xs text-muted-foreground/80 truncate">{leagueName(team.league_id)}</p>
+                <p className="text-xs text-muted-foreground/80 truncate">{leagueName(team.league_id)}{levelName(team.level_id) ? ` · ${levelName(team.level_id)}` : ""}</p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <Button variant="outline" size="sm" onClick={() => openEdit(team)}>
@@ -299,11 +305,23 @@ export const AdminTeams = () => {
             </div>
             <div className="space-y-2">
               <Label>Liga *</Label>
-              <Select value={form.league_id} onValueChange={(v) => setForm({ ...form, league_id: v })}>
+              <Select value={form.league_id} onValueChange={(v) => setForm({ ...form, league_id: v, level_id: "" })}>
                 <SelectTrigger><SelectValue placeholder="Selecciona liga" /></SelectTrigger>
                 <SelectContent>{leagues.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
+            {formLevels.length > 0 && (
+              <div className="space-y-2">
+                <Label>Nivel</Label>
+                <Select value={form.level_id || "none"} onValueChange={(v) => setForm({ ...form, level_id: v === "none" ? "" : v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecciona nivel" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sin nivel</SelectItem>
+                    {formLevels.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setFormOpen(false)}>Cancelar</Button>

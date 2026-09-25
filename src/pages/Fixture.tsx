@@ -9,12 +9,15 @@ import { toast } from "sonner";
 import { useLeague } from "@/contexts/LeagueContext";
 import { AlertCircle, MapPin, ExternalLink, Calendar, Clock } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import LevelFilter from "@/components/LevelFilter";
+import { useLeagueLevels } from "@/hooks/useLeagueLevels";
 
 type Category = "Todos" | "Femenino" | "Masculino" | "Mixto";
 
 interface Team {
   id: string;
   name: string;
+  level_id: string | null;
 }
 
 interface Match {
@@ -37,6 +40,9 @@ const Fixture = () => {
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
+  const { levels } = useLeagueLevels(selectedLeague?.id);
+  const [level, setLevel] = useState("all");
+  useEffect(() => setLevel("all"), [selectedLeague?.id]);
 
   useEffect(() => {
     if (selectedLeague) {
@@ -55,7 +61,7 @@ const Fixture = () => {
     try {
       const [matchesResponse, teamsResponse] = await Promise.all([
         supabase.from("matches").select("*").eq("league_id", selectedLeague.id).order("date"),
-        supabase.from("teams").select("id, name"),
+        supabase.from("teams").select("id, name, level_id"),
       ]);
 
       if (matchesResponse.error) throw matchesResponse.error;
@@ -136,8 +142,11 @@ const Fixture = () => {
             </div>
           ) : (
             <div className="space-y-6">
+              <LevelFilter levels={levels} value={level} onChange={setLevel} />
               {(() => {
-                const dates = Array.from(new Set(matches.map(m => m.date))).sort();
+                const levelOf = (id: string) => teams.find((t) => t.id === id)?.level_id;
+                const visible = level === "all" ? matches : matches.filter((m) => levelOf(m.team_a_id) === level || levelOf(m.team_b_id) === level);
+                const dates = Array.from(new Set(visible.map(m => m.date))).sort();
                 
                 if (dates.length === 0) {
                   return (
@@ -148,7 +157,7 @@ const Fixture = () => {
               }
 
               return dates.map((date) => {
-                const dateMatches = matches.filter(m => m.date === date);
+                const dateMatches = visible.filter(m => m.date === date);
 
                 return (
                   <Card key={date} className="gradient-card">

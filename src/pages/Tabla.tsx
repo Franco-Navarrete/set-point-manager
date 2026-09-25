@@ -9,12 +9,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLeague } from "@/contexts/LeagueContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import LevelFilter from "@/components/LevelFilter";
+import { useLeagueLevels } from "@/hooks/useLeagueLevels";
 
 interface Team {
   id: string;
   name: string;
   category: "Femenino" | "Masculino" | "Mixto";
   age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
+  level_id: string | null;
 }
 
 interface TeamStat {
@@ -39,12 +42,16 @@ interface TeamStanding {
   setsFor: number;
   setsAgainst: number;
   points: number;
+  level_id: string | null;
 }
 
 const Tabla = () => {
   const { selectedLeague } = useLeague();
   const [standings, setStandings] = useState<TeamStanding[]>([]);
   const [loading, setLoading] = useState(true);
+  const { levels } = useLeagueLevels(selectedLeague?.id);
+  const [level, setLevel] = useState("all");
+  useEffect(() => setLevel("all"), [selectedLeague?.id]);
 
   useEffect(() => {
     if (selectedLeague) {
@@ -107,6 +114,7 @@ const Tabla = () => {
           setsFor: stat?.sets_for || 0,
           setsAgainst: stat?.sets_against || 0,
           points: stat?.points || 0,
+          level_id: team.level_id,
         };
       });
 
@@ -171,12 +179,13 @@ const Tabla = () => {
             </div>
           ) : (
             <div className="space-y-8">
+              <LevelFilter levels={levels} value={level} onChange={setLevel} />
               {categories.map((category) => (
                 <div key={category} className="space-y-6">
                   <h2 className="text-3xl font-bold">{category}</h2>
                   {ageCategories.map((ageCategory) => {
                     const categoryTeams = standings
-                      .filter((team) => team.category === category && team.age_category === ageCategory)
+                      .filter((team) => team.category === category && team.age_category === ageCategory && (level === "all" || team.level_id === level))
                       .sort((a, b) => b.points - a.points)
                       .map((team, index) => ({ ...team, position: index + 1 }));
 
