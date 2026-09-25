@@ -348,9 +348,9 @@ export type Database = {
       }
     }
     Enums: {
-      age_category_type: "SUB_16" | "LIBRE"
+      age_category_type: "SUB_16" | "LIBRE" | "SUB_12" | "SUB_14"
       app_role: "admin" | "user"
-      category_type: "Femenino" | "Masculino"
+      category_type: "Femenino" | "Masculino" | "Mixto"
       league_type: "LIGA" | "EVENTO_GRANDE" | "EVENTO_2DO_ORDEN"
     }
     CompositeTypes: {
@@ -479,9 +479,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      age_category_type: ["SUB_16", "LIBRE"],
+      age_category_type: ["SUB_16", "LIBRE", "SUB_12", "SUB_14"],
       app_role: ["admin", "user"],
-      category_type: ["Femenino", "Masculino"],
+      category_type: ["Femenino", "Masculino", "Mixto"],
       league_type: ["LIGA", "EVENTO_GRANDE", "EVENTO_2DO_ORDEN"],
     },
   },
