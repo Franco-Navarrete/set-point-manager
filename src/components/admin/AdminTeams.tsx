@@ -19,7 +19,7 @@ interface Team {
   id: string;
   name: string;
   category: "Femenino" | "Masculino" | "Mixto";
-  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
   logo_url: string | null;
   league_id: string | null;
 }
@@ -281,12 +281,13 @@ export const AdminTeams = () => {
                 <label className="text-sm font-medium mb-2 block text-foreground">Categoría de edad</label>
                 <Select
                   value={editingTeam.age_category}
-                  onValueChange={(value: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE") => setEditingTeam({ ...editingTeam, age_category: value })}
+                  onValueChange={(value: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE") => setEditingTeam({ ...editingTeam, age_category: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona categoría" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="SUB_18">Sub 18</SelectItem>
                     <SelectItem value="SUB_16">Sub 16</SelectItem>
                     <SelectItem value="SUB_14">Sub 14</SelectItem>
                     <SelectItem value="SUB_12">Sub 12</SelectItem>
@@ -421,6 +422,7 @@ export const AdminTeams = () => {
                 <SelectValue placeholder="Selecciona categoría" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="SUB_18">Sub 18</SelectItem>
                 <SelectItem value="SUB_16">Sub 16</SelectItem>
                 <SelectItem value="SUB_14">Sub 14</SelectItem>
                 <SelectItem value="SUB_12">Sub 12</SelectItem>
