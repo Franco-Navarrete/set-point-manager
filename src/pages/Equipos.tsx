@@ -84,7 +84,7 @@ const Equipos = () => {
         return "bg-pink-500/10 text-pink-700 dark:text-pink-400";
       case "Masculino":
         return "bg-blue-500/10 text-blue-700 dark:text-blue-400";
-          default:
+      default:
         return "bg-orange-500/10 text-orange-400";
     }
   };
