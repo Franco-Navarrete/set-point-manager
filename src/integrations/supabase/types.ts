@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      league_levels: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          league_id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          league_id: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          league_id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "league_levels_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leagues: {
         Row: {
           created_at: string
@@ -271,6 +306,7 @@ export type Database = {
           created_at: string
           id: string
           league_id: string | null
+          level_id: string | null
           logo_url: string | null
           name: string
           updated_at: string
@@ -281,6 +317,7 @@ export type Database = {
           created_at?: string
           id?: string
           league_id?: string | null
+          level_id?: string | null
           logo_url?: string | null
           name: string
           updated_at?: string
@@ -291,6 +328,7 @@ export type Database = {
           created_at?: string
           id?: string
           league_id?: string | null
+          level_id?: string | null
           logo_url?: string | null
           name?: string
           updated_at?: string
@@ -301,6 +339,13 @@ export type Database = {
             columns: ["league_id"]
             isOneToOne: false
             referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "league_levels"
             referencedColumns: ["id"]
           },
         ]
