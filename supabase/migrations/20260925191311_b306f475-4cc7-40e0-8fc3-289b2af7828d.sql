@@ -1,0 +1,1 @@
+ALTER TYPE public.age_category_type ADD VALUE IF NOT EXISTS 'SUB_18';
