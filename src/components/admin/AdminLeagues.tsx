@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Trash2, Edit2, Check, X } from "lucide-react";
+import { AdminLevels } from "./AdminLevels";
 
 interface League {
   id: string;
@@ -175,6 +176,8 @@ export const AdminLeagues = () => {
           <Button onClick={createLeague}>Crear Liga/Evento</Button>
         </CardContent>
       </Card>
+
+      <AdminLevels leagues={leagues} />
 
       <Card className="gradient-card">
         <CardHeader>

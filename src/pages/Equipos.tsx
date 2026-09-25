@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLeague } from "@/contexts/LeagueContext";
 import { AlertCircle } from "lucide-react";
+import LevelFilter from "@/components/LevelFilter";
+import { useLeagueLevels } from "@/hooks/useLeagueLevels";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Team {
@@ -16,6 +18,7 @@ interface Team {
   category: "Femenino" | "Masculino" | "Mixto";
   age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
   logo_url: string | null;
+  level_id: string | null;
 }
 
 interface Player {
@@ -31,6 +34,9 @@ const Equipos = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { levels } = useLeagueLevels(selectedLeague?.id);
+  const [level, setLevel] = useState("all");
+  useEffect(() => setLevel("all"), [selectedLeague?.id]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -129,6 +135,8 @@ const Equipos = () => {
             </Alert>
           )}
 
+          <LevelFilter levels={levels} value={level} onChange={setLevel} />
+
           {teams.length === 0 ? (
             <Card className="gradient-card">
               <CardContent className="py-12 text-center">
@@ -144,7 +152,7 @@ const Equipos = () => {
                   <h2 className="text-3xl font-bold">{category}</h2>
                   {ageCategories.map((ageCategory) => {
                     const categoryTeams = teams.filter(
-                      (team) => team.category === category && team.age_category === ageCategory
+                      (team) => team.category === category && team.age_category === ageCategory && (level === "all" || team.level_id === level)
                     );
 
                     if (categoryTeams.length === 0) return null;
