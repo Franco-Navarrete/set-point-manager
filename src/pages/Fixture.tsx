@@ -26,7 +26,7 @@ interface Match {
   score_a: number | null;
   score_b: number | null;
   category: Exclude<Category, "Todos">;
-  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
   jornada: number;
   venue: string | null;
   venue_maps_url: string | null;
@@ -75,8 +75,8 @@ const Fixture = () => {
   };
 
   const genderCategories = ["Femenino", "Masculino", "Mixto"] as const;
-  type AgeCategory = "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
-  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16", "SUB_14", "SUB_12"];
+  type AgeCategory = "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
+  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_18", "SUB_16", "SUB_14", "SUB_12"];
 
   const getCategoryColor = (category: "Femenino" | "Masculino" | "Mixto") => {
     switch (category) {

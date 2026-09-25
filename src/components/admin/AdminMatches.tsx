@@ -16,7 +16,7 @@ interface Team {
   id: string;
   name: string;
   category: "Femenino" | "Masculino" | "Mixto";
-  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
   league_id: string | null;
 }
 
@@ -29,7 +29,7 @@ interface Match {
   score_a: number | null;
   score_b: number | null;
   category: "Femenino" | "Masculino" | "Mixto";
-  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
   jornada: number;
   league_id: string | null;
   venue: string | null;
@@ -268,6 +268,7 @@ export const AdminMatches = () => {
                 <SelectValue placeholder="Categoría" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="SUB_18">Sub 18</SelectItem>
                 <SelectItem value="SUB_16">Sub 16</SelectItem>
                 <SelectItem value="SUB_14">Sub 14</SelectItem>
                 <SelectItem value="SUB_12">Sub 12</SelectItem>

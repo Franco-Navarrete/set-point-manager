@@ -14,7 +14,7 @@ interface Team {
   id: string;
   name: string;
   category: "Femenino" | "Masculino" | "Mixto";
-  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
 }
 
 interface TeamStat {
@@ -32,7 +32,7 @@ interface TeamStanding {
   position: number;
   team: string;
   category: "Femenino" | "Masculino" | "Mixto";
-  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
   played: number;
   won: number;
   lost: number;
@@ -131,12 +131,12 @@ const Tabla = () => {
     }
   };
 
-  const getAgeCategoryLabel = (ageCategory: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE") => {
+  const getAgeCategoryLabel = (ageCategory: "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE") => {
     return (ageCategory === "LIBRE" ? "Libre" : ageCategory.replace("SUB_", "Sub "));
   };
 
-  type AgeCategory = "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
-  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16", "SUB_14", "SUB_12"];
+  type AgeCategory = "SUB_12" | "SUB_14" | "SUB_16" | "SUB_18" | "LIBRE";
+  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_18", "SUB_16", "SUB_14", "SUB_12"];
 
   if (loading) {
     return (
