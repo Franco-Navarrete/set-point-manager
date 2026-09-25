@@ -15,7 +15,7 @@ interface League {
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino";
+  category: "Femenino" | "Masculino" | "Mixto";
   league_id: string | null;
 }
 

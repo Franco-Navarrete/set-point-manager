@@ -13,8 +13,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface Team {
   id: string;
   name: string;
-  category: "Femenino" | "Masculino";
-  age_category: "SUB_16" | "LIBRE";
+  category: "Femenino" | "Masculino" | "Mixto";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
 }
 
 interface TeamStat {
@@ -31,8 +31,8 @@ interface TeamStat {
 interface TeamStanding {
   position: number;
   team: string;
-  category: "Femenino" | "Masculino";
-  age_category: "SUB_16" | "LIBRE";
+  category: "Femenino" | "Masculino" | "Mixto";
+  age_category: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
   played: number;
   won: number;
   lost: number;
@@ -118,7 +118,7 @@ const Tabla = () => {
     }
   };
 
-  const categories = ["Femenino", "Masculino"] as const;
+  const categories = ["Femenino", "Masculino", "Mixto"] as const;
 
   const getCategoryColor = (category: typeof categories[number]) => {
     switch (category) {
@@ -126,15 +126,17 @@ const Tabla = () => {
         return "bg-pink-500/10 text-pink-700 dark:text-pink-400";
       case "Masculino":
         return "bg-blue-500/10 text-blue-700 dark:text-blue-400";
+      default:
+        return "bg-orange-500/10 text-orange-400";
     }
   };
 
-  const getAgeCategoryLabel = (ageCategory: "SUB_16" | "LIBRE") => {
-    return ageCategory === "SUB_16" ? "Sub 16" : "Libre";
+  const getAgeCategoryLabel = (ageCategory: "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE") => {
+    return (ageCategory === "LIBRE" ? "Libre" : ageCategory.replace("SUB_", "Sub "));
   };
 
-  type AgeCategory = "SUB_16" | "LIBRE";
-  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16"];
+  type AgeCategory = "SUB_12" | "SUB_14" | "SUB_16" | "LIBRE";
+  const ageCategories: AgeCategory[] = ["LIBRE", "SUB_16", "SUB_14", "SUB_12"];
 
   if (loading) {
     return (
