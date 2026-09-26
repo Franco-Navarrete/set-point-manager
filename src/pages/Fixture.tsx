@@ -43,6 +43,11 @@ const Fixture = () => {
   const { levels } = useLeagueLevels(selectedLeague?.id);
   const [level, setLevel] = useState("all");
   useEffect(() => setLevel("all"), [selectedLeague?.id]);
+  useEffect(() => {
+    if (levels.length && (level === "all" || !levels.some((l) => l.id === level))) {
+      setLevel(levels[0].id);
+    }
+  }, [levels, level]);
 
   useEffect(() => {
     if (selectedLeague) {
