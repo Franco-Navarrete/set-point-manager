@@ -9,7 +9,7 @@ interface Props {
 
 const LevelFilter = ({ levels, value, onChange }: Props) => {
   if (levels.length === 0) return null;
-  const options = [{ id: "all", name: "Todos los niveles" }, ...levels];
+  const options = levels;
   return (
     <div className="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="Nivel">
       {options.map((o) => (
