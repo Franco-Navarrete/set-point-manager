@@ -185,7 +185,7 @@ const Tabla = () => {
           ) : (
             <div className="space-y-8">
               <LevelFilter levels={levels} value={level} onChange={setLevel} />
-              {categories.map((category) => (
+              {categories.filter((category) => standings.some((t) => t.category === category && (level === "all" || t.level_id === level))).map((category) => (
                 <div key={category} className="space-y-6">
                   <h2 className="text-3xl font-bold">{category}</h2>
                   {ageCategories.map((ageCategory) => {
@@ -193,6 +193,8 @@ const Tabla = () => {
                       .filter((team) => team.category === category && team.age_category === ageCategory && (level === "all" || team.level_id === level))
                       .sort((a, b) => b.points - a.points)
                       .map((team, index) => ({ ...team, position: index + 1 }));
+
+                    if (categoryTeams.length === 0) return null;
 
                     return (
                       <Card key={`${category}-${ageCategory}`} className="gradient-card">
